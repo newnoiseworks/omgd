@@ -128,22 +128,21 @@ async function build() {
   console.log("copying godot zip to website...")
   fs.copyFileSync(TMP_DIR + "tpl-win.zip", websiteDir + `/public/static/ThePromisedLand-${versionString}.win.zip`)
 
+  if (IS_LOCAL === false) {
+    console.log("packaging launcher...")
+    process.chdir(launcherDir)
+    await exec(`yarn && yarn package`)
+
+    // TODO: Need to get tagged launcher version
+    console.log("copying launcher to website...")
+    fs.copyFileSync("release\\The Promised Land - Game Launcher Setup 0.0.2.exe", websiteDir + `/public/static/ThePromisedLand-Launcher-Setup-0.0.2.${versionString}.exe`)
+  }
+
   console.log("building website for firebase...")
   process.chdir(websiteDir)
 
-  if (IS_LOCAL === false)
-    await exec("npm install --no-progress")
-
+  await exec("npm install --no-progress")
   await exec("npm run build")
-
-  if (IS_LOCAL === false) {
-    //console.log("packaging launcher...")
-    //process.chdir(launcherDir)
-    //await exec(`yarn && yarn package`)
-
-    // TODO: zip up necessary install files for launcher windows app
-    // TODO: move .zip for launcher to website w/ launcher version number in name
-  }
 }
 
 async function deploy() {

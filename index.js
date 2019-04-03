@@ -26,6 +26,9 @@ const GAME_REPO = "git@github.com:newnoiseworks/not-stardew.git"
 const LOCAL_GODOT_WIN_BINARY = process.cwd() + "/../Godot/Godot.exe"
 const GODOT_WIN_DOWNLOAD_URL = "https://downloads.tuxfamily.org/godotengine/3.1/mono/Godot_v3.1-stable_mono_win64.zip"
 
+// TODO: The below should be defined via tag or project's package.json
+const LAUNCHER_VERSION = "0.0.3"
+
 async function setup() {
   console.log("setting up...")
   await setupTempWorkingDirectory()
@@ -135,7 +138,10 @@ async function build() {
 
     // TODO: Need to get tagged launcher version
     console.log("copying launcher to website...")
-    fs.copyFileSync("release\\The Promised Land - Game Launcher Setup 0.0.2.exe", websiteDir + `/public/static/ThePromisedLand-Launcher-Setup-0.0.2.${versionString}.exe`)
+    fs.copyFileSync(
+      `release\\The Promised Land - Game Launcher Setup ${LAUNCHER_VERSION}.exe`,
+      `${websiteDir}/public/static/ThePromisedLand-Launcher-Setup-${LAUNCHER_VERSION}.${versionString}.exe`
+    )
   }
 
   console.log("building website for firebase...")

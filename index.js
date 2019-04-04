@@ -92,7 +92,7 @@ async function build() {
   const launcherDir = IS_LOCAL ? LAUNCHER_DIR : TMP_LAUNCHER_DIR
   const serverDir = IS_LOCAL ? SERVER_DIR : TMP_SERVER_DIR
 
-  console.log("Building godot game client...")
+  console.log("building godot game client...")
 
   process.chdir(gameDir)
 
@@ -174,18 +174,33 @@ async function build() {
 
   await exec("npm install --no-progress")
   await exec("npm run build")
+  
+  if (IS_LOCAL) await exec("docker-compose restart")
 }
 
 async function deploy() {
-  console.log("running deploy...")
-
   if (IS_LOCAL) return
 
+  console.log("preparing deploy...")
+  console.log("shutting down nakama servers...")
+  await exec(`gcloud compute ssh instance-1 --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.13.0 down"`)
+
+  console.log("running deploy...")
+
+  console.log("deploying website...")
   process.chdir(TMP_WEBSITE_DIR)
   await exec(`firebase deploy`)
 
-  // TODO: Restart GCP server -- or local server -- with new build
+  console.log("pushing nakama changes...")
+  process.chdir(TMP_SERVER_DIR)
+  // push lib and docker compose and build file up to server
+  await exec(`gcloud compute scp --recurse --force-key-file-overwrite ./nakama instance-1:`)
+  await exec(`gcloud compute scp --force-key-file-overwrite docker-compose.yml build-config.json instance-1:`)
+
+  // up containers via docker-compose
+  await exec(`gcloud compute ssh instance-1 --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.13.0 up -d"`)
 }
+
 
 async function buildAndDeploy() {
   console.log("running build and deploy...")
@@ -194,17 +209,18 @@ async function buildAndDeploy() {
 }
 
 (async function() {
-  await setup()
   
   switch(COMMAND) {
     case "build":
+      await setup()
       await build()
       break
     case "deploy":
-      deploy()
+      await deploy()
       break
     case "build-and-deploy":
-      buildAndDeploy()
+      await setup()
+      await buildAndDeploy()
       break
   }
 })()

@@ -3,10 +3,10 @@ const rimraf = require('rimraf')
 const util = require('util')
 const exec = util.promisify(require('child_process').exec);
 const AdmZip = require('adm-zip')
+const yjs = require('js-yaml')
 
 const COMMAND = process.argv[2]
 const ENVIRONMENT = process.argv[3]
-const VERSION = process.argv[4]
 
 const IS_LOCAL = ENVIRONMENT === "local"
 
@@ -25,9 +25,6 @@ const GAME_REPO = "git@github.com:newnoiseworks/not-stardew.git"
 
 const LOCAL_GODOT_WIN_BINARY = process.cwd() + "/../Godot/Godot.exe"
 const GODOT_WIN_DOWNLOAD_URL = "https://downloads.tuxfamily.org/godotengine/3.1/mono/Godot_v3.1-stable_mono_win64.zip"
-
-// TODO: The below should be defined via tag or project's package.json
-const LAUNCHER_VERSION = "0.0.3"
 
 async function setup() {
   console.log("setting up...")
@@ -63,19 +60,19 @@ async function cloneRepositoriesFromGithub() {
     originalRepo: GAME_REPO,
     tmpRepoDir: TMP_GAME_DIR,
   }*/].map((proj) => {
-    let launcherVersion
+    let originalRepoCommit
     process.chdir(proj.originalRepoDir)
     
     return exec(`git rev-parse HEAD`)
     .then(({ stderr, stdout }) => {
-      launcherVersion = stdout.trim()
+      originalRepoCommit = stdout.trim()
     }).then(() => {
       process.chdir(TMP_DIR)
       return exec(`git clone --depth 1 ${proj.originalRepo} ${proj.tmpRepoDir}`)
     }).then(() => {
       if (ENVIRONMENT !== "production") {
         process.chdir(proj.tmpRepoDir)
-        return exec(`git reset --hard ${launcherVersion}`)
+        return exec(`git reset --hard ${originalRepoCommit}`)
       }
     })
   }))
@@ -117,32 +114,45 @@ async function build() {
   console.log("copying godot zip to launcher...")
   fs.copyFileSync(TMP_DIR + "tpl-win.zip", launcherDir + "/tpl-win.zip")
   
-  let versionString
-  if (!!VERSION)
-    versionString = VERSION
-  else {
-    process.chdir(gameDir)
-    await exec("git fetch --tags")
-    // ??? For non production builds, do we need to adjust build #? Or should we only worry about that for prod pushes? We've gotta remember to update all the /game files manually as well. This really only matters for testing & for triggering updates w/n the launcher so probably not necessary, the only requirement is that all  version #'s are in sync. may be worth automating the references w/n Godot and Nakama somehow as well.
-    versionString = (await exec("git describe --tags --abbrev=0")).stdout.trim()
-    process.chdir(original_path)
-  }
+  const GAME_VERSION = yjs.safeLoad(
+    fs.readFileSync(`${GAME_DIR}/Resources/Config/config.tpl.tres`, 'utf8')
+    .replace(' =', ' :')
+    .replace(' :', ':')
+    .replace('[config]', '')
+  ).version;
+
+  const LAUNCHER_VERSION = require(`${launcherDir}/package.json`).version
 
   console.log("copying godot zip to website...")
-  fs.copyFileSync(TMP_DIR + "tpl-win.zip", websiteDir + `/public/static/ThePromisedLand-${versionString}.win.zip`)
+  fs.copyFileSync(TMP_DIR + "tpl-win.zip", websiteDir + `/public/static/ThePromisedLand-${GAME_VERSION}.win.zip`)
 
-  if (IS_LOCAL === false) {
-    console.log("packaging launcher...")
-    process.chdir(launcherDir)
-    await exec(`yarn && yarn package`)
-
-    // TODO: Need to get tagged launcher version
-    console.log("copying launcher to website...")
-    fs.copyFileSync(
-      `release\\The Promised Land - Game Launcher Setup ${LAUNCHER_VERSION}.exe`,
-      `${websiteDir}/public/static/ThePromisedLand-Launcher-Setup-${LAUNCHER_VERSION}.${versionString}.exe`
-    )
+  console.log("creationg build-config.json file for launcher and website...")
+  const versionObj = {
+    "gameVersion": GAME_VERSION,
+    "launcherVersion": LAUNCHER_VERSION
   }
+  fs.writeFileSync(`${launcherDir}/build-config.json`, JSON.stringify(versionObj));
+  fs.copyFileSync(`${launcherDir}/build-config.json`, `${websiteDir}/src/build-config.json`);
+
+  console.log("packaging launcher...")
+  process.chdir(launcherDir)
+
+  /*
+  const launcherPackageConfig = require(`${launcherDir}/package.json`)
+  let productName = launcherPackageConfig.build.productName
+  console.log("original product name ", productName)
+  launcherPackageConfig.build.productName = productName.replace(" -- Local", " -- Staging")
+  console.log("converted product name ", launcherPackageConfig.build.productName)
+  fs.writeFileSync(`${launcherDir}/package.json`, JSON.stringify(launcherPackageConfig));
+  */
+  await exec(`yarn && yarn package`)
+
+  // TODO: Need to get tagged launcher version
+  console.log("copying launcher to website...")
+  fs.copyFileSync(
+    `release\\The Promised Land - Game Launcher Setup ${LAUNCHER_VERSION}.exe`,
+    `${websiteDir}/public/static/ThePromisedLand-Launcher-Setup-${LAUNCHER_VERSION}.${GAME_VERSION}.exe`
+  )
 
   console.log("building website for firebase...")
   process.chdir(websiteDir)
@@ -166,7 +176,6 @@ async function buildAndDeploy() {
   await deploy()
 }
 
-// eventually the file should be just the below and reference modules probably
 (async function() {
   await setup()
   

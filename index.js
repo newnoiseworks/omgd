@@ -13,15 +13,18 @@ const IS_LOCAL = ENVIRONMENT === "local"
 const LAUNCHER_DIR = process.cwd() + "/../launcher"
 const WEBSITE_DIR = process.cwd() + "/../website"
 const GAME_DIR = process.cwd() + "/../game"
+const SERVER_DIR = process.cwd() + "/../server"
 
 const TMP_DIR = process.cwd() + "/.tmp-tpl-fred/"
 const TMP_LAUNCHER_DIR = TMP_DIR + "launcher"
 const TMP_WEBSITE_DIR = TMP_DIR + "website"
 const TMP_GAME_DIR = TMP_DIR + "game"
+const TMP_SERVER_DIR = TMP_DIR + "server"
 
 const LAUNCHER_REPO = "git@github.com:newnoiseworks/tpl-launcher.git"
 const WEBSITE_REPO = "git@github.com:newnoiseworks/tpl-website.git"
 const GAME_REPO = "git@github.com:newnoiseworks/not-stardew.git"
+const SERVER_REPO = "git@github.com:newnoiseworks/not-stardew-backend.git"
 
 const LOCAL_GODOT_WIN_BINARY = process.cwd() + "/../Godot/Godot.exe"
 const GODOT_WIN_DOWNLOAD_URL = "https://downloads.tuxfamily.org/godotengine/3.1/mono/Godot_v3.1-stable_mono_win64.zip"
@@ -55,6 +58,10 @@ async function cloneRepositoriesFromGithub() {
     originalRepoDir: WEBSITE_DIR,
     originalRepo: WEBSITE_REPO,
     tmpRepoDir: TMP_WEBSITE_DIR,
+  },{
+    originalRepoDir: SERVER_DIR,
+    originalRepo: SERVER_REPO,
+    tmpRepoDir: TMP_SERVER_DIR,
   },/*{
     originalRepoDir: GAME_DIR,
     originalRepo: GAME_REPO,
@@ -83,6 +90,7 @@ async function build() {
   const gameDir = GAME_DIR
   const websiteDir = IS_LOCAL ? WEBSITE_DIR : TMP_WEBSITE_DIR
   const launcherDir = IS_LOCAL ? LAUNCHER_DIR : TMP_LAUNCHER_DIR
+  const serverDir = IS_LOCAL ? SERVER_DIR : TMP_SERVER_DIR
 
   console.log("Building godot game client...")
 
@@ -126,13 +134,14 @@ async function build() {
   console.log("copying godot zip to website...")
   fs.copyFileSync(TMP_DIR + "tpl-win.zip", websiteDir + `/public/static/ThePromisedLand-${GAME_VERSION}.win.zip`)
 
-  console.log("creating build-config.json file for launcher and website...")
+  console.log("creating build-config.json file for all projects...")
   const versionObj = {
     "gameVersion": GAME_VERSION,
     "launcherVersion": LAUNCHER_VERSION
   }
-  fs.writeFileSync(`${launcherDir}/build-config.json`, JSON.stringify(versionObj));
-  fs.copyFileSync(`${launcherDir}/build-config.json`, `${websiteDir}/src/build-config.json`);
+  fs.writeFileSync(`${launcherDir}/build-config.json`, JSON.stringify(versionObj))
+  fs.copyFileSync(`${launcherDir}/build-config.json`, `${websiteDir}/src/build-config.json`)
+  fs.copyFileSync(`${launcherDir}/build-config.json`, `${serverDir}/build-config.json`)
 
   console.log("packaging launcher...")
   process.chdir(launcherDir)
@@ -159,6 +168,12 @@ async function build() {
 
   await exec("npm install --no-progress")
   await exec("npm run build")
+
+  console.log("building server app with latest versions...")
+  process.chdir(serverDir)
+
+  await exec("npm install --no-progress")
+  await exec("npm run build")
 }
 
 async function deploy() {
@@ -168,6 +183,8 @@ async function deploy() {
 
   process.chdir(TMP_WEBSITE_DIR)
   await exec(`firebase deploy`)
+
+  // TODO: Restart GCP server -- or local server -- with new build
 }
 
 async function buildAndDeploy() {

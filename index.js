@@ -126,7 +126,7 @@ async function build() {
   console.log("copying godot zip to website...")
   fs.copyFileSync(TMP_DIR + "tpl-win.zip", websiteDir + `/public/static/ThePromisedLand-${GAME_VERSION}.win.zip`)
 
-  console.log("creationg build-config.json file for launcher and website...")
+  console.log("creating build-config.json file for launcher and website...")
   const versionObj = {
     "gameVersion": GAME_VERSION,
     "launcherVersion": LAUNCHER_VERSION

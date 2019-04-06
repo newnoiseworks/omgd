@@ -137,7 +137,8 @@ async function build() {
   console.log("creating build-config.json file for all projects...")
   const versionObj = {
     "gameVersion": GAME_VERSION,
-    "launcherVersion": LAUNCHER_VERSION
+    "launcherVersion": LAUNCHER_VERSION,
+    "environment": ENVIRONMENT
   }
   fs.writeFileSync(`${launcherDir}/build-config.json`, JSON.stringify(versionObj))
   fs.copyFileSync(`${launcherDir}/build-config.json`, `${websiteDir}/src/build-config.json`)
@@ -146,21 +147,33 @@ async function build() {
   console.log("packaging launcher...")
   process.chdir(launcherDir)
 
-  /*
   const launcherPackageConfig = require(`${launcherDir}/package.json`)
   let productName = launcherPackageConfig.build.productName
-  console.log("original product name ", productName)
-  launcherPackageConfig.build.productName = productName.replace(" -- Local", " -- Staging")
-  console.log("converted product name ", launcherPackageConfig.build.productName)
-  fs.writeFileSync(`${launcherDir}/package.json`, JSON.stringify(launcherPackageConfig));
-  */
+
+  if (IS_LOCAL === false) {
+    let appId = launcherPackageConfig.build.appId
+    
+    if (ENVIRONMENT === "production") {
+      productName = productName.replace(" {ENVIRONMENT}", "")
+      appId = appId.replace("{ENVIRONMENT}", "")
+    } else {
+      productName = productName.replace("{ENVIRONMENT}", ENVIRONMENT)
+      appId = appId.replace("{ENVIRONMENT}", "-" + ENVIRONMENT)
+    }
+    
+    launcherPackageConfig.build.productName = productName
+    launcherPackageConfig.build.appId = appId
+    launcherPackageConfig.productName = productName
+    fs.writeFileSync(`${launcherDir}/package.json`, JSON.stringify(launcherPackageConfig, null, 2));
+  }
+
   await exec(`yarn && yarn package`)
 
   // TODO: Need to get tagged launcher version
   console.log("copying launcher to website...")
   fs.copyFileSync(
-    `release\\The Promised Land - Game Launcher Setup ${LAUNCHER_VERSION}.exe`,
-    `${websiteDir}/public/static/ThePromisedLand-Launcher-Setup-${LAUNCHER_VERSION}.${GAME_VERSION}.exe`
+    `release\\${productName} Setup ${LAUNCHER_VERSION}.exe`,
+    `${websiteDir}/public/static/ThePromisedLand-Launcher-Setup-${LAUNCHER_VERSION}.${GAME_VERSION}.${ENVIRONMENT}.exe`
   )
 
   console.log("building website for firebase...")
@@ -175,7 +188,10 @@ async function build() {
   await exec("npm install --no-progress")
   await exec("npm run build")
   
-  if (IS_LOCAL) await exec("docker-compose restart")
+  if (IS_LOCAL){
+    await exec("docker-compose down")
+    await exec("docker-compose up -d")
+  }
 }
 
 async function deploy() {
@@ -195,7 +211,7 @@ async function deploy() {
   process.chdir(TMP_SERVER_DIR)
   // push lib and docker compose and build file up to server
   await exec(`gcloud compute scp --recurse --force-key-file-overwrite ./nakama instance-1:`)
-  await exec(`gcloud compute scp --force-key-file-overwrite docker-compose.yml build-config.json instance-1:`)
+  await exec(`gcloud compute scp --force-key-file-overwrite docker-compose.yml instance-1:`)
 
   // up containers via docker-compose
   await exec(`gcloud compute ssh instance-1 --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.13.0 up -d"`)

@@ -29,6 +29,19 @@ const SERVER_REPO = "git@github.com:newnoiseworks/not-stardew-backend.git"
 const LOCAL_GODOT_WIN_BINARY = process.cwd() + "/../Godot/Godot.exe"
 const GODOT_WIN_DOWNLOAD_URL = "https://downloads.tuxfamily.org/godotengine/3.1/mono/Godot_v3.1-stable_mono_win64.zip"
 
+function tresToJsonViaYml(path) {
+  return yjs.safeLoad(
+    fs.readFileSync(path, 'utf8')
+      .replace(/=/g, ':')
+      .replace(/ :/g, ':')
+      .replace(/\n\n/g, '\n')
+      .replace(/\n/g, '\n  ')
+      .replace(/  \[/g, '[')
+      .replace(/\[/g, '')
+      .replace(/\]/g, ':')
+  )
+}
+
 async function setup() {
   console.log("setting up...")
   await setupTempWorkingDirectory()
@@ -122,12 +135,9 @@ async function build() {
   console.log("copying godot zip to launcher...")
   fs.copyFileSync(TMP_DIR + "tpl-win.zip", launcherDir + "/tpl-win.zip")
   
-  const GAME_VERSION = yjs.safeLoad(
-    fs.readFileSync(`${GAME_DIR}/Resources/Config/config.tpl.tres`, 'utf8')
-    .replace(' =', ' :')
-    .replace(' :', ':')
-    .replace('[config]', '')
-  ).version;
+  const GAME_VERSION = tresToJsonViaYml(`${GAME_DIR}/Resources/Config/config.tpl.tres`).config.version;
+  
+  const gameEnvConfig = tresToJsonViaYml(`${GAME_DIR}/Resources/Config/config.tpl_${ENVIRONMENT}.tres`);
 
   const LAUNCHER_VERSION = require(`${launcherDir}/package.json`).version
 
@@ -135,11 +145,15 @@ async function build() {
   fs.copyFileSync(TMP_DIR + "tpl-win.zip", websiteDir + `/public/static/ThePromisedLand-${GAME_VERSION}.win.zip`)
 
   console.log("creating build-config.json file for all projects...")
+
   const versionObj = {
     "gameVersion": GAME_VERSION,
     "launcherVersion": LAUNCHER_VERSION,
-    "environment": ENVIRONMENT
+    "environment": ENVIRONMENT,
+    nakama: gameEnvConfig.nakama,
+    website: gameEnvConfig.website
   }
+
   fs.writeFileSync(`${launcherDir}/build-config.json`, JSON.stringify(versionObj))
   fs.copyFileSync(`${launcherDir}/build-config.json`, `${websiteDir}/src/build-config.json`)
   fs.copyFileSync(`${launcherDir}/build-config.json`, `${serverDir}/build-config.json`)
@@ -189,6 +203,7 @@ async function build() {
   await exec("npm run build")
   
   if (IS_LOCAL){
+    console.log("restarting local docker containers")
     await exec("docker-compose down")
     await exec("docker-compose up -d")
   }

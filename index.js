@@ -88,7 +88,7 @@ async function cloneRepositoriesFromGithub() {
       originalRepoCommit = stdout.trim()
     }).then(() => {
       process.chdir(TMP_DIR)
-      return exec(`git clone --depth 1 ${proj.originalRepo} ${proj.tmpRepoDir}`)
+      return exec(`git clone --depth 5 ${proj.originalRepo} ${proj.tmpRepoDir}`)
     }).then(() => {
       if (ENVIRONMENT !== "production") {
         process.chdir(proj.tmpRepoDir)

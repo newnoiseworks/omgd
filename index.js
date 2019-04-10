@@ -52,6 +52,7 @@ async function setupTempWorkingDirectory() {
     rimraf.sync(TMP_DIR)
  
   fs.mkdirSync(TMP_DIR)
+  fs.mkdirSync(TMP_DIR + "/gameBuild")
 
   if (IS_LOCAL) return
 
@@ -214,7 +215,7 @@ async function deploy() {
 
   console.log("preparing deploy...")
   console.log("shutting down nakama servers...")
-  await exec(`gcloud compute ssh instance-1 --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.13.0 down"`)
+  await exec(`gcloud compute ssh instance-1 --zone us-east1-b --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.13.0 down"`)
 
   console.log("running deploy...")
 
@@ -225,11 +226,11 @@ async function deploy() {
   console.log("pushing nakama changes...")
   process.chdir(TMP_SERVER_DIR)
   // push lib and docker compose and build file up to server
-  await exec(`gcloud compute scp --recurse --force-key-file-overwrite ./nakama instance-1:`)
-  await exec(`gcloud compute scp --force-key-file-overwrite docker-compose.yml instance-1:`)
+  await exec(`gcloud compute scp --zone us-east1-b --recurse --force-key-file-overwrite ./nakama instance-1:`)
+  await exec(`gcloud compute scp --zone us-east1-b --force-key-file-overwrite docker-compose.yml instance-1:`)
 
   // up containers via docker-compose
-  await exec(`gcloud compute ssh instance-1 --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.13.0 up -d"`)
+  await exec(`gcloud compute ssh instance-1 --zone us-east1-b --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.13.0 up -d"`)
 }
 
 

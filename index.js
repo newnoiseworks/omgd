@@ -223,24 +223,49 @@ async function build() {
 async function deploy() {
   if (IS_LOCAL) return
 
+  const serverProfiles = {
+    staging: {
+      gcloudProject: "tpl-nakama-staging",
+      gcloudInstance: "instance-1",
+      gcloudZone: "us-east1-b",
+      firebaseProject: "the-promised-land-dev",
+    },
+    production: {
+      gcloudProject: "the-promised-land-production",
+      gcloudInstance: "instance-1",
+      gcloudZone: "us-east1-d",
+      firebaseProject: "the-promised-land-production",
+    },
+  }
+
+  const profile = serverProfiles[ENVIRONMENT]
+
+  if (!!profile === false) 
+    throw new Error(`environment profile ${ENVIRONMENT} not setup for deploy`)
+
   console.log("preparing deploy...")
   console.log("shutting down nakama servers...")
-  await exec(`gcloud compute ssh instance-1 --zone us-east1-b --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.13.0 down"`)
+
+  try {
+    await exec(`gcloud compute ssh ${profile.gcloudInstance} --zone ${profile.gcloudZone} --project ${profile.gcloudProject} --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.13.0 down"`)
+  } catch(err) {
+    console.log("turning nakama servers down failed, assuming it's a new environment and moving on")
+  }
 
   console.log("running deploy...")
 
   console.log("deploying website...")
   process.chdir(TMP_WEBSITE_DIR)
-  await exec(`firebase deploy`)
+  await exec(`firebase deploy --project ${profile.firebaseProject}`)
 
   console.log("pushing nakama changes...")
   process.chdir(TMP_SERVER_DIR)
   // push lib and docker compose and build file up to server
-  await exec(`gcloud compute scp --zone us-east1-b --recurse --force-key-file-overwrite ./nakama instance-1:`)
-  await exec(`gcloud compute scp --zone us-east1-b --force-key-file-overwrite docker-compose.yml instance-1:`)
+  await exec(`gcloud compute scp --project ${profile.gcloudProject} --zone ${profile.gcloudZone} --recurse --force-key-file-overwrite ./nakama ${profile.gcloudInstance}:`)
+  await exec(`gcloud compute scp --project ${profile.gcloudProject} --zone ${profile.gcloudZone} --force-key-file-overwrite docker-compose.yml ${profile.gcloudInstance}:`)
 
   // up containers via docker-compose
-  await exec(`gcloud compute ssh instance-1 --zone us-east1-b --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.13.0 up -d"`)
+  await exec(`gcloud compute ssh ${profile.gcloudInstance} --zone ${profile.gcloudZone} --project ${profile.gcloudProject} --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.13.0 up -d"`)
 }
 
 

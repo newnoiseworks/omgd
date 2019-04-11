@@ -12,6 +12,7 @@
   "dependencies": {
     "adm-zip": "^0.4.13",
     "js-yaml": "^3.13.0",
+    "md5": "^2.2.1",
     "rimraf": "^2.6.3"
   }
 }

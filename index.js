@@ -4,6 +4,7 @@ const util = require('util')
 const exec = util.promisify(require('child_process').exec);
 const AdmZip = require('adm-zip')
 const yjs = require('js-yaml')
+const md5 = require('md5')
 
 const COMMAND = process.argv[2]
 const ENVIRONMENT = process.argv[3]
@@ -106,6 +107,17 @@ async function build() {
   const launcherDir = IS_LOCAL ? LAUNCHER_DIR : TMP_LAUNCHER_DIR
   const serverDir = IS_LOCAL ? SERVER_DIR : TMP_SERVER_DIR
 
+  const GAME_VERSION = tresToJsonViaYml(`${GAME_DIR}/Resources/Config/config.tpl.tres`).config.version;
+  
+  if (IS_LOCAL === false) {
+    const filePath = `${GAME_DIR}/Resources/Config/config.tpl_${ENVIRONMENT}.tres`
+    const envConfigFile = fs.readFileSync(filePath)
+    fs.writeFileSync(filePath, envConfigFile.toString().replace(
+      /key \= .+/,
+      `key = "${md5(`the-promised-land-${ENVIRONMENT}-v${GAME_VERSION}`)}"`
+    ))
+  }
+
   console.log("building godot game client...")
 
   process.chdir(gameDir)
@@ -135,9 +147,7 @@ async function build() {
 
   console.log("copying godot zip to launcher...")
   fs.copyFileSync(TMP_DIR + "tpl-win.zip", launcherDir + "/tpl-win.zip")
-  
-  const GAME_VERSION = tresToJsonViaYml(`${GAME_DIR}/Resources/Config/config.tpl.tres`).config.version;
-  
+
   const gameEnvConfig = tresToJsonViaYml(`${GAME_DIR}/Resources/Config/config.tpl_${ENVIRONMENT}.tres`);
 
   const LAUNCHER_VERSION = require(`${launcherDir}/package.json`).version

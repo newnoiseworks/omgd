@@ -2,6 +2,7 @@ const fs = require('fs')
 const rimraf = require('rimraf')
 const util = require('util')
 const exec = util.promisify(require('child_process').exec);
+const spawn = require('child_process').spawn
 const AdmZip = require('adm-zip')
 const yjs = require('js-yaml')
 const md5 = require('md5')
@@ -53,7 +54,8 @@ async function setupTempWorkingDirectory() {
     rimraf.sync(TMP_DIR)
  
   fs.mkdirSync(TMP_DIR)
-  fs.mkdirSync(TMP_DIR + "/gameBuild")
+  fs.mkdirSync(TMP_DIR + "/gameBuildWin")
+  fs.mkdirSync(TMP_DIR + "/gameBuildX11")
 
   if (IS_LOCAL) return
 
@@ -118,7 +120,7 @@ async function build() {
     ))
   }
 
-  console.log("building godot game client...")
+  console.log("building godot game clients...")
 
   process.chdir(gameDir)
 
@@ -132,7 +134,8 @@ async function build() {
   }
 
   try {
-    await exec(`${LOCAL_GODOT_WIN_BINARY} --export "windows-${ENVIRONMENT}" ${TMP_DIR}gameBuild/tpl.exe --no-window`)
+    await exec(`${LOCAL_GODOT_WIN_BINARY} --export "windows-${ENVIRONMENT}" ${TMP_DIR}gameBuildWin/tpl.exe --no-window`)
+    await exec(`${LOCAL_GODOT_WIN_BINARY} --export "linux-${ENVIRONMENT}" ${TMP_DIR}gameBuildX11/tpl.x86_64 --no-window`)
   } catch(err) {
     console.log("!!!")
     console.log(err)
@@ -142,11 +145,14 @@ async function build() {
   console.log("compressing godot executables...")
   process.chdir(original_path)
   const gameZip = new AdmZip();
-  gameZip.addLocalFolder(TMP_DIR + "gameBuild")
+  gameZip.addLocalFolder(TMP_DIR + "gameBuildWin")
   gameZip.writeZip(TMP_DIR + "tpl-win.zip")
+  gameZip.addLocalFolder(TMP_DIR + "gameBuildX11")
+  gameZip.writeZip(TMP_DIR + "tpl-x11.zip")
 
-  console.log("copying godot zip to launcher...")
+  console.log("copying godot zips to launcher...")
   fs.copyFileSync(TMP_DIR + "tpl-win.zip", launcherDir + "/tpl-win.zip")
+  fs.copyFileSync(TMP_DIR + "tpl-x11.zip", launcherDir + "/tpl-x11.zip")
 
   const gameEnvConfig = tresToJsonViaYml(`${GAME_DIR}/Resources/Config/config.tpl_${ENVIRONMENT}.tres`);
 
@@ -154,6 +160,7 @@ async function build() {
 
   console.log("copying godot zip to website...")
   fs.copyFileSync(TMP_DIR + "tpl-win.zip", websiteDir + `/public/static/ThePromisedLand-${GAME_VERSION}.win.zip`)
+  fs.copyFileSync(TMP_DIR + "tpl-x11.zip", websiteDir + `/public/static/ThePromisedLand-${GAME_VERSION}.x11.zip`)
 
   console.log("creating build-config.json file for all projects...")
 
@@ -169,7 +176,7 @@ async function build() {
   fs.copyFileSync(`${launcherDir}/build-config.json`, `${websiteDir}/src/build-config.json`)
   fs.copyFileSync(`${launcherDir}/build-config.json`, `${serverDir}/build-config.json`)
 
-  console.log("packaging launcher...")
+  console.log("packaging launchers...")
   process.chdir(launcherDir)
 
   const launcherPackageConfig = require(`${launcherDir}/package.json`)
@@ -192,13 +199,19 @@ async function build() {
     fs.writeFileSync(`${launcherDir}/package.json`, JSON.stringify(launcherPackageConfig, null, 2));
   }
 
-  await exec(`yarn && yarn package`)
+  await exec(`yarn`)
+  await exec(`yarn package-win`)
+  //await exec(`yarn package-linux-via-docker`)
 
   // TODO: Need to get tagged launcher version
-  console.log("copying launcher to website...")
+  console.log("copying launchers to website...")
   fs.copyFileSync(
     `release\\${productName} Setup ${LAUNCHER_VERSION}.exe`,
     `${websiteDir}/public/static/ThePromisedLand-Launcher-Setup-${LAUNCHER_VERSION}.${GAME_VERSION}.${ENVIRONMENT}.exe`
+  )
+  fs.copyFileSync(
+    `release\\${productName} ${LAUNCHER_VERSION}.AppImage`,
+    `${websiteDir}/public/static/ThePromisedLand-Launcher-Setup-${LAUNCHER_VERSION}.${GAME_VERSION}.${ENVIRONMENT}.AppImage`
   )
 
   console.log("building website for firebase...")

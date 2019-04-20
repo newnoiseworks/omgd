@@ -6,6 +6,7 @@ const spawn = require('child_process').spawn
 const AdmZip = require('adm-zip')
 const yjs = require('js-yaml')
 const md5 = require('md5')
+const prompt = require('prompt-confirm')
 
 const COMMAND = process.argv[2]
 const ENVIRONMENT = process.argv[3]
@@ -203,6 +204,11 @@ async function build() {
   await exec(`yarn package-win`)
   //await exec(`yarn package-linux-via-docker`)
 
+  await new prompt({
+    name: "linux-build",
+    message: "run `$yarn package-linux-via-docker` in another shell to completion? aaaand in the right directory?"
+  }).run()
+
   // TODO: Need to get tagged launcher version
   console.log("copying launchers to website...")
   fs.copyFileSync(
@@ -280,7 +286,6 @@ async function deploy() {
   // up containers via docker-compose
   await exec(`gcloud compute ssh ${profile.gcloudInstance} --zone ${profile.gcloudZone} --project ${profile.gcloudProject} --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.13.0 up -d"`)
 }
-
 
 async function buildAndDeploy() {
   console.log("running build and deploy...")

@@ -136,7 +136,7 @@ async function build() {
 
   try {
     await exec(`${LOCAL_GODOT_WIN_BINARY} --export "windows-${ENVIRONMENT}" ${TMP_DIR}gameBuildWin/tpl.exe --no-window`)
-    await exec(`${LOCAL_GODOT_WIN_BINARY} --export "linux-${ENVIRONMENT}" ${TMP_DIR}gameBuildX11/tpl.x86_64 --no-window`)
+    await exec(`${LOCAL_GODOT_WIN_BINARY} --export "x11-${ENVIRONMENT}" ${TMP_DIR}gameBuildX11/tpl.x86_64 --no-window`)
   } catch(err) {
     console.log("!!!")
     console.log(err)
@@ -145,9 +145,12 @@ async function build() {
 
   console.log("compressing godot executables...")
   process.chdir(original_path)
-  const gameZip = new AdmZip();
+
+  let gameZip = new AdmZip();
   gameZip.addLocalFolder(TMP_DIR + "gameBuildWin")
   gameZip.writeZip(TMP_DIR + "tpl-win.zip")
+
+  gameZip = new AdmZip();
   gameZip.addLocalFolder(TMP_DIR + "gameBuildX11")
   gameZip.writeZip(TMP_DIR + "tpl-x11.zip")
 
@@ -197,6 +200,10 @@ async function build() {
     launcherPackageConfig.build.productName = productName
     launcherPackageConfig.build.appId = appId
     launcherPackageConfig.productName = productName
+
+    const dockerCmd = launcherPackageConfig.scripts["linux-docker"]
+    launcherPackageConfig.scripts["linux-docker"] = dockerCmd.replace("//c/ThePromisedLand/launcher", "/" + launcherDir)
+
     fs.writeFileSync(`${launcherDir}/package.json`, JSON.stringify(launcherPackageConfig, null, 2));
   }
 

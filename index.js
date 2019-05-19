@@ -32,6 +32,13 @@ const SERVER_REPO = "git@github.com:newnoiseworks/not-stardew-backend.git"
 const LOCAL_GODOT_WIN_BINARY = process.cwd() + "/../Godot/Godot.exe"
 const GODOT_WIN_DOWNLOAD_URL = "https://downloads.tuxfamily.org/godotengine/3.1/mono/Godot_v3.1-stable_mono_win64.zip"
 
+
+let original_path,
+    gameDir,
+    websiteDir,
+    launcherDir,
+    serverDir
+
 function tresToJsonViaYml(path) {
   return yjs.safeLoad(
     fs.readFileSync(path, 'utf8')
@@ -103,23 +110,53 @@ async function cloneRepositoriesFromGithub() {
   }))
 }
 
-async function build() {
-  const original_path = process.cwd()
-  const gameDir = GAME_DIR
-  const websiteDir = IS_LOCAL ? WEBSITE_DIR : TMP_WEBSITE_DIR
-  const launcherDir = IS_LOCAL ? LAUNCHER_DIR : TMP_LAUNCHER_DIR
-  const serverDir = IS_LOCAL ? SERVER_DIR : TMP_SERVER_DIR
+function setupBuildPaths() {
+  original_path = process.cwd()
+  gameDir = GAME_DIR
+  websiteDir = IS_LOCAL ? WEBSITE_DIR : TMP_WEBSITE_DIR
+  launcherDir = IS_LOCAL ? LAUNCHER_DIR : TMP_LAUNCHER_DIR
+  serverDir = IS_LOCAL ? SERVER_DIR : TMP_SERVER_DIR
+}
 
-  const GAME_VERSION = tresToJsonViaYml(`${GAME_DIR}/Resources/Config/config.tpl.tres`).config.version;
+function buildConfigFiles(
+  gameDir,
+  websiteDir,
+  launcherDir,
+  serverDir
+) {
+  console.log("creating build-config.json file for all projects...")
+  
+  const gameVersion = tresToJsonViaYml(`${gameDir}/Resources/Config/config.tpl.tres`).config.version
   
   if (IS_LOCAL === false) {
-    const filePath = `${GAME_DIR}/Resources/Config/config.tpl_${ENVIRONMENT}.tres`
+    const filePath = `${gameDir}/Resources/Config/config.tpl_${ENVIRONMENT}.tres`
     const envConfigFile = fs.readFileSync(filePath)
     fs.writeFileSync(filePath, envConfigFile.toString().replace(
       /key \= .+/,
-      `key = "${md5(`the-promised-land-${ENVIRONMENT}-v${GAME_VERSION}`)}"`
+      `key = "${md5(`the-promised-land-${ENVIRONMENT}-v${gameVersion}`)}"`
     ))
   }
+
+  const gameEnvConfig = tresToJsonViaYml(`${gameDir}/Resources/Config/config.tpl_${ENVIRONMENT}.tres`)
+
+  const versionObj = {
+    "gameVersion": tresToJsonViaYml(`${gameDir}/Resources/Config/config.tpl.tres`).config.version,
+    "launcherVersion": require(`${launcherDir}/package.json`).version,
+    "environment": ENVIRONMENT,
+    nakama: gameEnvConfig.nakama,
+    website: gameEnvConfig.website
+  }
+
+  fs.writeFileSync(`${launcherDir}/build-config.json`, JSON.stringify(versionObj))
+  fs.copyFileSync(`${launcherDir}/build-config.json`, `${websiteDir}/src/build-config.json`)
+  fs.copyFileSync(`${launcherDir}/build-config.json`, `${serverDir}/build-config.json`)
+
+  return versionObj
+}
+
+async function build() {
+  setupBuildPaths()
+  const config = buildConfigFiles(gameDir, websiteDir, launcherDir, serverDir)
 
   console.log("building godot game clients...")
 
@@ -158,27 +195,9 @@ async function build() {
   fs.copyFileSync(TMP_DIR + "tpl-win.zip", launcherDir + "/tpl-win.zip")
   fs.copyFileSync(TMP_DIR + "tpl-x11.zip", launcherDir + "/tpl-x11.zip")
 
-  const gameEnvConfig = tresToJsonViaYml(`${GAME_DIR}/Resources/Config/config.tpl_${ENVIRONMENT}.tres`);
-
-  const LAUNCHER_VERSION = require(`${launcherDir}/package.json`).version
-
   console.log("copying godot zip to website...")
-  fs.copyFileSync(TMP_DIR + "tpl-win.zip", websiteDir + `/public/static/ThePromisedLand-${GAME_VERSION}.win.zip`)
-  fs.copyFileSync(TMP_DIR + "tpl-x11.zip", websiteDir + `/public/static/ThePromisedLand-${GAME_VERSION}.x11.zip`)
-
-  console.log("creating build-config.json file for all projects...")
-
-  const versionObj = {
-    "gameVersion": GAME_VERSION,
-    "launcherVersion": LAUNCHER_VERSION,
-    "environment": ENVIRONMENT,
-    nakama: gameEnvConfig.nakama,
-    website: gameEnvConfig.website
-  }
-
-  fs.writeFileSync(`${launcherDir}/build-config.json`, JSON.stringify(versionObj))
-  fs.copyFileSync(`${launcherDir}/build-config.json`, `${websiteDir}/src/build-config.json`)
-  fs.copyFileSync(`${launcherDir}/build-config.json`, `${serverDir}/build-config.json`)
+  fs.copyFileSync(TMP_DIR + "tpl-win.zip", websiteDir + `/public/static/ThePromisedLand-${config.gameVersion}.win.zip`)
+  fs.copyFileSync(TMP_DIR + "tpl-x11.zip", websiteDir + `/public/static/ThePromisedLand-${config.gameVersion}.x11.zip`)
 
   console.log("packaging launchers...")
   process.chdir(launcherDir)
@@ -219,12 +238,12 @@ async function build() {
   // TODO: Need to get tagged launcher version
   console.log("copying launchers to website...")
   fs.copyFileSync(
-    `release\\${productName} Setup ${LAUNCHER_VERSION}.exe`,
-    `${websiteDir}/public/static/ThePromisedLand-Launcher-Setup-${LAUNCHER_VERSION}.${GAME_VERSION}.${ENVIRONMENT}.exe`
+    `release\\${productName} Setup ${config.launcherVersion}.exe`,
+    `${websiteDir}/public/static/ThePromisedLand-Launcher-Setup-${config.launcherVersion}.${config.gameVersion}.${ENVIRONMENT}.exe`
   )
   fs.copyFileSync(
-    `release\\${productName} ${LAUNCHER_VERSION}.AppImage`,
-    `${websiteDir}/public/static/ThePromisedLand-Launcher-Setup-${LAUNCHER_VERSION}.${GAME_VERSION}.${ENVIRONMENT}.AppImage`
+    `release\\${productName} ${config.launcherVersion}.AppImage`,
+    `${websiteDir}/public/static/ThePromisedLand-Launcher-Setup-${config.launcherVersion}.${config.gameVersion}.${ENVIRONMENT}.AppImage`
   )
 
   console.log("building website for firebase...")
@@ -313,6 +332,13 @@ async function buildAndDeploy() {
     case "build-and-deploy":
       await setup()
       await buildAndDeploy()
+      break
+    case "build-local-config":
+      if (ENVIRONMENT !== "LOCAL")
+        return console.log("Cannot use out of local context")
+
+      setupBuildPaths()
+      buildConfigFiles()
       break
   }
 })()

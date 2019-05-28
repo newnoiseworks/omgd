@@ -1,0 +1,20 @@
+local nk = require("nakama")
+
+local P = {}
+
+<% for(var itemKey in items) { var item = items[itemKey]; -%>
+P["<%= item.itemKeyMd5 %>"] = {
+  key = "<%= itemKey %>"<% if (!!item.price) { -%>,
+  price = {
+<% for(var priceKey in item.price) { var price = item.price[priceKey]; -%>
+    {
+      item = "<%= price.item %>",
+      quantity = <%= price.quantity %>
+    },
+<% } -%>
+  }
+<% } %>
+}
+
+<% } -%>
+return P

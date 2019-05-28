@@ -1,0 +1,33 @@
+using System.Collections.Generic;
+
+namespace TPV.Data { 
+
+  public static class InventoryItemIDHelper {
+
+    private static Dictionary<string, int> hashToIdMap = new Dictionary<string, int>() {
+<% var i = 0; for(var itemKey in items) { var item = items[itemKey] -%>
+      { "<%= item.itemKeyMd5 %>", <%= i %> },
+<% i++; } -%>
+    };
+
+    private static Dictionary<int, string> idToHashMap = new Dictionary<int, string>() { 
+<% var i = 0; for(var itemKey in items) { var item = items[itemKey] -%>
+      { <%= i %>, "<%= item.itemKeyMd5 %>" },
+<% i++; } -%>
+    };
+
+    public static string GetHashFromInt(int id) {
+      return idToHashMap[id];
+    }
+
+    public static int GetIntFromHash(string id) {
+      return hashToIdMap[id];
+    }
+  }
+
+  public enum InventoryItemType {
+<% var i = 0; for(var itemKey in items) { var item = items[itemKey] -%>
+    <%= itemKey %> = <%= i %>,
+<% i++; } -%>
+  }
+}

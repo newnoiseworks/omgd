@@ -7,6 +7,7 @@ const AdmZip = require('adm-zip')
 const yjs = require('js-yaml')
 const md5 = require('md5')
 const prompt = require('prompt-confirm')
+const ejs = require('ejs')
 
 const COMMAND = process.argv[2]
 const ENVIRONMENT = process.argv[3]
@@ -31,7 +32,6 @@ const SERVER_REPO = "git@github.com:newnoiseworks/not-stardew-backend.git"
 
 const LOCAL_GODOT_WIN_BINARY = process.cwd() + "/../Godot/Godot.exe"
 const GODOT_WIN_DOWNLOAD_URL = "https://downloads.tuxfamily.org/godotengine/3.1/mono/Godot_v3.1-stable_mono_win64.zip"
-
 
 let original_path,
     gameDir,
@@ -118,12 +118,54 @@ function setupBuildPaths() {
   serverDir = IS_LOCAL ? SERVER_DIR : TMP_SERVER_DIR
 }
 
-function buildConfigFiles(
+async function buildConfigFiles(
   gameDir,
   websiteDir,
   launcherDir,
   serverDir
 ) {
+  return constructInventoryItemFiles()
+  .then(constructBuildConfigFiles)
+}
+
+async function constructInventoryItemFiles() {
+  console.log("creating inventory files...")
+
+  const itemsJson = yjs.safeLoad(
+    fs.readFileSync(
+      "./resources/items.yml",
+      "utf8"
+    )
+  )
+
+  for (var itemKey in itemsJson)
+    itemsJson[itemKey].itemKeyMd5 = md5(itemKey)
+
+  return renderInventoryFile(
+    "./templates/InventoryItem.cs.ejs",
+    gameDir + "/Data/InventoryItems.cs",
+    { items: itemsJson }
+  ).then(() =>
+    renderInventoryFile(
+      "./templates/inventory_items.lua.ejs",
+      serverDir + "/nakama/data/modules/inventory_items.lua",
+      { items: itemsJson }
+    )
+  )
+}
+
+function renderInventoryFile(
+  template, file, itemsJson
+) {
+  return ejs.renderFile(
+    template,
+    itemsJson,
+    { async: true }
+  )
+  .then((str) => fs.writeFileSync(file, str))
+}
+
+function constructBuildConfigFiles() {
   console.log("creating build-config.json file for all projects...")
   
   const gameVersion = tresToJsonViaYml(`${gameDir}/Resources/Config/config.tpl.tres`).config.version
@@ -156,7 +198,7 @@ function buildConfigFiles(
 
 async function build() {
   setupBuildPaths()
-  const config = buildConfigFiles(gameDir, websiteDir, launcherDir, serverDir)
+  const config = await buildConfigFiles(gameDir, websiteDir, launcherDir, serverDir)
 
   console.log("building godot game clients...")
 
@@ -334,11 +376,11 @@ async function buildAndDeploy() {
       await buildAndDeploy()
       break
     case "build-local-config":
-      if (ENVIRONMENT !== "LOCAL")
+      if (ENVIRONMENT !== "local")
         return console.log("Cannot use out of local context")
 
       setupBuildPaths()
-      buildConfigFiles()
+      await buildConfigFiles()
       break
   }
 })()

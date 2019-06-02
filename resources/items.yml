@@ -1,11 +1,11 @@
-Cabbage: {}
+Tiller: {}
+Pail: {}
+Can: {}
+Newspaper: {}
 CabbageSeeds:
   price:
     - item: Newspaper
       quantity: 4
     - item: Can
       quantity: 6
-Can: {}
-Tiller: {}
-Pail: {}
-Newspaper: {}
+Cabbage: {}

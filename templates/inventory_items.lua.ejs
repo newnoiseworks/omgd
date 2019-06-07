@@ -1,6 +1,7 @@
 local nk = require("nakama")
 
 local P = {}
+P.reverse = {}
 
 <% for(var itemKey in items) { var item = items[itemKey]; -%>
 P["<%= item.itemKeyMd5 %>"] = {
@@ -15,6 +16,8 @@ P["<%= item.itemKeyMd5 %>"] = {
   }
 <% } %>
 }
+
+P.reverse["<%= itemKey %>"] = "<%= item.itemKeyMd5 %>"
 
 <% } -%>
 return P

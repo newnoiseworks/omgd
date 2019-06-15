@@ -8,4 +8,6 @@ CabbageSeeds:
       quantity: 4
     - item: Can
       quantity: 6
-Cabbage: {}
+  toPlant: Cabbage
+Cabbage:
+  fromSeeds: CabbageSeeds

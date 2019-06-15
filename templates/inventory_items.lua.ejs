@@ -5,7 +5,8 @@ P.reverse = {}
 
 <% for(var itemKey in items) { var item = items[itemKey]; -%>
 P["<%= item.itemKeyMd5 %>"] = {
-  key = "<%= itemKey %>"<% if (!!item.price) { -%>,
+  key = "<%= itemKey %>",
+<% if (!!item.price) { -%>
   price = {
 <% for(var priceKey in item.price) { var price = item.price[priceKey]; -%>
     {
@@ -13,8 +14,14 @@ P["<%= item.itemKeyMd5 %>"] = {
       quantity = <%= price.quantity %>
     },
 <% } -%>
-  }
-<% } %>
+  },
+<% } -%>
+<% if (!!item.fromSeeds) { -%>
+  from_seeds = "<%= item.fromSeeds %>",
+<% } -%>
+<% if (!!item.toPlant) { -%>
+  to_plant = "<%= item.toPlant %>",
+<% } -%>
 }
 
 P.reverse["<%= itemKey %>"] = "<%= item.itemKeyMd5 %>"

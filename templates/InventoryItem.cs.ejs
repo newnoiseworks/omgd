@@ -16,6 +16,10 @@ namespace TPV.Data {
 <% i++; } -%>
     };
 
+    public static string GetHash(InventoryItemType type) {
+      return GetHashFromInt((int)type);
+    }
+
     public static string GetHashFromInt(int id) {
       return idToHashMap[id];
     }

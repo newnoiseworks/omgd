@@ -16,6 +16,14 @@ namespace TPV.Data {
 <% i++; } -%>
     };
 
+    public static InventoryItemType GetEnum(string id) {
+      return (InventoryItemType)GetIntFromHash(id);
+    }
+
+    public static InventoryItemType GetEnum(int id) {
+      return (InventoryItemType)id;
+    }
+
     public static string GetHash(InventoryItemType type) {
       return GetHashFromInt((int)type);
     }

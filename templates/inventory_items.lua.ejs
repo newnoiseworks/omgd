@@ -11,6 +11,7 @@ P["<%= item.itemKeyMd5 %>"] = {
 <% for(var priceKey in item.price) { var price = item.price[priceKey]; -%>
     {
       item = "<%= items[price.item].itemKeyMd5 %>",
+      itemKey = "<%= price.item %>",
       quantity = <%= price.quantity %>
     },
 <% } -%>

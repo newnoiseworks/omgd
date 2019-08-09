@@ -133,7 +133,7 @@ async function constructInventoryItemFiles() {
 
   const itemsJson = yjs.safeLoad(
     fs.readFileSync(
-      "./resources/items.yml",
+      TMP_DIR + "../resources/items.yml",
       "utf8"
     )
   )
@@ -142,12 +142,12 @@ async function constructInventoryItemFiles() {
     itemsJson[itemKey].itemKeyMd5 = md5(itemKey)
 
   return renderInventoryFile(
-    "./templates/InventoryItem.cs.ejs",
+    TMP_DIR + "../templates/InventoryItem.cs.ejs",
     gameDir + "/Data/InventoryItems.cs",
     { items: itemsJson }
   ).then(() =>
     renderInventoryFile(
-      "./templates/inventory_items.lua.ejs",
+      TMP_DIR + "../templates/inventory_items.lua.ejs",
       serverDir + "/nakama/data/modules/inventory_items.lua",
       { items: itemsJson }
     )

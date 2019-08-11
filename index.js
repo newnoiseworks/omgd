@@ -348,6 +348,7 @@ async function deploy() {
   console.log("pushing nakama changes...")
   process.chdir(TMP_SERVER_DIR)
   // push lib and docker compose and build file up to server
+  await exec(`gcloud compute ssh ${profile.gcloudInstance} --zone ${profile.gcloudZone} --project ${profile.gcloudProject} --command "rm -rf ./nakama"`)
   await exec(`gcloud compute scp --project ${profile.gcloudProject} --zone ${profile.gcloudZone} --recurse --force-key-file-overwrite ./nakama ${profile.gcloudInstance}:`)
   await exec(`gcloud compute scp --project ${profile.gcloudProject} --zone ${profile.gcloudZone} --force-key-file-overwrite docker-compose.yml ${profile.gcloudInstance}:`)
 

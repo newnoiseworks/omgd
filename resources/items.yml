@@ -2,12 +2,18 @@ Tiller: {}
 Pail: {}
 Can: {}
 Newspaper: {}
+CorpusCoin: {}
+CommunityCoin: {}
 CabbageSeeds:
   price:
-    - item: Newspaper
-      quantity: 4
-    - item: Can
-      quantity: 6
+    - item: CorpusCoin
+      quantity: 2
   toPlant: Cabbage
 Cabbage:
   fromSeeds: CabbageSeeds
+  price:
+    - item: CommunityCoin
+      quantity: 1
+  sale:
+    - item: CorpusCoin
+      quantity: 3

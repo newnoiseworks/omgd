@@ -13,7 +13,7 @@ Cabbage:
   fromSeeds: CabbageSeeds
   price:
     - item: CommunityCoin
-      quantity: 1
+      quantity: 5
   sale:
     - item: CorpusCoin
       quantity: 3

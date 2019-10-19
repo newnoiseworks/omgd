@@ -17,6 +17,17 @@ P["<%= item.itemKeyMd5 %>"] = {
 <% } -%>
   },
 <% } -%>
+<% if (!!item.sale) { -%>
+  sale = {
+<% for(var priceKey in item.sale) { var price = item.sale[priceKey]; -%>
+    {
+      item = "<%= items[price.item].itemKeyMd5 %>",
+      itemKey = "<%= price.item %>",
+      quantity = <%= price.quantity %>
+    },
+<% } -%>
+  },
+<% } -%>
 <% if (!!item.fromSeeds) { -%>
   from_seeds = "<%= item.fromSeeds %>",
 <% } -%>

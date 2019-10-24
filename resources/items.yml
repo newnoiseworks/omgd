@@ -13,7 +13,20 @@ Cabbage:
   fromSeeds: CabbageSeeds
   price:
     - item: CommunityCoin
-      quantity: 5
+      quantity: 25
   sale:
     - item: CorpusCoin
       quantity: 3
+WheatSeeds:
+  price:
+    - item: CorpusCoin
+      quantity: 3
+  toPlant: Wheat
+Wheat:
+  fromSeeds: WheatSeeds
+  price:
+    - item: CommunityCoin
+      quantity: 25
+  sale:
+    - item: CorpusCoin
+      quantity: 5

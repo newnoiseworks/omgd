@@ -1,13 +1,13 @@
-const fs = require('fs')
-const rimraf = require('rimraf')
-const util = require('util')
-const exec = util.promisify(require('child_process').exec);
-const spawn = require('child_process').spawn
-const AdmZip = require('adm-zip')
-const yjs = require('js-yaml')
-const md5 = require('md5')
-const prompt = require('prompt-confirm')
-const ejs = require('ejs')
+const fs = require("fs")
+const rimraf = require("rimraf")
+const util = require("util")
+const exec = util.promisify(require("child_process").exec)
+const spawn = require("child_process").spawn
+const AdmZip = require("adm-zip")
+const yjs = require("js-yaml")
+const md5 = require("md5")
+const prompt = require("prompt-confirm")
+const ejs = require("ejs")
 
 const COMMAND = process.argv[2]
 const ENVIRONMENT = process.argv[3]
@@ -31,24 +31,22 @@ const GAME_REPO = "git@github.com:newnoiseworks/not-stardew.git"
 const SERVER_REPO = "git@github.com:newnoiseworks/not-stardew-backend.git"
 
 const LOCAL_GODOT_WIN_BINARY = process.cwd() + "/../Godot/Godot.exe"
-const GODOT_WIN_DOWNLOAD_URL = "https://downloads.tuxfamily.org/godotengine/3.1/mono/Godot_v3.1-stable_mono_win64.zip"
+const GODOT_WIN_DOWNLOAD_URL =
+  "https://downloads.tuxfamily.org/godotengine/3.1/mono/Godot_v3.1-stable_mono_win64.zip"
 
-let original_path,
-    gameDir,
-    websiteDir,
-    launcherDir,
-    serverDir
+let original_path, gameDir, websiteDir, launcherDir, serverDir
 
 function tresToJsonViaYml(path) {
   return yjs.safeLoad(
-    fs.readFileSync(path, 'utf8')
-      .replace(/=/g, ':')
-      .replace(/ :/g, ':')
-      .replace(/\n\n/g, '\n')
-      .replace(/\n/g, '\n  ')
-      .replace(/  \[/g, '[')
-      .replace(/\[/g, '')
-      .replace(/\]/g, ':')
+    fs
+      .readFileSync(path, "utf8")
+      .replace(/=/g, ":")
+      .replace(/ :/g, ":")
+      .replace(/\n\n/g, "\n")
+      .replace(/\n/g, "\n  ")
+      .replace(/  \[/g, "[")
+      .replace(/\[/g, "")
+      .replace(/\]/g, ":")
   )
 }
 
@@ -58,9 +56,8 @@ async function setup() {
 }
 
 async function setupTempWorkingDirectory() {
-  if (fs.existsSync(TMP_DIR))
-    rimraf.sync(TMP_DIR)
- 
+  if (fs.existsSync(TMP_DIR)) rimraf.sync(TMP_DIR)
+
   fs.mkdirSync(TMP_DIR)
   fs.mkdirSync(TMP_DIR + "/gameBuildWin")
   fs.mkdirSync(TMP_DIR + "/gameBuildX11")
@@ -75,39 +72,63 @@ async function setupTempWorkingDirectory() {
 
 async function cloneRepositoriesFromGithub() {
   // TODO: abort if "git status" shows changes
-  await Promise.all([{
-    originalRepoDir: LAUNCHER_DIR,
-    originalRepo: LAUNCHER_REPO,
-    tmpRepoDir: TMP_LAUNCHER_DIR,
-  },{
-    originalRepoDir: WEBSITE_DIR,
-    originalRepo: WEBSITE_REPO,
-    tmpRepoDir: TMP_WEBSITE_DIR,
-  },{
-    originalRepoDir: SERVER_DIR,
-    originalRepo: SERVER_REPO,
-    tmpRepoDir: TMP_SERVER_DIR,
-  },/*{
+  await Promise.all(
+    [
+      {
+        originalRepoDir: LAUNCHER_DIR,
+        originalRepo: LAUNCHER_REPO,
+        tmpRepoDir: TMP_LAUNCHER_DIR,
+      },
+      {
+        originalRepoDir: WEBSITE_DIR,
+        originalRepo: WEBSITE_REPO,
+        tmpRepoDir: TMP_WEBSITE_DIR,
+      },
+      {
+        originalRepoDir: SERVER_DIR,
+        originalRepo: SERVER_REPO,
+        tmpRepoDir: TMP_SERVER_DIR,
+      } /*{
     originalRepoDir: GAME_DIR,
     originalRepo: GAME_REPO,
     tmpRepoDir: TMP_GAME_DIR,
-  }*/].map((proj) => {
-    let originalRepoCommit
-    process.chdir(proj.originalRepoDir)
-    
-    return exec(`git rev-parse HEAD`)
-    .then(({ stderr, stdout }) => {
-      originalRepoCommit = stdout.trim()
-    }).then(() => {
-      process.chdir(TMP_DIR)
-      return exec(`git clone --depth 5 ${proj.originalRepo} ${proj.tmpRepoDir}`)
-    }).then(() => {
-      if (ENVIRONMENT !== "production") {
-        process.chdir(proj.tmpRepoDir)
-        return exec(`git reset --hard ${originalRepoCommit}`)
-      }
+  }*/,
+    ].map(proj => {
+      process.chdir(proj.originalRepoDir)
+
+      return exec(`git rev-parse --abbrev-ref HEAD`)
+        .then(({ stderr, stdout }) => {
+          let originalRepoBranch
+
+          if (ENVIRONMENT === "production") {
+            originalRepoBranch = "master"
+          } else {
+            originalRepoBranch = stdout.trim()
+          }
+
+          process.chdir(TMP_DIR)
+
+          return exec(
+            `git clone --depth 5 ${proj.originalRepo} ${proj.tmpRepoDir} --branch ${originalRepoBranch}`
+          )
+        })
+        .then(() => {
+          process.chdir(proj.tmpRepoDir)
+          return exec(`git fetch --all`)
+        })
+        .then(() => {
+          process.chdir(proj.originalRepoDir)
+          return exec(`git rev-parse HEAD`)
+        })
+        .then(({ stderr, stdout }) => {
+          const originalRepoCommit = stdout.trim()
+          if (ENVIRONMENT !== "production") {
+            process.chdir(proj.tmpRepoDir)
+            return exec(`git reset --hard ${originalRepoCommit}`)
+          }
+        })
     })
-  }))
+  )
 }
 
 function setupBuildPaths() {
@@ -118,28 +139,18 @@ function setupBuildPaths() {
   serverDir = IS_LOCAL ? SERVER_DIR : TMP_SERVER_DIR
 }
 
-async function buildConfigFiles(
-  gameDir,
-  websiteDir,
-  launcherDir,
-  serverDir
-) {
-  return constructInventoryItemFiles()
-  .then(constructBuildConfigFiles)
+async function buildConfigFiles(gameDir, websiteDir, launcherDir, serverDir) {
+  return constructInventoryItemFiles().then(constructBuildConfigFiles)
 }
 
 async function constructInventoryItemFiles() {
   console.log("creating inventory files...")
 
   const itemsJson = yjs.safeLoad(
-    fs.readFileSync(
-      TMP_DIR + "../resources/items.yml",
-      "utf8"
-    )
+    fs.readFileSync(TMP_DIR + "../resources/items.yml", "utf8")
   )
 
-  for (var itemKey in itemsJson)
-    itemsJson[itemKey].itemKeyMd5 = md5(itemKey)
+  for (var itemKey in itemsJson) itemsJson[itemKey].itemKeyMd5 = md5(itemKey)
 
   return renderInventoryFile(
     TMP_DIR + "../templates/InventoryItem.cs.ejs",
@@ -154,51 +165,70 @@ async function constructInventoryItemFiles() {
   )
 }
 
-function renderInventoryFile(
-  template, file, itemsJson
-) {
-  return ejs.renderFile(
-    template,
-    itemsJson,
-    { async: true }
-  )
-  .then((str) => fs.writeFileSync(file, str))
+function renderInventoryFile(template, file, itemsJson) {
+  return ejs
+    .renderFile(template, itemsJson, { async: true })
+    .then(str => fs.writeFileSync(file, str))
 }
 
 function constructBuildConfigFiles() {
   console.log("creating build-config.json file for all projects...")
-  
-  const gameVersion = tresToJsonViaYml(`${gameDir}/Resources/Config/config.tpl.tres`).config.version
-  
+
+  const gameVersion = tresToJsonViaYml(
+    `${gameDir}/Resources/Config/config.tpl.tres`
+  ).config.version
+
   if (IS_LOCAL === false) {
     const filePath = `${gameDir}/Resources/Config/config.tpl_${ENVIRONMENT}.tres`
     const envConfigFile = fs.readFileSync(filePath)
-    fs.writeFileSync(filePath, envConfigFile.toString().replace(
-      /key \= .+/,
-      `key = "${md5(`the-promised-land-${ENVIRONMENT}-v${gameVersion}`)}"`
-    ))
+    fs.writeFileSync(
+      filePath,
+      envConfigFile
+        .toString()
+        .replace(
+          /key \= .+/,
+          `key = "${md5(`the-promised-land-${ENVIRONMENT}-v${gameVersion}`)}"`
+        )
+    )
   }
 
-  const gameEnvConfig = tresToJsonViaYml(`${gameDir}/Resources/Config/config.tpl_${ENVIRONMENT}.tres`)
+  const gameEnvConfig = tresToJsonViaYml(
+    `${gameDir}/Resources/Config/config.tpl_${ENVIRONMENT}.tres`
+  )
 
   const versionObj = {
-    "gameVersion": tresToJsonViaYml(`${gameDir}/Resources/Config/config.tpl.tres`).config.version,
-    "launcherVersion": require(`${launcherDir}/package.json`).version,
-    "environment": ENVIRONMENT,
+    gameVersion: tresToJsonViaYml(`${gameDir}/Resources/Config/config.tpl.tres`)
+      .config.version,
+    launcherVersion: require(`${launcherDir}/package.json`).version,
+    environment: ENVIRONMENT,
     nakama: gameEnvConfig.nakama,
-    website: gameEnvConfig.website
+    website: gameEnvConfig.website,
   }
 
-  fs.writeFileSync(`${launcherDir}/build-config.json`, JSON.stringify(versionObj))
-  fs.copyFileSync(`${launcherDir}/build-config.json`, `${websiteDir}/src/build-config.json`)
-  fs.copyFileSync(`${launcherDir}/build-config.json`, `${serverDir}/build-config.json`)
+  fs.writeFileSync(
+    `${launcherDir}/build-config.json`,
+    JSON.stringify(versionObj)
+  )
+  fs.copyFileSync(
+    `${launcherDir}/build-config.json`,
+    `${websiteDir}/src/build-config.json`
+  )
+  fs.copyFileSync(
+    `${launcherDir}/build-config.json`,
+    `${serverDir}/build-config.json`
+  )
 
   return versionObj
 }
 
 async function build() {
   setupBuildPaths()
-  const config = await buildConfigFiles(gameDir, websiteDir, launcherDir, serverDir)
+  const config = await buildConfigFiles(
+    gameDir,
+    websiteDir,
+    launcherDir,
+    serverDir
+  )
 
   console.log("building godot game clients...")
 
@@ -208,15 +238,22 @@ async function build() {
     // check git status in staging, git status -s should return empty
     const statusString = (await exec(`git status -s`)).stdout.trim()
 
-    if (!!statusString) throw new Error(`Error! can't build to ${ENVIRONMENT} with unchecked file changes in the game folder. Try git stashing first.`)
+    if (!!statusString)
+      throw new Error(
+        `Error! can't build to ${ENVIRONMENT} with unchecked file changes in the game folder. Try git stashing first.`
+      )
 
     // TODO: in production check current git branch && commit in dir -- should be master && latest
   }
 
   try {
-    await exec(`${LOCAL_GODOT_WIN_BINARY} --export "windows-${ENVIRONMENT}" ${TMP_DIR}gameBuildWin/tpl.exe --no-window`)
-    await exec(`${LOCAL_GODOT_WIN_BINARY} --export "x11-${ENVIRONMENT}" ${TMP_DIR}gameBuildX11/tpl.x86_64 --no-window`)
-  } catch(err) {
+    await exec(
+      `${LOCAL_GODOT_WIN_BINARY} --export "windows-${ENVIRONMENT}" ${TMP_DIR}gameBuildWin/tpl.exe --no-window`
+    )
+    await exec(
+      `${LOCAL_GODOT_WIN_BINARY} --export "x11-${ENVIRONMENT}" ${TMP_DIR}gameBuildX11/tpl.x86_64 --no-window`
+    )
+  } catch (err) {
     console.log("!!!")
     console.log(err)
     throw new Error(err)
@@ -225,11 +262,11 @@ async function build() {
   console.log("compressing godot executables...")
   process.chdir(original_path)
 
-  let gameZip = new AdmZip();
+  let gameZip = new AdmZip()
   gameZip.addLocalFolder(TMP_DIR + "gameBuildWin")
   gameZip.writeZip(TMP_DIR + "tpl-win.zip")
 
-  gameZip = new AdmZip();
+  gameZip = new AdmZip()
   gameZip.addLocalFolder(TMP_DIR + "gameBuildX11")
   gameZip.writeZip(TMP_DIR + "tpl-x11.zip")
 
@@ -238,8 +275,14 @@ async function build() {
   fs.copyFileSync(TMP_DIR + "tpl-x11.zip", launcherDir + "/tpl-x11.zip")
 
   console.log("copying godot zip to website...")
-  fs.copyFileSync(TMP_DIR + "tpl-win.zip", websiteDir + `/public/static/ThePromisedLand-${config.gameVersion}.win.zip`)
-  fs.copyFileSync(TMP_DIR + "tpl-x11.zip", websiteDir + `/public/static/ThePromisedLand-${config.gameVersion}.x11.zip`)
+  fs.copyFileSync(
+    TMP_DIR + "tpl-win.zip",
+    websiteDir + `/public/static/ThePromisedLand-${config.gameVersion}.win.zip`
+  )
+  fs.copyFileSync(
+    TMP_DIR + "tpl-x11.zip",
+    websiteDir + `/public/static/ThePromisedLand-${config.gameVersion}.x11.zip`
+  )
 
   console.log("packaging launchers...")
   process.chdir(launcherDir)
@@ -249,7 +292,11 @@ async function build() {
 
   if (IS_LOCAL === false) {
     let appId = launcherPackageConfig.build.appId
-    
+    launcherPackageConfig.name = launcherPackageConfig.name.replace(
+      "environment",
+      ENVIRONMENT
+    )
+
     if (ENVIRONMENT === "production") {
       productName = productName.replace(" {ENVIRONMENT}", "")
       appId = appId.replace("{ENVIRONMENT}", "")
@@ -257,15 +304,21 @@ async function build() {
       productName = productName.replace("{ENVIRONMENT}", ENVIRONMENT)
       appId = appId.replace("{ENVIRONMENT}", "-" + ENVIRONMENT)
     }
-    
+
     launcherPackageConfig.build.productName = productName
     launcherPackageConfig.build.appId = appId
     launcherPackageConfig.productName = productName
 
     const dockerCmd = launcherPackageConfig.scripts["linux-docker"]
-    launcherPackageConfig.scripts["linux-docker"] = dockerCmd.replace("//c/ThePromisedLand/launcher", "/" + launcherDir)
+    launcherPackageConfig.scripts["linux-docker"] = dockerCmd.replace(
+      "//c/ThePromisedLand/launcher",
+      "/" + launcherDir
+    )
 
-    fs.writeFileSync(`${launcherDir}/package.json`, JSON.stringify(launcherPackageConfig, null, 2));
+    fs.writeFileSync(
+      `${launcherDir}/package.json`,
+      JSON.stringify(launcherPackageConfig, null, 2)
+    )
   }
 
   await exec(`yarn`)
@@ -274,7 +327,8 @@ async function build() {
 
   await new prompt({
     name: "linux-build",
-    message: "run `$yarn package-linux-via-docker` in another shell to completion? aaaand in the right directory?"
+    message:
+      "run `$yarn package-linux-via-docker` in another shell to completion? aaaand in the right directory?",
   }).run()
 
   // TODO: Need to get tagged launcher version
@@ -299,8 +353,8 @@ async function build() {
 
   await exec("npm install --no-progress")
   await exec("npm run build")
-  
-  if (IS_LOCAL){
+
+  if (IS_LOCAL) {
     console.log("restarting local docker containers")
     await exec("docker-compose down")
     await exec("docker-compose up -d")
@@ -327,16 +381,20 @@ async function deploy() {
 
   const profile = serverProfiles[ENVIRONMENT]
 
-  if (!!profile === false) 
+  if (!!profile === false)
     throw new Error(`environment profile ${ENVIRONMENT} not setup for deploy`)
 
   console.log("preparing deploy...")
   console.log("shutting down nakama servers...")
 
   try {
-    await exec(`gcloud compute ssh ${profile.gcloudInstance} --zone ${profile.gcloudZone} --project ${profile.gcloudProject} --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.13.0 down"`)
-  } catch(err) {
-    console.log("turning nakama servers down failed, assuming it's a new environment and moving on")
+    await exec(
+      `gcloud compute ssh ${profile.gcloudInstance} --zone ${profile.gcloudZone} --project ${profile.gcloudProject} --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.13.0 down"`
+    )
+  } catch (err) {
+    console.log(
+      "turning nakama servers down failed, assuming it's a new environment and moving on"
+    )
   }
 
   console.log("running deploy...")
@@ -348,12 +406,20 @@ async function deploy() {
   console.log("pushing nakama changes...")
   process.chdir(TMP_SERVER_DIR)
   // push lib and docker compose and build file up to server
-  await exec(`gcloud compute ssh ${profile.gcloudInstance} --zone ${profile.gcloudZone} --project ${profile.gcloudProject} --command "rm -rf ./nakama"`)
-  await exec(`gcloud compute scp --project ${profile.gcloudProject} --zone ${profile.gcloudZone} --recurse --force-key-file-overwrite ./nakama ${profile.gcloudInstance}:`)
-  await exec(`gcloud compute scp --project ${profile.gcloudProject} --zone ${profile.gcloudZone} --force-key-file-overwrite docker-compose.yml ${profile.gcloudInstance}:`)
+  await exec(
+    `gcloud compute ssh ${profile.gcloudInstance} --zone ${profile.gcloudZone} --project ${profile.gcloudProject} --command "rm -rf ./nakama"`
+  )
+  await exec(
+    `gcloud compute scp --project ${profile.gcloudProject} --zone ${profile.gcloudZone} --recurse --force-key-file-overwrite ./nakama ${profile.gcloudInstance}:`
+  )
+  await exec(
+    `gcloud compute scp --project ${profile.gcloudProject} --zone ${profile.gcloudZone} --force-key-file-overwrite docker-compose.yml ${profile.gcloudInstance}:`
+  )
 
   // up containers via docker-compose
-  await exec(`gcloud compute ssh ${profile.gcloudInstance} --zone ${profile.gcloudZone} --project ${profile.gcloudProject} --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.13.0 up -d"`)
+  await exec(
+    `gcloud compute ssh ${profile.gcloudInstance} --zone ${profile.gcloudZone} --project ${profile.gcloudProject} --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:$PWD" -w="$PWD" docker/compose:1.13.0 up -d"`
+  )
 }
 
 async function buildAndDeploy() {
@@ -362,9 +428,8 @@ async function buildAndDeploy() {
   await deploy()
 }
 
-(async function() {
-  
-  switch(COMMAND) {
+;(async function() {
+  switch (COMMAND) {
     case "build":
       await setup()
       await build()

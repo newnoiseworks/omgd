@@ -1,7 +1,5 @@
 Tiller: {}
 Pail: {}
-Can: {}
-Newspaper: {}
 CorpusCoin: {}
 CommunityCoin: {}
 CabbageSeeds:
@@ -17,13 +15,13 @@ Cabbage:
   sale:
     - item: CorpusCoin
       quantity: 3
-WheatSeeds:
+BeetSeeds:
   price:
     - item: CorpusCoin
       quantity: 3
-  toPlant: Wheat
-Wheat:
-  fromSeeds: WheatSeeds
+  toPlant: Beet
+Beet:
+  fromSeeds: BeetSeeds
   price:
     - item: CommunityCoin
       quantity: 25

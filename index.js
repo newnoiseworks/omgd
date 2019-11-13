@@ -441,7 +441,7 @@ async function buildAndDeploy() {
       await setup()
       await buildAndDeploy()
       break
-    case "build-local-config":
+    case "build-config":
       if (ENVIRONMENT !== "local")
         return console.log("Cannot use out of local context")
 

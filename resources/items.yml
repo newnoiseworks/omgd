@@ -2,19 +2,6 @@ Tiller: {}
 Pail: {}
 CorpusCoin: {}
 CommunityCoin: {}
-CabbageSeeds:
-  price:
-    - item: CorpusCoin
-      quantity: 2
-  toPlant: Cabbage
-Cabbage:
-  fromSeeds: CabbageSeeds
-  price:
-    - item: CommunityCoin
-      quantity: 25
-  sale:
-    - item: CorpusCoin
-      quantity: 3
 BeetSeeds:
   price:
     - item: CorpusCoin
@@ -28,3 +15,97 @@ Beet:
   sale:
     - item: CorpusCoin
       quantity: 5
+CabbageSeeds:
+  price:
+    - item: CorpusCoin
+      quantity: 2
+  toPlant: Cabbage
+Cabbage:
+  fromSeeds: CabbageSeeds
+  price:
+    - item: CommunityCoin
+      quantity: 25
+  sale:
+    - item: CorpusCoin
+      quantity: 3
+DragonFruitSeeds:
+  price:
+    - item: CorpusCoin
+      quantity: 2
+  toPlant: DragonFruit
+DragonFruit:
+  fromSeeds: DragonFruitSeeds
+  price:
+    - item: CommunityCoin
+      quantity: 25
+  sale:
+    - item: CorpusCoin
+      quantity: 3
+
+EggplantSeeds:
+  price:
+    - item: CorpusCoin
+      quantity: 2
+  toPlant: Eggplant
+Eggplant:
+  fromSeeds: EggplantSeeds
+  price:
+    - item: CommunityCoin
+      quantity: 25
+  sale:
+    - item: CorpusCoin
+      quantity: 3
+
+PotatoSeeds:
+  price:
+    - item: CorpusCoin
+      quantity: 2
+  toPlant: Potato
+Potato:
+  fromSeeds: PotatoSeeds
+  price:
+    - item: CommunityCoin
+      quantity: 25
+  sale:
+    - item: CorpusCoin
+      quantity: 3
+
+OddFruitSeeds:
+  price:
+    - item: CorpusCoin
+      quantity: 2
+  toPlant: OddFruit
+OddFruit:
+  fromSeeds: OddFruitSeeds
+  price:
+    - item: CommunityCoin
+      quantity: 25
+  sale:
+    - item: CorpusCoin
+      quantity: 3
+TomatoSeeds:
+  price:
+    - item: CorpusCoin
+      quantity: 2
+  toPlant: Tomato
+Tomato:
+  fromSeeds: TomatoSeeds
+  price:
+    - item: CommunityCoin
+      quantity: 25
+  sale:
+    - item: CorpusCoin
+      quantity: 3
+TurnipSeeds:
+  price:
+    - item: CorpusCoin
+      quantity: 2
+  toPlant: Turnip
+Turnip:
+  fromSeeds: TurnipSeeds
+  price:
+    - item: CommunityCoin
+      quantity: 25
+  sale:
+    - item: CorpusCoin
+      quantity: 3

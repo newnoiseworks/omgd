@@ -31,71 +31,71 @@ Cabbage:
 DragonFruitSeeds:
   price:
     - item: CorpusCoin
-      quantity: 2
+      quantity: 4
   toPlant: DragonFruit
 DragonFruit:
   fromSeeds: DragonFruitSeeds
   price:
     - item: CommunityCoin
-      quantity: 25
+      quantity: 50
   sale:
     - item: CorpusCoin
-      quantity: 3
+      quantity: 4
 
 EggplantSeeds:
   price:
     - item: CorpusCoin
-      quantity: 2
+      quantity: 3
   toPlant: Eggplant
 Eggplant:
   fromSeeds: EggplantSeeds
   price:
     - item: CommunityCoin
-      quantity: 25
+      quantity: 30
   sale:
     - item: CorpusCoin
-      quantity: 3
+      quantity: 4
 
 PotatoSeeds:
   price:
     - item: CorpusCoin
-      quantity: 2
+      quantity: 1
   toPlant: Potato
 Potato:
   fromSeeds: PotatoSeeds
   price:
     - item: CommunityCoin
-      quantity: 25
+      quantity: 10
   sale:
     - item: CorpusCoin
-      quantity: 3
+      quantity: 2
 
 OddFruitSeeds:
   price:
     - item: CorpusCoin
-      quantity: 2
+      quantity: 15
   toPlant: OddFruit
 OddFruit:
   fromSeeds: OddFruitSeeds
   price:
     - item: CommunityCoin
-      quantity: 25
+      quantity: 250
   sale:
     - item: CorpusCoin
-      quantity: 3
+      quantity: 20
 TomatoSeeds:
   price:
     - item: CorpusCoin
-      quantity: 2
+      quantity: 5
   toPlant: Tomato
 Tomato:
   fromSeeds: TomatoSeeds
   price:
     - item: CommunityCoin
-      quantity: 25
+      quantity: 30
   sale:
     - item: CorpusCoin
-      quantity: 3
+      quantity: 7
 TurnipSeeds:
   price:
     - item: CorpusCoin
@@ -105,7 +105,7 @@ Turnip:
   fromSeeds: TurnipSeeds
   price:
     - item: CommunityCoin
-      quantity: 25
+      quantity: 20
   sale:
     - item: CorpusCoin
       quantity: 3

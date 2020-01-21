@@ -4,6 +4,8 @@ Pickaxe: {}
 Scythe: {}
 CorpusCoin: {}
 CommunityCoin: {}
+Stone: {}
+Fern: {}
 BeetSeeds:
   price:
     - item: CorpusCoin

@@ -2,10 +2,12 @@ Tiller: {}
 Pail: {}
 Pickaxe: {}
 Scythe: {}
+Axe: {}
 CorpusCoin: {}
 CommunityCoin: {}
 Stone: {}
 Fern: {}
+Wood: {}
 BeetSeeds:
   price:
     - item: CorpusCoin

@@ -3,11 +3,36 @@ Pail: {}
 Pickaxe: {}
 Scythe: {}
 Axe: {}
+
 CorpusCoin: {}
 CommunityCoin: {}
-Stone: {}
-Fern: {}
-Wood: {}
+
+Stone:
+  sale:
+    - item: CorpusCoin
+      quantity: 1
+Fern:
+  sale:
+    - item: CorpusCoin
+      quantity: 2
+Wood:
+  sale:
+    - item: CorpusCoin
+      quantity: 1
+
+Blueprint_StonePath:
+  price:
+    - item: CommunityCoin
+      quantity: 25
+Blueprint_WoodPath:
+  price:
+    - item: CommunityCoin
+      quantity: 25
+Blueprint_Lamp:
+  price:
+    - item: CommunityCoin
+      quantity: 50
+
 BeetSeeds:
   price:
     - item: CorpusCoin

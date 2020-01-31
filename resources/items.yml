@@ -33,6 +33,25 @@ Blueprint_Lamp:
     - item: CommunityCoin
       quantity: 50
 
+Crafted_StonePath:
+  purchase_validation: true
+  price:
+    - item: Stone
+      quantity: 2
+Crafted_WoodPath:
+  purchase_validation: true
+  price:
+    - item: Wood
+      quantity: 2
+Crafted_Lamp:
+  purchase_validation: true
+  combo_price: true
+  price:
+    - item: Wood
+      quantity: 12
+    - item: Stone
+      quantity: 12
+
 BeetSeeds:
   price:
     - item: CorpusCoin

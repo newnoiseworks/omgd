@@ -16,6 +16,8 @@ P["<%= item.itemKeyMd5 %>"] = {
     },
 <% } -%>
   },
+  comboPrice = <%= !!item.combo_price %>,
+  purchaseValidation = <%= !!item.purchase_validation %>,
 <% } -%>
 <% if (!!item.sale) { -%>
   sale = {

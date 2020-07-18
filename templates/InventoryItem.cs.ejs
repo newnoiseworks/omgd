@@ -3,6 +3,15 @@ using System;
 
 namespace TPV.Data { 
 
+  public static class PlantInfoHelper {
+
+    public static Dictionary<string, List<int>> plantGrowthStages = new Dictionary<string, List<int>>() {
+<% var i = 0; for(var itemKey in items) { var item = items[itemKey]; if (item.growthStages) { -%>
+      { "<%= item.itemKeyMd5 %>", new List<int>() { <% for(var j = 0; j < item.growthStages.length; j++) { -%><%= item.growthStages[j] %>, <% } %>} }, 
+<% i++; } } -%>
+    };
+  };
+
   public static class InventoryItemIDHelper {
 
     private static Dictionary<string, int> hashToIdMap = new Dictionary<string, int>() {

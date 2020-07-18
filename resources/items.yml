@@ -59,12 +59,21 @@ BeetSeeds:
   toPlant: Beet
 Beet:
   fromSeeds: BeetSeeds
+  growthStages:
+    - 0
+    - 1
+    - 1
+    - 1
+    - 1
   price:
     - item: CommunityCoin
       quantity: 25
   sale:
     - item: CorpusCoin
       quantity: 5
+  exp:
+    base: 5
+
 CabbageSeeds:
   price:
     - item: CorpusCoin
@@ -72,12 +81,19 @@ CabbageSeeds:
   toPlant: Cabbage
 Cabbage:
   fromSeeds: CabbageSeeds
+  growthStages:
+    - 0
+    - 1
+    - 1
+    - 1
+    - 1
   price:
     - item: CommunityCoin
       quantity: 25
   sale:
     - item: CorpusCoin
       quantity: 3
+
 DragonFruitSeeds:
   price:
     - item: CorpusCoin
@@ -85,6 +101,13 @@ DragonFruitSeeds:
   toPlant: DragonFruit
 DragonFruit:
   fromSeeds: DragonFruitSeeds
+  growthStages:
+    - 0
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
   price:
     - item: CommunityCoin
       quantity: 50
@@ -99,6 +122,13 @@ EggplantSeeds:
   toPlant: Eggplant
 Eggplant:
   fromSeeds: EggplantSeeds
+  growthStages:
+    - 0
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
   price:
     - item: CommunityCoin
       quantity: 30
@@ -113,6 +143,13 @@ PotatoSeeds:
   toPlant: Potato
 Potato:
   fromSeeds: PotatoSeeds
+  growthStages:
+    - 0
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
   price:
     - item: CommunityCoin
       quantity: 10
@@ -127,12 +164,20 @@ OddFruitSeeds:
   toPlant: OddFruit
 OddFruit:
   fromSeeds: OddFruitSeeds
+  growthStages:
+    - 0
+    - 1
+    - 1
+    - 1
+    - 1
+    - 1
   price:
     - item: CommunityCoin
       quantity: 250
   sale:
     - item: CorpusCoin
       quantity: 20
+
 TomatoSeeds:
   price:
     - item: CorpusCoin
@@ -140,12 +185,19 @@ TomatoSeeds:
   toPlant: Tomato
 Tomato:
   fromSeeds: TomatoSeeds
+  growthStages:
+    - 0
+    - 1
+    - 1
+    - 1
+    - 1
   price:
     - item: CommunityCoin
       quantity: 30
   sale:
     - item: CorpusCoin
       quantity: 7
+
 TurnipSeeds:
   price:
     - item: CorpusCoin
@@ -153,6 +205,12 @@ TurnipSeeds:
   toPlant: Turnip
 Turnip:
   fromSeeds: TurnipSeeds
+  growthStages:
+    - 0
+    - 1
+    - 1
+    - 1
+    - 1
   price:
     - item: CommunityCoin
       quantity: 20

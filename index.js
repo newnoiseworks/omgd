@@ -447,6 +447,10 @@ async function buildAndDeploy() {
 
       setupBuildPaths()
       await buildConfigFiles()
+      process.chdir(serverDir)
+
+      await exec("npm install --no-progress")
+      await exec("npm run build")
       break
   }
 })()

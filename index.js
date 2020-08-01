@@ -140,7 +140,9 @@ function setupBuildPaths() {
 }
 
 async function buildConfigFiles(gameDir, websiteDir, launcherDir, serverDir) {
-  return constructInventoryItemFiles().then(constructBuildConfigFiles)
+  return constructInventoryItemFiles()
+    .then(constructGameConfigFiles)
+    .then(constructBuildConfigFiles)
 }
 
 async function constructInventoryItemFiles() {
@@ -152,12 +154,12 @@ async function constructInventoryItemFiles() {
 
   for (var itemKey in itemsJson) itemsJson[itemKey].itemKeyMd5 = md5(itemKey)
 
-  return renderInventoryFile(
+  return renderEjsFile(
     TMP_DIR + "../templates/InventoryItem.cs.ejs",
     gameDir + "/Data/InventoryItems.cs",
     { items: itemsJson }
   ).then(() =>
-    renderInventoryFile(
+    renderEjsFile(
       TMP_DIR + "../templates/inventory_items.lua.ejs",
       serverDir + "/nakama/data/modules/inventory_items.lua",
       { items: itemsJson }
@@ -165,9 +167,29 @@ async function constructInventoryItemFiles() {
   )
 }
 
-function renderInventoryFile(template, file, itemsJson) {
+async function constructGameConfigFiles() {
+  console.log("creating Game Config files...")
+
+  const gameConfig = yjs.safeLoad(
+    fs.readFileSync(TMP_DIR + "../resources/game-config.yml", "utf8")
+  )
+
+  return renderEjsFile(
+    TMP_DIR + "../templates/GameConfig.cs.ejs",
+    gameDir + "/Resources/Config/GameConfig.cs",
+    { ...gameConfig }
+  ).then(() =>
+    renderEjsFile(
+      TMP_DIR + "../templates/game_config.lua.ejs",
+      serverDir + "/nakama/data/modules/game_config.lua",
+      { ...gameConfig }
+    )
+  )
+}
+
+function renderEjsFile(template, file, json) {
   return ejs
-    .renderFile(template, itemsJson, { async: true })
+    .renderFile(template, json, { async: true })
     .then(str => fs.writeFileSync(file, str))
 }
 

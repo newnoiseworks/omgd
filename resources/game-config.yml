@@ -1,2 +1,2 @@
 # real_world_seconds_per_in_game_day: 12 * 60
-real_world_seconds_per_in_game_day: 30
+real_world_seconds_per_in_game_day: 3 * 60

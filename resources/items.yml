@@ -65,14 +65,10 @@ Beet:
     - 1
     - 1
     - 1
-  price:
-    - item: CommunityCoin
-      quantity: 25
   sale:
     - item: CorpusCoin
-      quantity: 5
-  exp:
-    base: 5
+      quantity: 2
+  maxYield: 5
 
 CabbageSeeds:
   price:
@@ -87,12 +83,10 @@ Cabbage:
     - 1
     - 1
     - 1
-  price:
-    - item: CommunityCoin
-      quantity: 25
   sale:
     - item: CorpusCoin
-      quantity: 3
+      quantity: 2
+  maxYield: 2
 
 DragonFruitSeeds:
   price:
@@ -108,12 +102,10 @@ DragonFruit:
     - 1
     - 1
     - 1
-  price:
-    - item: CommunityCoin
-      quantity: 50
   sale:
     - item: CorpusCoin
-      quantity: 4
+      quantity: 3
+  maxYield: 4
 
 EggplantSeeds:
   price:
@@ -129,12 +121,10 @@ Eggplant:
     - 1
     - 1
     - 1
-  price:
-    - item: CommunityCoin
-      quantity: 30
   sale:
     - item: CorpusCoin
       quantity: 4
+  maxYield: 2
 
 PotatoSeeds:
   price:
@@ -150,12 +140,10 @@ Potato:
     - 1
     - 1
     - 1
-  price:
-    - item: CommunityCoin
-      quantity: 10
   sale:
     - item: CorpusCoin
-      quantity: 2
+      quantity: 1
+  maxYield: 3
 
 OddFruitSeeds:
   price:
@@ -171,12 +159,10 @@ OddFruit:
     - 1
     - 1
     - 1
-  price:
-    - item: CommunityCoin
-      quantity: 250
   sale:
     - item: CorpusCoin
-      quantity: 20
+      quantity: 6
+  maxYield: 5
 
 TomatoSeeds:
   price:
@@ -191,12 +177,10 @@ Tomato:
     - 1
     - 1
     - 1
-  price:
-    - item: CommunityCoin
-      quantity: 30
   sale:
     - item: CorpusCoin
-      quantity: 7
+      quantity: 3
+  maxYield: 5
 
 TurnipSeeds:
   price:
@@ -211,9 +195,7 @@ Turnip:
     - 1
     - 1
     - 1
-  price:
-    - item: CommunityCoin
-      quantity: 20
   sale:
     - item: CorpusCoin
-      quantity: 3
+      quantity: 2
+  maxYield: 2

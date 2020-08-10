@@ -9,6 +9,9 @@ P["<%= item.itemKeyMd5 %>"] = {
 <% if (!!item.growthStages) { -%>
   growthStages = { <% for(var i=0; i < item.growthStages.length; i++) { -%><%= item.growthStages[i] %>, <% } -%>},
 <% } -%>
+<% if (!!item.maxYield) { -%>
+  maxYield = <%= item.maxYield %>,
+<% } -%>
 <% if (!!item.price) { -%>
   price = {
 <% for(var priceKey in item.price) { var price = item.price[priceKey]; -%>

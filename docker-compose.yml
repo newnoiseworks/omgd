@@ -1,0 +1,8 @@
+version: "2"
+services:
+  app:
+    build: .
+    volumes:
+      - ./src:/go/src/github.com/newnoiseworks/tpl-fred
+    working_dir: /go/src/github.com/newnoiseworks/tpl-fred
+    command: zsh

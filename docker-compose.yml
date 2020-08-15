@@ -15,4 +15,4 @@ services:
   build-osx:
     extends:
       service: app 
-    command: env GOOS=darwin GOARCH=amd64 go build -o ../build/tpl-fred.osx github.com/newnoiseworks/tpl-fred
+    command: env GOOS=darwin GOARCH=amd64 go build -o ../bin/tpl-fred.osx github.com/newnoiseworks/tpl-fred

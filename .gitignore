@@ -1,6 +1,6 @@
-node_modules
-npm-debug.log*
-.tmp-tpl-fred
-.import
-tpl-fred-*
-build
+build/profiles/*
+!build/profiles/example.yml
+
+build/artifacts
+
+bin

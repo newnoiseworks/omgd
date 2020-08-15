@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1.14.7
 RUN sh -c "$(wget -O- https://raw.githubusercontent.com/deluan/zsh-in-docker/master/zsh-in-docker.sh)" -- \
     -t random \
     -p git \
@@ -6,4 +6,3 @@ RUN sh -c "$(wget -O- https://raw.githubusercontent.com/deluan/zsh-in-docker/mas
     -p https://github.com/zsh-users/zsh-autosuggestions \
     -p https://github.com/zsh-users/zsh-completions \
     -p https://github.com/zsh-users/zsh-history-substring-search
-RUN go get -u github.com/spf13/cobra/cobra

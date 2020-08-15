@@ -24,15 +24,33 @@ import (
 // buildCmd represents the build command
 var buildCmd = &cobra.Command{
 	Use:   "build",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Builds various parts of the stack",
+	Long: `tpl-fred build command
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+The main command. Builds all components of the stack.
+
+Usage: $ tpl-fred build [project] [environment] [target]
+`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("build called")
+		if len(args) < 2 {
+			fmt.Println("You need both arguments dumb dumb")
+			return
+		}
+
+		var project = args[0]
+		var environment = args[1]
+
+		if project != "game" && project != "server" && project != "website" && project != "config-files" {
+			fmt.Println("Invalid project name")
+			return
+		}
+
+		if environment != "production" && environment != "staging" && environment != "local" {
+			fmt.Println("Invalid environment name")
+			return
+		}
+
+		fmt.Println(fmt.Sprintf("build called with args %s %s", project, environment))
 	},
 }
 

@@ -3,6 +3,12 @@ services:
   app:
     build: .
     volumes:
-      - ./src:/go/src/github.com/newnoiseworks/tpl-fred
-    working_dir: /go/src/github.com/newnoiseworks/tpl-fred
+      - ./:/go/src/github.com/newnoiseworks/tpl-fred
+    working_dir: /go/src/github.com/newnoiseworks/tpl-fred/src
     command: zsh
+  build-osx:
+    build: .
+    volumes:
+      - ./:/go/src/github.com/newnoiseworks/tpl-fred
+    working_dir: /go/src/github.com/newnoiseworks/tpl-fred/src
+    command: env GOOS=darwin GOARCH=amd64 go build -o ../build/tpl-fred.osx github.com/newnoiseworks/tpl-fred

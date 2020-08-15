@@ -9,3 +9,4 @@ RUN sh -c "$(wget -O- https://raw.githubusercontent.com/deluan/zsh-in-docker/mas
 RUN apt-get -y update
 RUN apt-get -y remove docker docker-engine docker.io
 RUN apt install -y docker.io
+RUN apt install -y docker-compose

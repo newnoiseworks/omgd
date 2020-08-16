@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/newnoiseworks/tpl-fred/builder"
+	"github.com/newnoiseworks/tpl-fred/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -21,23 +22,12 @@ Usage: $ tpl-fred build [project] [environment] [target]
 }
 
 func run(cmd *cobra.Command, args []string) {
-	if len(args) < 2 {
-		fmt.Println("You need both arguments dumb dumb")
+	if utils.CheckProjectAndEnv(args) == false {
 		return
 	}
 
 	var project = args[0]
 	var environment = args[1]
-
-	if project != "game" && project != "server" && project != "website" && project != "config-files" {
-		fmt.Println("Invalid project name")
-		return
-	}
-
-	if environment != "production" && environment != "staging" && environment != "local" {
-		fmt.Println("Invalid environment name")
-		return
-	}
 
 	fmt.Println(fmt.Sprintf("build called with args %s %s", project, environment))
 	builder.Builder(project, environment)

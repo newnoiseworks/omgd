@@ -13,7 +13,7 @@ type ProfileConf struct {
 	Nakama struct {
 		Host   string `yaml:"host"`
 		Key    string `yaml:"key"`
-		Port   int64  `yaml:"port"`
+		Port   int    `yaml:"port"`
 		Secure bool   `yaml:"secure"`
 	}
 	Website struct {

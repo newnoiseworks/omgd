@@ -25,7 +25,7 @@ func GameConfig(environment string, buildPath string) {
 
 	buildGameClientConfig(buildPath, config)
 	buildServerConfig(buildPath, config)
-	buildGameBuildConfig(buildPath, config)
+	buildGameBuildConfig(environment, buildPath, config)
 }
 
 func buildGameClientConfig(buildPath string, config map[string]string) {
@@ -75,15 +75,15 @@ func buildServerConfig(buildPath string, config map[string]string) {
 	}
 }
 
-func buildGameBuildConfig(buildPath string, config map[string]string) {
+func buildGameBuildConfig(environment string, buildPath string, config map[string]string) {
 	fmt.Println("build game config for game client build")
-	t, err := template.ParseFiles("builder/config/templates/config.tpl_local.tres.tmpl")
+	t, err := template.ParseFiles("builder/config/templates/config.tpl_build.tres.tmpl")
 	if err != nil {
 		log.Print(err)
 		return
 	}
 
-	path := fmt.Sprintf("%s/config.tpl_local.tres", buildPath)
+	path := fmt.Sprintf("%s/config.tpl_%s.tres", buildPath, environment)
 
 	f, err := os.Create(path)
 	if err != nil {

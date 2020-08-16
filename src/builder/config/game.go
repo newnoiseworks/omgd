@@ -10,12 +10,19 @@ import (
 )
 
 // GameConfig go brr
-func GameConfig(environment string) {
-	fmt.Println("build game config")
-
+func GameConfig(environment string, buildPath string) {
 	var profile = utils.GetProfile(environment)
 
-	fmt.Println(profile)
+	config := map[string]string{
+		"realWorldSecondsPerDay": profile.Game.RealWorldSecondsPerDay,
+	}
+
+	buildGameClientConfig(buildPath, config)
+	buildServerConfig(buildPath, config)
+}
+
+func buildGameClientConfig(buildPath string, config map[string]string) {
+	fmt.Println("build game config")
 
 	t, err := template.ParseFiles("builder/config/templates/GameConfig.cs.tmpl")
 	if err != nil {
@@ -23,16 +30,35 @@ func GameConfig(environment string) {
 		return
 	}
 
-	path := ".tmp/GameConfig.cs"
+	path := fmt.Sprintf("%s/GameConfig.cs", buildPath)
+
+	f, err := os.Create(path)
+
+	if err != nil {
+		log.Println("create file: ", err)
+		return
+	}
+	err = t.Execute(f, config)
+	if err != nil {
+		log.Print("execute: ", err)
+		return
+	}
+}
+
+func buildServerConfig(buildPath string, config map[string]string) {
+	fmt.Println("build game config for server")
+	t, err := template.ParseFiles("builder/config/templates/game_config.lua.tmpl")
+	if err != nil {
+		log.Print(err)
+		return
+	}
+
+	path := fmt.Sprintf("%s/game_config.lua", buildPath)
 
 	f, err := os.Create(path)
 	if err != nil {
 		log.Println("create file: ", err)
 		return
-	}
-
-	config := map[string]string{
-		"realWorldSecondsPerDay": profile.Game.RealWorldSecondsPerDay,
 	}
 
 	err = t.Execute(f, config)

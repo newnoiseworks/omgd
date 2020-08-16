@@ -25,7 +25,7 @@ Usage: $ tpl-fred build-config [project] [environment] [target]
 		// var project = args[0]
 		var environment = args[1]
 
-		config.GameConfig(environment)
+		config.GameConfig(environment, OutputDir)
 	},
 }
 

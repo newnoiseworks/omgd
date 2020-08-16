@@ -11,7 +11,9 @@ import (
 )
 
 var cfgFile string
-var outputDir string
+
+// OutputDir this is where all builds and build artifacts will be written to
+var OutputDir string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -44,7 +46,11 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.tpl-fred.yaml)")
-	rootCmd.PersistentFlags().StringVar(&outputDir, "output", ".tmp", "Output durr")
+	rootCmd.PersistentFlags().StringVar(&OutputDir, "output", ".tmp", "Output durr")
+
+	if _, err := os.Stat(OutputDir); os.IsNotExist(err) {
+		os.Mkdir(OutputDir, 0700)
+	}
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.

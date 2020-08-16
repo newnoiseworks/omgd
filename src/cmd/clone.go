@@ -42,7 +42,7 @@ to quickly create a Cobra application.`,
 }
 
 func cloneTPLFred() {
-	_, err := git.PlainClone(fmt.Sprintf("%s/tpl-fred", outputDir), false, &git.CloneOptions{
+	_, err := git.PlainClone(fmt.Sprintf("%s/tpl-fred", OutputDir), false, &git.CloneOptions{
 		URL:      "git@github.com:newnoiseworks/tpl-fred.git",
 		Progress: os.Stdout,
 	})
@@ -53,7 +53,7 @@ func cloneTPLFred() {
 }
 
 func cloneGame() {
-	_, err := git.PlainClone(fmt.Sprintf("%s/server", outputDir), false, &git.CloneOptions{
+	_, err := git.PlainClone(fmt.Sprintf("%s/server", OutputDir), false, &git.CloneOptions{
 		URL:      "git@github.com:newnoiseworks/not-stardew.git",
 		Progress: os.Stdout,
 	})
@@ -64,7 +64,7 @@ func cloneGame() {
 }
 
 func cloneServer() {
-	_, err := git.PlainClone(fmt.Sprintf("%s/server", outputDir), false, &git.CloneOptions{
+	_, err := git.PlainClone(fmt.Sprintf("%s/server", OutputDir), false, &git.CloneOptions{
 		URL:      "git@github.com:newnoiseworks/not-stardew-backend.git",
 		Progress: os.Stdout,
 	})

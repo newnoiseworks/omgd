@@ -5,3 +5,5 @@ build/profiles/*
 build/artifacts
 
 bin
+
+.tmp

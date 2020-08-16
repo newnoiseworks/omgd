@@ -10,3 +10,5 @@ RUN apt-get -y update
 RUN apt-get -y remove docker docker-engine docker.io
 RUN apt install -y docker.io
 RUN apt install -y docker-compose
+
+RUN go get -u -v github.com/spf13/cobra/cobra

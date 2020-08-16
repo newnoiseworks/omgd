@@ -11,6 +11,7 @@ import (
 )
 
 var cfgFile string
+var outputDir string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -43,6 +44,7 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.tpl-fred.yaml)")
+	rootCmd.PersistentFlags().StringVar(&outputDir, "output", ".tmp", "Output durr")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.

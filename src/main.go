@@ -15,7 +15,9 @@ limitations under the License.
 */
 package main
 
-import "github.com/newnoiseworks/tpl-fred/cmd"
+import (
+	"github.com/newnoiseworks/tpl-fred/cmd"
+)
 
 func main() {
 	cmd.Execute()

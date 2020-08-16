@@ -5,6 +5,7 @@ services:
     volumes:
       - ./:/go/src/github.com/newnoiseworks/tpl-fred
       - /var/run/docker.sock:/var/run/docker.sock
+      - ~/.ssh:/root/.ssh
     working_dir: /go/src/github.com/newnoiseworks/tpl-fred/src
 
   dev:

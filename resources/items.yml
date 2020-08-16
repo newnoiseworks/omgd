@@ -1,201 +1,202 @@
-Tiller: {}
-Pail: {}
-Pickaxe: {}
-Scythe: {}
-Axe: {}
+items:
+  - key: Tiller
+  - key: Pail
+  - key: Pickaxe
+  - key: Scythe
+  - key: Axe
+  - key: CorpusCoin
+  - key: CommunityCoin
+  - key: CorpusCoin
+  - key: CommunityCoin
+  - key: Stone
+    sale:
+      - item: CorpusCoin
+        quantity: 1
+  - key: Fern
+    sale:
+      - item: CorpusCoin
+        quantity: 2
+  - key: Wood
+    sale:
+      - item: CorpusCoin
+        quantity: 1
 
-CorpusCoin: {}
-CommunityCoin: {}
+  - key: Blueprint_StonePath
+    price:
+      - item: CommunityCoin
+        quantity: 25
+  - key: Blueprint_WoodPath
+    price:
+      - item: CommunityCoin
+        quantity: 25
+  - key: Blueprint_Lamp
+    price:
+      - item: CommunityCoin
+        quantity: 50
 
-Stone:
-  sale:
-    - item: CorpusCoin
-      quantity: 1
-Fern:
-  sale:
-    - item: CorpusCoin
-      quantity: 2
-Wood:
-  sale:
-    - item: CorpusCoin
-      quantity: 1
+  - key: Crafted_StonePath
+    purchase_validation: true
+    price:
+      - item: Stone
+        quantity: 2
+  - key: Crafted_WoodPath
+    purchase_validation: true
+    price:
+      - item: Wood
+        quantity: 2
+  - key: Crafted_Lamp
+    purchase_validation: true
+    combo_price: true
+    price:
+      - item: Wood
+        quantity: 12
+      - item: Stone
+        quantity: 12
 
-Blueprint_StonePath:
-  price:
-    - item: CommunityCoin
-      quantity: 25
-Blueprint_WoodPath:
-  price:
-    - item: CommunityCoin
-      quantity: 25
-Blueprint_Lamp:
-  price:
-    - item: CommunityCoin
-      quantity: 50
+  - key: BeetSeeds
+    price:
+      - item: CorpusCoin
+        quantity: 3
+    toPlant: Beet
+  - key: Beet
+    fromSeeds: BeetSeeds
+    growthStages:
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+    sale:
+      - item: CorpusCoin
+        quantity: 2
+    maxYield: 5
 
-Crafted_StonePath:
-  purchase_validation: true
-  price:
-    - item: Stone
-      quantity: 2
-Crafted_WoodPath:
-  purchase_validation: true
-  price:
-    - item: Wood
-      quantity: 2
-Crafted_Lamp:
-  purchase_validation: true
-  combo_price: true
-  price:
-    - item: Wood
-      quantity: 12
-    - item: Stone
-      quantity: 12
+  - key: CabbageSeeds
+    price:
+      - item: CorpusCoin
+        quantity: 2
+    toPlant: Cabbage
+  - key: Cabbage
+    fromSeeds: CabbageSeeds
+    growthStages:
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+    sale:
+      - item: CorpusCoin
+        quantity: 2
+    maxYield: 2
 
-BeetSeeds:
-  price:
-    - item: CorpusCoin
-      quantity: 3
-  toPlant: Beet
-Beet:
-  fromSeeds: BeetSeeds
-  growthStages:
-    - 1
-    - 1
-    - 1
-    - 1
-    - 1
-  sale:
-    - item: CorpusCoin
-      quantity: 2
-  maxYield: 5
+  - key: DragonFruitSeeds
+    price:
+      - item: CorpusCoin
+        quantity: 4
+    toPlant: DragonFruit
+  - key: DragonFruit
+    fromSeeds: DragonFruitSeeds
+    growthStages:
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+    sale:
+      - item: CorpusCoin
+        quantity: 3
+    maxYield: 4
 
-CabbageSeeds:
-  price:
-    - item: CorpusCoin
-      quantity: 2
-  toPlant: Cabbage
-Cabbage:
-  fromSeeds: CabbageSeeds
-  growthStages:
-    - 1
-    - 1
-    - 1
-    - 1
-    - 1
-  sale:
-    - item: CorpusCoin
-      quantity: 2
-  maxYield: 2
+  - key: EggplantSeeds
+    price:
+      - item: CorpusCoin
+        quantity: 3
+    toPlant: Eggplant
+  - key: Eggplant
+    fromSeeds: EggplantSeeds
+    growthStages:
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+    sale:
+      - item: CorpusCoin
+        quantity: 4
+    maxYield: 2
 
-DragonFruitSeeds:
-  price:
-    - item: CorpusCoin
-      quantity: 4
-  toPlant: DragonFruit
-DragonFruit:
-  fromSeeds: DragonFruitSeeds
-  growthStages:
-    - 1
-    - 1
-    - 1
-    - 1
-    - 1
-    - 1
-  sale:
-    - item: CorpusCoin
-      quantity: 3
-  maxYield: 4
+  - key: PotatoSeeds
+    price:
+      - item: CorpusCoin
+        quantity: 1
+    toPlant: Potato
+  - key: Potato
+    fromSeeds: PotatoSeeds
+    growthStages:
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+    sale:
+      - item: CorpusCoin
+        quantity: 1
+    maxYield: 3
 
-EggplantSeeds:
-  price:
-    - item: CorpusCoin
-      quantity: 3
-  toPlant: Eggplant
-Eggplant:
-  fromSeeds: EggplantSeeds
-  growthStages:
-    - 1
-    - 1
-    - 1
-    - 1
-    - 1
-    - 1
-  sale:
-    - item: CorpusCoin
-      quantity: 4
-  maxYield: 2
+  - key: OddFruitSeeds
+    price:
+      - item: CorpusCoin
+        quantity: 15
+    toPlant: OddFruit
+  - key: OddFruit
+    fromSeeds: OddFruitSeeds
+    growthStages:
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+    sale:
+      - item: CorpusCoin
+        quantity: 6
+    maxYield: 5
 
-PotatoSeeds:
-  price:
-    - item: CorpusCoin
-      quantity: 1
-  toPlant: Potato
-Potato:
-  fromSeeds: PotatoSeeds
-  growthStages:
-    - 1
-    - 1
-    - 1
-    - 1
-    - 1
-    - 1
-  sale:
-    - item: CorpusCoin
-      quantity: 1
-  maxYield: 3
+  - key: TomatoSeeds
+    price:
+      - item: CorpusCoin
+        quantity: 5
+    toPlant: Tomato
+  - key: Tomato
+    fromSeeds: TomatoSeeds
+    growthStages:
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+    sale:
+      - item: CorpusCoin
+        quantity: 3
+    maxYield: 5
 
-OddFruitSeeds:
-  price:
-    - item: CorpusCoin
-      quantity: 15
-  toPlant: OddFruit
-OddFruit:
-  fromSeeds: OddFruitSeeds
-  growthStages:
-    - 1
-    - 1
-    - 1
-    - 1
-    - 1
-    - 1
-  sale:
-    - item: CorpusCoin
-      quantity: 6
-  maxYield: 5
-
-TomatoSeeds:
-  price:
-    - item: CorpusCoin
-      quantity: 5
-  toPlant: Tomato
-Tomato:
-  fromSeeds: TomatoSeeds
-  growthStages:
-    - 1
-    - 1
-    - 1
-    - 1
-    - 1
-  sale:
-    - item: CorpusCoin
-      quantity: 3
-  maxYield: 5
-
-TurnipSeeds:
-  price:
-    - item: CorpusCoin
-      quantity: 2
-  toPlant: Turnip
-Turnip:
-  fromSeeds: TurnipSeeds
-  growthStages:
-    - 1
-    - 1
-    - 1
-    - 1
-    - 1
-  sale:
-    - item: CorpusCoin
-      quantity: 2
-  maxYield: 2
+  - key: TurnipSeeds
+    price:
+      - item: CorpusCoin
+        quantity: 2
+    toPlant: Turnip
+  - key: Turnip
+    fromSeeds: TurnipSeeds
+    growthStages:
+      - 1
+      - 1
+      - 1
+      - 1
+      - 1
+    sale:
+      - item: CorpusCoin
+        quantity: 2
+    maxYield: 2

@@ -6,24 +6,26 @@ namespace TPV.Data {
   public static class PlantInfoHelper {
 
     public static Dictionary<string, List<int>> plantGrowthStages = new Dictionary<string, List<int>>() {
-<% var i = 0; for(var itemKey in items) { var item = items[itemKey]; if (item.growthStages) { -%>
-      { "<%= item.itemKeyMd5 %>", new List<int>() { <% for(var j = 0; j < item.growthStages.length; j++) { -%><%= item.growthStages[j] %>, <% } %>} }, 
-<% i++; } } -%>
+      {{- range .Items}}{{ if .GrowthStages}}
+      { "{{.Key}}", new List<int>() {
+        {{ range $i, $s := .GrowthStages}}{{$s}}, {{end}}
+      } },
+      {{- end}}{{end}}
     };
   };
 
   public static class InventoryItemIDHelper {
 
     private static Dictionary<string, int> hashToIdMap = new Dictionary<string, int>() {
-<% var i = 0; for(var itemKey in items) { var item = items[itemKey] -%>
-      { "<%= item.itemKeyMd5 %>", <%= i %> },
-<% i++; } -%>
+      {{- range $i, $item := .Items }}
+      { "{{md5 .Key}}", {{$i}} },
+      {{- end }}
     };
 
     private static Dictionary<int, string> idToHashMap = new Dictionary<int, string>() { 
-<% var i = 0; for(var itemKey in items) { var item = items[itemKey] -%>
-      { <%= i %>, "<%= item.itemKeyMd5 %>" },
-<% i++; } -%>
+      {{- range $i, $item := .Items }}
+      { {{$i}}, "{{md5 .Key}}" },
+      {{- end }}
     };
 
     public static InventoryItemType GetEnum(string id) {
@@ -52,8 +54,8 @@ namespace TPV.Data {
   }
 
   public enum InventoryItemType {
-<% var i = 0; for(var itemKey in items) { var item = items[itemKey] -%>
-    <%= itemKey %> = <%= i %>,
-<% i++; } -%>
+    {{- range $i, $item := .Items }}
+    {{.Key}} = {{$i}},
+    {{- end }}
   }
 }

@@ -53,7 +53,7 @@ func cloneTPLFred() {
 }
 
 func cloneGame() {
-	_, err := git.PlainClone(fmt.Sprintf("%s/server", OutputDir), false, &git.CloneOptions{
+	_, err := git.PlainClone(fmt.Sprintf("%s/game", OutputDir), false, &git.CloneOptions{
 		URL:      "git@github.com:newnoiseworks/not-stardew.git",
 		Progress: os.Stdout,
 	})

@@ -21,6 +21,7 @@ type ProfileConf struct {
 	}
 	Game struct {
 		RealWorldSecondsPerDay string `yaml:"real_world_seconds_per_day"`
+		Version                string `yaml:"version"`
 	}
 }
 

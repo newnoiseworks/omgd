@@ -22,10 +22,17 @@ Usage: $ tpl-fred build-config [project] [environment] [target]
 			return
 		}
 
-		// var project = args[0]
+		var project = args[0]
 		var environment = args[1]
 
-		config.GameConfig(environment, OutputDir)
+		switch project {
+		case "game":
+			config.GameConfig(environment, OutputDir)
+			break
+		case "server":
+			config.ServerConfig(environment, OutputDir)
+			break
+		}
 	},
 }
 

@@ -1,0 +1,9 @@
+local nk = require("nakama")
+
+local function get_version(context, payload)
+  return nk.json_encode({
+    ["game"] = "{{ .gameVersion }}",
+  })
+end
+
+nk.register_rpc(get_version, "get_version")

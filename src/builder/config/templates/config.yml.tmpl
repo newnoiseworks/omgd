@@ -1,0 +1,12 @@
+name: nakama1
+database:
+  address:
+    - "root@cockroachdb:26257"
+socket:
+  max_message_size_bytes: 51200
+  server_key: {{ .nakamaKey }}
+session:
+  token_expiry_sec: 864900
+  server_key: {{ .nakamaKey }}
+runtime:
+  http_key: defaultkey

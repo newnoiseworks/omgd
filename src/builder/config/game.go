@@ -26,19 +26,17 @@ func GameConfig(environment string, buildPath string) {
 		"websiteHost":            profile.Website.Host,
 	}
 
+	fmt.Println("build game config files")
+
 	buildGameClientConfig(buildPath, config)
 
 	buildGameBuildConfig(environment, buildPath, config)
 
 	buildGameItemsFile(buildPath)
-
-	// TODO: Move the below to server config profile
-	buildServerConfig(buildPath, config)
-	buildServerItemsFile(buildPath)
 }
 
 func buildGameClientConfig(buildPath string, config map[string]string) {
-	fmt.Println("build game config")
+	fmt.Println(" >> build GameConfig.cs.tmpl >> game/Resources/Config/GameConfig.cs")
 
 	t, err := template.ParseFiles("builder/config/templates/GameConfig.cs.tmpl")
 	if err != nil {
@@ -46,7 +44,7 @@ func buildGameClientConfig(buildPath string, config map[string]string) {
 		return
 	}
 
-	path := fmt.Sprintf("%s/GameConfig.cs", buildPath)
+	path := fmt.Sprintf("%s/game/Resources/Config/GameConfig.cs", buildPath)
 
 	f, err := os.Create(path)
 
@@ -54,29 +52,6 @@ func buildGameClientConfig(buildPath string, config map[string]string) {
 		log.Println("create file: ", err)
 		return
 	}
-	err = t.Execute(f, config)
-	if err != nil {
-		log.Print("execute: ", err)
-		return
-	}
-}
-
-func buildServerConfig(buildPath string, config map[string]string) {
-	fmt.Println(" >> build game config for server")
-	t, err := template.ParseFiles("builder/config/templates/game_config.lua.tmpl")
-	if err != nil {
-		log.Print(err)
-		return
-	}
-
-	path := fmt.Sprintf("%s/game_config.lua", buildPath)
-
-	f, err := os.Create(path)
-	if err != nil {
-		log.Println("create file: ", err)
-		return
-	}
-
 	err = t.Execute(f, config)
 	if err != nil {
 		log.Print("execute: ", err)
@@ -85,14 +60,14 @@ func buildServerConfig(buildPath string, config map[string]string) {
 }
 
 func buildGameBuildConfig(environment string, buildPath string, config map[string]string) {
-	fmt.Println(" >> build game config for game client build")
+	fmt.Printf(" >> build config.tpl_build.tres.tmpl >> game/Resources/Config/config.tpl_%s.tres\n", environment)
 	t, err := template.ParseFiles("builder/config/templates/config.tpl_build.tres.tmpl")
 	if err != nil {
 		log.Print(err)
 		return
 	}
 
-	path := fmt.Sprintf("%s/config.tpl_%s.tres", buildPath, environment)
+	path := fmt.Sprintf("%s/game/Resources/Config/config.tpl_%s.tres", buildPath, environment)
 
 	f, err := os.Create(path)
 	if err != nil {
@@ -110,7 +85,8 @@ func buildGameBuildConfig(environment string, buildPath string, config map[strin
 func buildGameItemsFile(buildPath string) {
 	var items = utils.GetItems()
 
-	fmt.Println(" >> build game items file for game client build")
+	fmt.Println(" >> build InventoryItems.cs.tmpl >> game/Data/InventoryItems.cs")
+
 	var tmpl = "builder/config/templates/InventoryItem.cs.tmpl"
 	t, err := template.New(path.Base(tmpl)).Funcs(template.FuncMap{"md5": func(text string) string {
 		hash := md5.Sum([]byte(text))
@@ -121,36 +97,7 @@ func buildGameItemsFile(buildPath string) {
 		return
 	}
 
-	path := fmt.Sprintf("%s/InventoryItem.cs", buildPath)
-
-	f, err := os.Create(path)
-	if err != nil {
-		log.Println("create file: ", err)
-		return
-	}
-
-	err = t.Execute(f, items)
-	if err != nil {
-		log.Print("execute: ", err)
-		return
-	}
-}
-
-func buildServerItemsFile(buildPath string) {
-	var items = utils.GetItems()
-
-	fmt.Println(" >> build game items file for server build")
-	var tmpl = "builder/config/templates/inventory_items.lua.tmpl"
-	t, err := template.New(path.Base(tmpl)).Funcs(template.FuncMap{"md5": func(text string) string {
-		hash := md5.Sum([]byte(text))
-		return hex.EncodeToString(hash[:])
-	}}).ParseFiles(tmpl)
-	if err != nil {
-		log.Print(err)
-		return
-	}
-
-	path := fmt.Sprintf("%s/inventory_items.lua", buildPath)
+	path := fmt.Sprintf("%s/game/Data/InventoryItems.cs", buildPath)
 
 	f, err := os.Create(path)
 	if err != nil {

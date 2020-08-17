@@ -9,3 +9,4 @@ website:
 
 game:
   real_world_seconds_per_day: 2 * 60
+  version: 0.1.23

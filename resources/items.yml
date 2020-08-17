@@ -6,8 +6,6 @@ items:
   - key: Axe
   - key: CorpusCoin
   - key: CommunityCoin
-  - key: CorpusCoin
-  - key: CommunityCoin
   - key: Stone
     sale:
       - item: CorpusCoin

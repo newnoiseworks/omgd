@@ -21,6 +21,8 @@ import (
 	"os"
 
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/newnoiseworks/tpl-fred/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -35,57 +37,51 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		var environment = args[0]
+
+		conf := utils.GetProfile(environment)
 		// cloneTPLFred()
-		cloneGame()
-		cloneServer()
-		cloneWebsite()
+		cloneGame(conf)
+		cloneServer(conf)
+		// cloneWebsite()
 	},
 }
 
-func cloneTPLFred() {
-	_, err := git.PlainClone(fmt.Sprintf("%s/tpl-fred", OutputDir), false, &git.CloneOptions{
-		URL:      "git@github.com:newnoiseworks/tpl-fred.git",
-		Progress: os.Stdout,
-	})
-
-	if err != nil {
-		log.Fatal(err)
-	}
+func cloneGame(conf utils.ProfileConf) {
+	gitClone("git@github.com:newnoiseworks/not-stardew.git", "game", conf.Git.GameBranch)
 }
 
-func cloneGame() {
-	_, err := git.PlainClone(fmt.Sprintf("%s/game", OutputDir), false, &git.CloneOptions{
-		URL:           "git@github.com:newnoiseworks/not-stardew.git",
-		Progress:      os.Stdout,
-		ReferenceName: "refs/heads/golang-refactor",
-	})
-
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func cloneServer() {
-	_, err := git.PlainClone(fmt.Sprintf("%s/server", OutputDir), false, &git.CloneOptions{
-		URL:           "git@github.com:newnoiseworks/not-stardew-backend.git",
-		Progress:      os.Stdout,
-		ReferenceName: "refs/heads/golang-build-refactor",
-	})
-
-	if err != nil {
-		log.Fatal(err)
-	}
+func cloneServer(conf utils.ProfileConf) {
+	gitClone("git@github.com:newnoiseworks/not-stardew-backend.git", "server", conf.Git.ServerBranch)
 }
 
 func cloneWebsite() {
-	_, err := git.PlainClone(fmt.Sprintf("%s/website", OutputDir), false, &git.CloneOptions{
-		URL:      "git@github.com:newnoiseworks/tpl-website.git",
-		Progress: os.Stdout,
+	gitClone("git@github.com:newnoiseworks/tpl-website.git", "website", "")
+}
+
+func cloneTPLFred() {
+	gitClone("git@github.com:newnoiseworks/tpl-fred.git", "tpl-fred", "")
+}
+
+func gitClone(repo string, dir string, confBranch string) {
+	branchName := "master"
+
+	if confBranch != "" {
+		branchName = confBranch
+	}
+
+	refVal := plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", branchName))
+
+	_, err := git.PlainClone(fmt.Sprintf("%s/%s", OutputDir, dir), false, &git.CloneOptions{
+		URL:           repo,
+		Progress:      os.Stdout,
+		ReferenceName: refVal,
 	})
 
 	if err != nil {
 		log.Fatal(err)
 	}
+
 }
 
 func init() {

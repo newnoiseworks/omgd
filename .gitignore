@@ -1,6 +1,5 @@
 build/profiles/*
 !build/profiles/example.yml
-!build/profiles/local.yml
 
 build/artifacts
 

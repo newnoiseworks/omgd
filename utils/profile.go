@@ -29,6 +29,10 @@ type ProfileConf struct {
 		RealWorldSecondsPerDay string `yaml:"real_world_seconds_per_day"`
 		Version                string `yaml:"version"`
 	}
+	Git struct {
+		GameBranch   string `yaml:"game"`
+		ServerBranch string `yaml:"server"`
+	}
 }
 
 // GetProfile d

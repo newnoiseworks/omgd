@@ -10,17 +10,14 @@ func CheckProjectAndEnv(args []string) bool {
 	}
 
 	var project = args[0]
-	var environment = args[1]
 
 	if project != "game" && project != "server" && project != "website" && project != "config-files" {
 		fmt.Println("Invalid project name")
 		return false
 	}
 
-	if environment != "production" && environment != "staging" && environment != "local" {
-		fmt.Println("Invalid environment name")
-		return false
-	}
+	// var environment = args[1]
+	// TODO: check for existing profile yml against the given environment name, if none exists exit
 
 	return true
 }

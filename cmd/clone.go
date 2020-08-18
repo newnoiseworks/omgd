@@ -35,9 +35,10 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		cloneTPLFred()
+		// cloneTPLFred()
 		cloneGame()
 		cloneServer()
+		cloneWebsite()
 	},
 }
 
@@ -54,8 +55,9 @@ func cloneTPLFred() {
 
 func cloneGame() {
 	_, err := git.PlainClone(fmt.Sprintf("%s/game", OutputDir), false, &git.CloneOptions{
-		URL:      "git@github.com:newnoiseworks/not-stardew.git",
-		Progress: os.Stdout,
+		URL:           "git@github.com:newnoiseworks/not-stardew.git",
+		Progress:      os.Stdout,
+		ReferenceName: "refs/heads/golang-refactor",
 	})
 
 	if err != nil {
@@ -65,7 +67,19 @@ func cloneGame() {
 
 func cloneServer() {
 	_, err := git.PlainClone(fmt.Sprintf("%s/server", OutputDir), false, &git.CloneOptions{
-		URL:      "git@github.com:newnoiseworks/not-stardew-backend.git",
+		URL:           "git@github.com:newnoiseworks/not-stardew-backend.git",
+		Progress:      os.Stdout,
+		ReferenceName: "refs/heads/golang-build-refactor",
+	})
+
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func cloneWebsite() {
+	_, err := git.PlainClone(fmt.Sprintf("%s/website", OutputDir), false, &git.CloneOptions{
+		URL:      "git@github.com:newnoiseworks/tpl-website.git",
 		Progress: os.Stdout,
 	})
 

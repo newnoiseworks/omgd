@@ -17,8 +17,13 @@ type ProfileConf struct {
 		Port   int    `yaml:"port"`
 		Secure bool   `yaml:"secure"`
 	}
-	Website struct {
-		Host string `yaml:"host"`
+	Gcloud struct {
+		Project   string `yaml:"project"`
+		Instance  string `yaml:"instance"`
+		CloudZone string `yaml:"cloudZone"`
+	}
+	Firebase struct {
+		Project string `yaml:"project"`
 	}
 	Game struct {
 		RealWorldSecondsPerDay string `yaml:"real_world_seconds_per_day"`
@@ -41,8 +46,8 @@ func GetProfile(env string) ProfileConf {
 
 	if env != "local" {
 		var key = fmt.Sprintf("the-promised-land-%s-v%s", env, c.Game.Version)
-		var md = md5.Sum([]byte(key))
-		c.Nakama.Key = string(md[:])
+		data := []byte(key)
+		c.Nakama.Key = fmt.Sprintf("%x", md5.Sum(data))
 	} else {
 		c.Nakama.Key = "defaultkey"
 	}

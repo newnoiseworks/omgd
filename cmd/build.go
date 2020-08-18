@@ -34,6 +34,9 @@ func run(cmd *cobra.Command, args []string) {
 	case "game":
 		builder.BuildGame(environment, OutputDir)
 		break
+	case "server":
+		builder.BuildServer(environment, OutputDir)
+		break
 	}
 }
 

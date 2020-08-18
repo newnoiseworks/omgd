@@ -3,9 +3,6 @@ nakama:
   port: 7350
   secure: false
 
-website:
-  host: http://127.0.0.1:5000/
-
 game:
   real_world_seconds_per_day: 2 * 60
   version: 0.1.23

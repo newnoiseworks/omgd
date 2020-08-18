@@ -25,7 +25,6 @@ func ServerConfig(environment string, buildPath string) {
 		"nakamaKey":              profile.Nakama.Key,
 		"nakamaPort":             strconv.Itoa(profile.Nakama.Port),
 		"nakamaSecure":           strconv.FormatBool(profile.Nakama.Secure),
-		"websiteHost":            profile.Website.Host,
 		"gameVersion":            profile.Game.Version,
 	}
 

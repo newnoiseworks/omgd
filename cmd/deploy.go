@@ -28,6 +28,9 @@ to quickly create a Cobra application.`,
 		case "server":
 			deployer.DeployServer(environment, OutputDir)
 			break
+		case "game":
+			deployer.DeployGame(environment, OutputDir)
+			break
 		}
 	},
 }

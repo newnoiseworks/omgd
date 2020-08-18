@@ -5,7 +5,6 @@ import (
 	"log"
 	"path/filepath"
 
-	"github.com/logrusorgru/aurora"
 	"github.com/newnoiseworks/tpl-fred/builder/config"
 	"github.com/newnoiseworks/tpl-fred/utils"
 )
@@ -28,11 +27,7 @@ func BuildGame(environment string, buildPath string) {
 func buildDistro(target string, environment string, buildPath string, gamePath string) {
 	cmdStr := fmt.Sprintf("BUILD_ENV=%s docker-compose run build-%s", environment, target)
 
-	fmt.Print(aurora.Cyan(fmt.Sprintf("Building %s distro...\n", target)))
-
-	utils.CmdOnDir(cmdStr, fmt.Sprintf("building %s distro using command %s \n", target, cmdStr), gamePath)
-
-	fmt.Print(aurora.Green(fmt.Sprintf("%s distro built!\n", target)))
+	utils.CmdOnDir(cmdStr, fmt.Sprintf("building %s distro", target), gamePath)
 
 	destroyDockerImage(environment, buildPath, gamePath, target)
 }
@@ -41,5 +36,5 @@ func destroyDockerImage(environment string, buildPath string, gamePath string, d
 	dockerImgName := fmt.Sprintf("newnoiseworks/game-build-%s-%s", distro, environment)
 	cmdStr := fmt.Sprintf("docker rmi -f %s", dockerImgName)
 
-	utils.CmdOnDir(cmdStr, fmt.Sprintf(" destroying docker image post build for %s", distro), gamePath)
+	utils.CmdOnDir(cmdStr, fmt.Sprintf("docker rmi destroys image post build for %s", distro), gamePath)
 }

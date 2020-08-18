@@ -6,7 +6,7 @@ services:
       - ./:/go/src/github.com/newnoiseworks/tpl-fred
       - /var/run/docker.sock:/var/run/docker.sock
       - ~/.ssh:/root/.ssh
-    working_dir: /go/src/github.com/newnoiseworks/tpl-fred/src
+    working_dir: /go/src/github.com/newnoiseworks/tpl-fred
 
   dev:
     extends:

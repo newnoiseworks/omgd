@@ -30,7 +30,11 @@ func run(cmd *cobra.Command, args []string) {
 	var environment = args[1]
 
 	fmt.Println(fmt.Sprintf("build called with args %s %s", project, environment))
-	builder.Builder(project, environment)
+	switch project {
+	case "game":
+		builder.BuildGame(environment, OutputDir)
+		break
+	}
 }
 
 func init() {

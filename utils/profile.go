@@ -29,7 +29,7 @@ type ProfileConf struct {
 func GetProfile(env string) ProfileConf {
 	c := ProfileConf{}
 
-	yamlFile, err := ioutil.ReadFile(fmt.Sprintf("../build/profiles/%s.yml", env))
+	yamlFile, err := ioutil.ReadFile(fmt.Sprintf("build/profiles/%s.yml", env))
 	if err != nil {
 		log.Printf("yamlFile Get err: #%v ", err)
 	}

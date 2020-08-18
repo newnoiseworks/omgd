@@ -33,7 +33,7 @@ type InventoryItems struct {
 func GetItems() InventoryItems {
 	c := InventoryItems{}
 
-	yamlFile, err := ioutil.ReadFile("../resources/items.yml")
+	yamlFile, err := ioutil.ReadFile("resources/items.yml")
 	if err != nil {
 		log.Printf("yamlFile Get err: #%v ", err)
 	}

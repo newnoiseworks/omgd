@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"crypto/md5"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -36,6 +37,14 @@ func GetProfile(env string) ProfileConf {
 	err = yaml.Unmarshal(yamlFile, &c)
 	if err != nil {
 		log.Fatalf("Unmarshal err: %v", err)
+	}
+
+	if env != "local" {
+		var key = fmt.Sprintf("the-promised-land-%s-v%s", env, c.Game.Version)
+		var md = md5.Sum([]byte(key))
+		c.Nakama.Key = string(md[:])
+	} else {
+		c.Nakama.Key = "defaultkey"
 	}
 
 	return c

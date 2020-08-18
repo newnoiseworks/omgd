@@ -1,6 +1,5 @@
 nakama:
   host: 127.0.0.1
-  key: defaultkey
   port: 7350
   secure: false
 

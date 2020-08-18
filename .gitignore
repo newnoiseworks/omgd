@@ -1,8 +1,6 @@
 build/profiles/*
 !build/profiles/example.yml
 
-build/artifacts
-
-bin
-
 .tmp
+
+tpl-fred.*

@@ -10,10 +10,15 @@ services:
 
   dev:
     extends:
-      service: app 
+      service: app
     command: zsh
 
   build-osx:
     extends:
-      service: app 
-    command: env GOOS=darwin GOARCH=amd64 go build -o ../bin/tpl-fred.osx github.com/newnoiseworks/tpl-fred
+      service: app
+    command: env GOOS=darwin GOARCH=amd64 go build -o tpl-fred.osx github.com/newnoiseworks/tpl-fred
+
+  build-windows:
+    extends:
+      service: app
+    command: env GOOS=windows GOARCH=amd64 go build -o tpl-fred.exe github.com/newnoiseworks/tpl-fred

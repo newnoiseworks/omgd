@@ -7,7 +7,7 @@ namespace TPV.Data {
 
     public static Dictionary<string, List<int>> plantGrowthStages = new Dictionary<string, List<int>>() {
       {{- range .Items}}{{ if .GrowthStages}}
-      { "{{.Key}}", new List<int>() {
+      { "{{md5 .Key}}", new List<int>() {
         {{ range $i, $s := .GrowthStages}}{{$s}}, {{end}}
       } },
       {{- end}}{{end}}

@@ -113,7 +113,7 @@ func buildGameItemsFile(buildPath string) {
 
 	fmt.Println(" >> build InventoryItems.cs.tmpl >> game/Data/InventoryItems.cs")
 
-	var tmpl = "builder/config/templates/InventoryItem.cs.tmpl"
+	var tmpl = "builder/config/templates/InventoryItems.cs.tmpl"
 	t, err := template.New(path.Base(tmpl)).Funcs(template.FuncMap{"md5": func(text string) string {
 		hash := md5.Sum([]byte(text))
 		return hex.EncodeToString(hash[:])

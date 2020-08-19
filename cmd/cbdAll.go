@@ -17,7 +17,6 @@ package cmd
 
 import (
 	"github.com/newnoiseworks/tpl-fred/builder"
-	"github.com/newnoiseworks/tpl-fred/builder/config"
 	"github.com/newnoiseworks/tpl-fred/deployer"
 
 	"github.com/spf13/cobra"
@@ -38,9 +37,6 @@ to quickly create a Cobra application.`,
 		var environment = args[0]
 
 		CloneLibs(environment)
-
-		config.GameConfig(environment, OutputDir)
-		config.ServerConfig(environment, OutputDir)
 
 		builder.BuildGame(environment, OutputDir)
 		builder.BuildServer(environment, OutputDir)

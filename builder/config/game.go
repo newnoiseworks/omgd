@@ -23,11 +23,14 @@ func GameConfig(environment string, buildPath string) {
 		"nakamaKey":              profile.Nakama.Key,
 		"nakamaPort":             strconv.Itoa(profile.Nakama.Port),
 		"nakamaSecure":           strconv.FormatBool(profile.Nakama.Secure),
+		"gameVersion":            profile.Game.Version,
 	}
 
 	fmt.Println("build game config files")
 
 	buildGameClientConfig(buildPath, config)
+
+	buildGameClientConfigTpl(buildPath, config)
 
 	buildGameBuildConfig(environment, buildPath, config)
 
@@ -44,6 +47,30 @@ func buildGameClientConfig(buildPath string, config map[string]string) {
 	}
 
 	path := fmt.Sprintf("%s/game/Resources/Config/GameConfig.cs", buildPath)
+
+	f, err := os.Create(path)
+
+	if err != nil {
+		log.Println("create file: ", err)
+		return
+	}
+	err = t.Execute(f, config)
+	if err != nil {
+		log.Print("execute: ", err)
+		return
+	}
+}
+
+func buildGameClientConfigTpl(buildPath string, config map[string]string) {
+	fmt.Println(" >> build config.tpl.tres.tmpl >> game/Resources/Config/config.tpl.tres")
+
+	t, err := template.ParseFiles("builder/config/templates/config.tpl.tres.tmpl")
+	if err != nil {
+		log.Print(err)
+		return
+	}
+
+	path := fmt.Sprintf("%s/game/Resources/Config/config.tpl.tres", buildPath)
 
 	f, err := os.Create(path)
 

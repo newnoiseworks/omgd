@@ -39,12 +39,17 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var environment = args[0]
 
-		conf := utils.GetProfile(environment)
-		// cloneTPLFred()
-		cloneGame(conf)
-		cloneServer(conf)
-		// cloneWebsite()
+		CloneLibs(environment)
 	},
+}
+
+// CloneLibs clones dem libs
+func CloneLibs(environment string) {
+	conf := utils.GetProfile(environment)
+	// cloneTPLFred()
+	cloneGame(conf)
+	cloneServer(conf)
+	// cloneWebsite()
 }
 
 func cloneGame(conf utils.ProfileConf) {

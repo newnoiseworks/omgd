@@ -41,7 +41,13 @@ func deployGameBasedOnProfile(environment string, buildPath string, distro strin
 		itchGame = itchGame + "-dev"
 	}
 
-	cmd := fmt.Sprintf("butler push ./dist/%s newnoiseworks/%s:%s", distro, itchGame, distro)
+	itchDistro := distro
+
+	if distro == "x11" {
+		itchDistro = "linux"
+	}
+
+	cmd := fmt.Sprintf("butler push ./dist/%s newnoiseworks/%s:%s", distro, itchGame, itchDistro)
 
 	if environment == "production" {
 		config := utils.GetProfile(environment)

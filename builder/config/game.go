@@ -30,9 +30,9 @@ func GameConfig(environment string, buildPath string) {
 
 	buildGameClientConfig(buildPath, config)
 
-	buildGameClientConfigTpl(buildPath, config)
+	// buildGameClientConfigTpl(buildPath, config)
 
-	buildGameBuildConfig(environment, buildPath, config)
+	// buildGameBuildConfig(environment, buildPath, config)
 
 	buildGameItemsFile(buildPath)
 }

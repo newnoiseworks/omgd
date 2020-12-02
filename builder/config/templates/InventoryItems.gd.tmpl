@@ -1,0 +1,58 @@
+extends Node
+
+const plant_growth_stages = {
+	{{- range .Items}}{{ if .GrowthStages}}
+	"{{md5 .Key}}": [
+		{{ range $i, $s := .GrowthStages}}{{$s}}, {{end}}
+	],
+	{{- end}}{{end}}
+}
+
+const hash_to_id_map = {
+	{{- range $i, $item := .Items }}
+	"{{md5 .Key}}": {{$i}},
+	{{- end }}
+}
+
+const id_to_hash_map = {
+	{{- range $i, $item := .Items }}
+	{{$i}}: "{{md5 .Key}}",
+	{{- end }}
+}
+
+enum {
+	{{- range $i, $item := .Items }}
+	{{upperSnake .Key}} = {{$i}},
+	{{- end }}
+}
+
+const name_to_enum_map = {
+	{{- range $i, $item := .Items }}
+	"{{.Key}}": {{$i}},
+	{{- end }}
+}
+
+func get_hash_from_int(id: int):
+	return id_to_hash_map[id]
+
+func get_int_from_hash(id: String):
+	return hash_to_id_map[id]
+
+func get_int_from_name(id: String):
+	return name_to_enum_map[id]
+	
+	
+#		public static InventoryItemType GetEnum(string id) {
+#			return (InventoryItemType)GetIntFromHash(id);
+#		}
+#
+#		public static InventoryItemType GetEnum(int id) {
+#			return (InventoryItemType)id;
+#		}
+#
+#		public static string GetHash(InventoryItemType type) {
+#			return GetHashFromInt((int)type);
+#		}
+#	}
+#
+#}

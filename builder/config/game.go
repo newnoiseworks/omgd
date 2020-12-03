@@ -7,7 +7,9 @@ import (
 	"log"
 	"os"
 	"path"
+	"regexp"
 	"strconv"
+	"strings"
 	"text/template"
 
 	"github.com/newnoiseworks/tpl-fred/utils"
@@ -30,11 +32,9 @@ func GameConfig(environment string, buildPath string) {
 
 	buildGameClientConfig(buildPath, config)
 
-	// buildGameClientConfigTpl(buildPath, config)
-
-	// buildGameBuildConfig(environment, buildPath, config)
-
 	buildGameItemsFile(buildPath)
+
+	buildGameGDItemsFile(buildPath)
 }
 
 func buildGameClientConfig(buildPath string, config map[string]string) {
@@ -61,53 +61,6 @@ func buildGameClientConfig(buildPath string, config map[string]string) {
 	}
 }
 
-func buildGameClientConfigTpl(buildPath string, config map[string]string) {
-	fmt.Println(" >> build config.tpl.tres.tmpl >> game/Resources/Config/config.tpl.tres")
-
-	t, err := template.ParseFiles("builder/config/templates/config.tpl.tres.tmpl")
-	if err != nil {
-		log.Print(err)
-		return
-	}
-
-	path := fmt.Sprintf("%s/game/Resources/Config/config.tpl.tres", buildPath)
-
-	f, err := os.Create(path)
-
-	if err != nil {
-		log.Println("create file: ", err)
-		return
-	}
-	err = t.Execute(f, config)
-	if err != nil {
-		log.Print("execute: ", err)
-		return
-	}
-}
-
-func buildGameBuildConfig(environment string, buildPath string, config map[string]string) {
-	fmt.Printf(" >> build config.tpl_build.tres.tmpl >> game/Resources/Config/config.tpl_%s.tres\n", environment)
-	t, err := template.ParseFiles("builder/config/templates/config.tpl_build.tres.tmpl")
-	if err != nil {
-		log.Print(err)
-		return
-	}
-
-	path := fmt.Sprintf("%s/game/Resources/Config/config.tpl_%s.tres", buildPath, environment)
-
-	f, err := os.Create(path)
-	if err != nil {
-		log.Println("create file: ", err)
-		return
-	}
-
-	err = t.Execute(f, config)
-	if err != nil {
-		log.Print("execute: ", err)
-		return
-	}
-}
-
 func buildGameItemsFile(buildPath string) {
 	var items = utils.GetItems()
 
@@ -124,6 +77,46 @@ func buildGameItemsFile(buildPath string) {
 	}
 
 	path := fmt.Sprintf("%s/game/Data/InventoryItems.cs", buildPath)
+
+	f, err := os.Create(path)
+	if err != nil {
+		log.Println("create file: ", err)
+		return
+	}
+
+	err = t.Execute(f, items)
+	if err != nil {
+		log.Print("execute: ", err)
+		return
+	}
+}
+
+var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
+var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
+
+func buildGameGDItemsFile(buildPath string) {
+	var items = utils.GetItems()
+
+	fmt.Println(" >> build InventoryItems.gd.tmpl >> game-gd/Utils/InventoryItems.gd")
+
+	var tmpl = "builder/config/templates/InventoryItems.gd.tmpl"
+	t, err := template.New(path.Base(tmpl)).Funcs(template.FuncMap{
+		"md5": func(text string) string {
+			hash := md5.Sum([]byte(text))
+			return hex.EncodeToString(hash[:])
+		},
+		"upperSnake": func(text string) string {
+			snake := matchFirstCap.ReplaceAllString(text, "${1}_${2}")
+			snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
+			return strings.ToUpper(snake)
+		},
+	}).ParseFiles(tmpl)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+
+	path := fmt.Sprintf("%s/game-gd/Utils/InventoryItems.gd", buildPath)
 
 	f, err := os.Create(path)
 	if err != nil {

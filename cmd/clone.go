@@ -53,7 +53,7 @@ func CloneLibs(environment string) {
 }
 
 func cloneGame(conf utils.ProfileConf) {
-	gitClone("git@github.com:newnoiseworks/not-stardew.git", "game", conf.Git.GameBranch)
+	gitClone("git@github.com:newnoiseworks/tpl-game-gd.git", "game", conf.Git.GameBranch)
 }
 
 func cloneServer(conf utils.ProfileConf) {

@@ -22,6 +22,7 @@ func BuildGame(environment string, buildPath string) {
 	buildDistro("mac", environment, buildPath, path)
 	buildDistro("windows", environment, buildPath, path)
 	buildDistro("x11", environment, buildPath, path)
+	buildDistro("web", environment, buildPath, path)
 }
 
 func buildDistro(target string, environment string, buildPath string, gamePath string) {

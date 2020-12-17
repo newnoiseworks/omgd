@@ -34,6 +34,7 @@ func ServerConfig(environment string, buildPath string) {
 	buildServerConfig(buildPath, config)
 	buildServerVersionFile(buildPath, config)
 	buildServerItemsFile(buildPath)
+	buildServerMissionList(buildPath)
 }
 
 func buildServerGameConfig(buildPath string, config map[string]string) {
@@ -131,6 +132,36 @@ func buildServerVersionFile(buildPath string, config map[string]string) {
 	}
 
 	err = t.Execute(f, config)
+	if err != nil {
+		log.Print("execute: ", err)
+		return
+	}
+}
+
+func buildServerMissionList(buildPath string) {
+	var missions = utils.GetMissions()
+
+	fmt.Println(" >> build mission_list.lua.tmpl >> /server/nakama/data/modules/mission_list.lua")
+
+	var tmpl = "builder/config/templates/mission_list.lua.tmpl"
+	t, err := template.New(path.Base(tmpl)).Funcs(template.FuncMap{"md5": func(text string) string {
+		hash := md5.Sum([]byte(text))
+		return hex.EncodeToString(hash[:])
+	}}).ParseFiles(tmpl)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+
+	path := fmt.Sprintf("%s/server/nakama/data/modules/mission_list.lua", buildPath)
+
+	f, err := os.Create(path)
+	if err != nil {
+		log.Println("create file: ", err)
+		return
+	}
+
+	err = t.Execute(f, missions)
 	if err != nil {
 		log.Print("execute: ", err)
 		return

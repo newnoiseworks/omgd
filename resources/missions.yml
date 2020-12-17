@@ -1,0 +1,5 @@
+missions:
+  - key: createAvatar
+    title: Create an avatar
+  - key: introJKJZ
+    title: Talk to the floating robot on the road

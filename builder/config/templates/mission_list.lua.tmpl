@@ -1,0 +1,9 @@
+local mission_list = {
+	{{- range $i, $mission := .Missions }}
+	{{.Key}} = {
+    title = "{{.Title}}",
+  },
+	{{- end }}
+}
+
+return mission_list

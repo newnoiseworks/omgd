@@ -1,0 +1,9 @@
+extends Node
+
+var list = {
+	{{- range $i, $mission := .Missions }}
+	"{{.Key}}": {
+    "title": "{{.Title}}",
+  },
+	{{- end }}
+}

@@ -32,9 +32,9 @@ func GameConfig(environment string, buildPath string) {
 
 	buildGameClientConfig(buildPath, config)
 
-	// buildGameItemsFile(buildPath)
-
 	buildGameGDItemsFile(buildPath)
+
+	buildMissionListFile(buildPath)
 }
 
 func buildGameClientConfig(buildPath string, config map[string]string) {
@@ -95,6 +95,39 @@ func buildGameGDItemsFile(buildPath string) {
 	}
 
 	err = t.Execute(f, items)
+	if err != nil {
+		log.Print("execute: ", err)
+		return
+	}
+}
+
+func buildMissionListFile(buildPath string) {
+	var missions = utils.GetMissions()
+
+	fmt.Println(" >> build MissionList.gd.tmpl >> game/Utils/MissionList.gd")
+
+	var tmpl = "builder/config/templates/MissionList.gd.tmpl"
+	t, err := template.New(path.Base(tmpl)).Funcs(template.FuncMap{
+		"upperSnake": func(text string) string {
+			snake := matchFirstCap.ReplaceAllString(text, "${1}_${2}")
+			snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
+			return strings.ToUpper(snake)
+		},
+	}).ParseFiles(tmpl)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+
+	path := fmt.Sprintf("%s/game/Utils/MissionList.gd", buildPath)
+
+	f, err := os.Create(path)
+	if err != nil {
+		log.Println("create file: ", err)
+		return
+	}
+
+	err = t.Execute(f, missions)
 	if err != nil {
 		log.Print("execute: ", err)
 		return

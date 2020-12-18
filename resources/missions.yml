@@ -3,3 +3,5 @@ missions:
     title: Create an avatar
   - key: introJKJZ
     title: Talk to the floating robot on the road
+  - key: visitTown
+    title: Visit town by walking down the road

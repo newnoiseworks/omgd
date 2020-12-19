@@ -7,11 +7,18 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// Mission struckt
+// MissionReq struct
+type MissionReq struct {
+	Key      string `yaml:"key"`
+	Quantity int    `yaml:"quantity"`
+}
+
+// Mission struct
 type Mission struct {
-	Key     string `yaml:"key"`
-	Title   string `yaml:"title"`
-	Prereqs string `yaml:"prereqs"`
+	Key     string       `yaml:"key"`
+	Title   string       `yaml:"title"`
+	Prereqs string       `yaml:"prereqs"`
+	Reqs    []MissionReq `yaml:"reqs"`
 }
 
 // MissionData dem missions

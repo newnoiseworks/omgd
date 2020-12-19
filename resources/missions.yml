@@ -8,5 +8,8 @@ missions:
   - key: tomatoesForSakana
     title: Sakana needs some tomatoes
     prereqs: introJKJZ,sayHiToSakana
+    reqs:
+      - key: Tomato
+        quantity: 5
   - key: sayHiToSakana
     title: Say hello to Sakana

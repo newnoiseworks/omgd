@@ -3,7 +3,17 @@ local mission_list = {
 	{{.Key}} = {
     title = "{{.Title}}",
 		{{- if .Prereqs }}
-		prereqs = "{{.Prereqs}}"
+		prereqs = "{{.Prereqs}}",
+		{{- end }}
+		{{- if .Reqs }}
+		reqs = {
+			{{- range $y, $req := .Reqs }}
+			{
+				key = "{{md5 .Key}}",
+				quantity = {{.Quantity}}
+			},
+			{{- end }}
+		}
 		{{- end }}
   },
 	{{- end }}

@@ -113,7 +113,10 @@ func buildMissionListFile(buildPath string) {
 			snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
 			return strings.ToUpper(snake)
 		},
-	}).ParseFiles(tmpl)
+		"md5": func(text string) string {
+			hash := md5.Sum([]byte(text))
+			return hex.EncodeToString(hash[:])
+		}}).ParseFiles(tmpl)
 	if err != nil {
 		log.Print(err)
 		return

@@ -5,3 +5,7 @@ missions:
     title: Talk to the floating robot on the road
   - key: visitTown
     title: Visit town by walking down the road
+  - key: tomatoesForSakana
+    title: Sakana needs some tomatoes
+  - key: sayHiToSakana
+    title: Say hello to Sakana

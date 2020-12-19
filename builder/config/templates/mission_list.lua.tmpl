@@ -2,6 +2,9 @@ local mission_list = {
 	{{- range $i, $mission := .Missions }}
 	{{.Key}} = {
     title = "{{.Title}}",
+		{{- if .Prereqs }}
+		prereqs = "{{.Prereqs}}"
+		{{- end }}
   },
 	{{- end }}
 }

@@ -4,6 +4,9 @@ var list = {
 	{{- range $i, $mission := .Missions }}
 	"{{.Key}}": {
     "title": "{{.Title}}",
+		{{- if .Prereqs }}
+		"prereqs": "{{.Prereqs}}"
+		{{- end }}
   },
 	{{- end }}
 }

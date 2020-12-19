@@ -9,8 +9,9 @@ import (
 
 // Mission struckt
 type Mission struct {
-	Key   string `yaml:"key"`
-	Title string `yaml:"title"`
+	Key     string `yaml:"key"`
+	Title   string `yaml:"title"`
+	Prereqs string `yaml:"prereqs"`
 }
 
 // MissionData dem missions

@@ -7,5 +7,6 @@ missions:
     title: Visit town by walking down the road
   - key: tomatoesForSakana
     title: Sakana needs some tomatoes
+    prereqs: introJKJZ,sayHiToSakana
   - key: sayHiToSakana
     title: Say hello to Sakana

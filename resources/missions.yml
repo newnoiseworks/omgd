@@ -5,11 +5,16 @@ missions:
     title: Talk to the floating robot on the road
   - key: visitTown
     title: Visit town by walking down the road
+  - key: sayHiToSakana
+    title: Say hello to Sakana
   - key: tomatoesForSakana
-    title: Sakana needs some tomatoes
+    title: Sakana needs one tomato
     prereqs: introJKJZ,sayHiToSakana
     reqs:
       - key: Tomato
+        quantity: 1
+  - key: pickupYorksHearts
+    title: Pickup the five hearts York dropped in town
+    reqs:
+      - key: YorkHeart
         quantity: 5
-  - key: sayHiToSakana
-    title: Say hello to Sakana

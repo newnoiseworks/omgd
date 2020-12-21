@@ -1,12 +1,19 @@
 items:
-  - key: YorkHeart
+  # USABLE INVENTORY ITEMS
   - key: Tiller
   - key: Pail
   - key: Pickaxe
   - key: Scythe
   - key: Axe
+
+  # CURRENCY TYPES
   - key: CorpusCoin
   - key: CommunityCoin
+
+  # DROP ITEMS - MISSION
+  - key: YorkHeart
+
+  # DROP ITEMS - FORAGEABLE
   - key: Stone
     sale:
       - item: CorpusCoin
@@ -20,6 +27,7 @@ items:
       - item: CorpusCoin
         quantity: 1
 
+  # BLUEPRINTS
   - key: Blueprint_StonePath
     price:
       - item: CommunityCoin
@@ -33,6 +41,7 @@ items:
       - item: CommunityCoin
         quantity: 50
 
+  # CRAFTED ITEMS
   - key: Crafted_StonePath
     purchase_validation: true
     price:
@@ -52,6 +61,7 @@ items:
       - item: Stone
         quantity: 12
 
+  # SEED / CROP COMBOS
   - key: BeetSeeds
     price:
       - item: CorpusCoin

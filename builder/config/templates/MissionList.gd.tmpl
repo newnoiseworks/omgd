@@ -12,6 +12,13 @@ var list = {
 			{{- range $y, $req := .Reqs }}
 			"{{md5 .Key}}": {{.Quantity}}
 			{{- end }}
+		},
+		{{- end }}
+		{{- if .Awards }}
+		"awards": {
+			{{- range $y, $award := .Awards }}
+			"{{md5 .Key}}": {{.Quantity}}
+			{{- end }}
 		}
 		{{- end }}
   },

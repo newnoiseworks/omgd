@@ -13,6 +13,16 @@ local mission_list = {
 				quantity = {{.Quantity}}
 			},
 			{{- end }}
+		},
+		{{- end }}
+		{{- if .Awards }}
+		awards = {
+			{{- range $y, $award := .Awards }}
+			{
+				key = "{{md5 .Key}}",
+				quantity = {{.Quantity}}
+			},
+			{{- end }}
 		}
 		{{- end }}
   },

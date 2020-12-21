@@ -16,6 +16,7 @@ missions:
 
   - key: sayHiToSakana
     title: Say hello to Sakana
+    prereqs: introJKJZ
     awards:
       - key: CorpusCoin
         quantity: 5

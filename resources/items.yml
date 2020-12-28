@@ -5,6 +5,7 @@ items:
   - key: Pickaxe
   - key: Scythe
   - key: Axe
+  - key: Fishpole
 
   # CURRENCY TYPES
   - key: CorpusCoin

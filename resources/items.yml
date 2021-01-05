@@ -62,6 +62,12 @@ items:
       - item: Stone
         quantity: 12
 
+  # FISH
+  - key: Fish
+    sale:
+      - item: CorpusCoin
+        quantity: 5
+
   # SEED / CROP COMBOS
   - key: BeetSeeds
     price:

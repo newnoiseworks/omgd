@@ -1,5 +1,11 @@
 extends Node
 
+const plant_max_yields = {
+	{{- range .Items}}{{ if .MaxYield}}
+	"{{md5 .Key}}": {{.MaxYield}},
+	{{- end}}{{end}}
+}
+
 const plant_growth_stages = {
 	{{- range .Items}}{{ if .GrowthStages}}
 	"{{md5 .Key}}": [

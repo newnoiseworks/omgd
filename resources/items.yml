@@ -77,7 +77,7 @@ items:
   - key: Beet
     fromSeeds: BeetSeeds
     growthStages:
-      - 1
+      - 0
       - 1
       - 1
       - 1
@@ -95,7 +95,7 @@ items:
   - key: Cabbage
     fromSeeds: CabbageSeeds
     growthStages:
-      - 1
+      - 0
       - 1
       - 1
       - 1
@@ -113,7 +113,7 @@ items:
   - key: DragonFruit
     fromSeeds: DragonFruitSeeds
     growthStages:
-      - 1
+      - 0
       - 1
       - 1
       - 1
@@ -132,7 +132,7 @@ items:
   - key: Eggplant
     fromSeeds: EggplantSeeds
     growthStages:
-      - 1
+      - 0
       - 1
       - 1
       - 1
@@ -151,7 +151,7 @@ items:
   - key: Potato
     fromSeeds: PotatoSeeds
     growthStages:
-      - 1
+      - 0
       - 1
       - 1
       - 1
@@ -170,7 +170,7 @@ items:
   - key: OddFruit
     fromSeeds: OddFruitSeeds
     growthStages:
-      - 1
+      - 0
       - 1
       - 1
       - 1
@@ -189,7 +189,7 @@ items:
   - key: Tomato
     fromSeeds: TomatoSeeds
     growthStages:
-      - 1
+      - 0
       - 1
       - 1
       - 1
@@ -207,7 +207,7 @@ items:
   - key: Turnip
     fromSeeds: TurnipSeeds
     growthStages:
-      - 1
+      - 0
       - 1
       - 1
       - 1

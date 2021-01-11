@@ -28,6 +28,13 @@ missions:
       - key: CorpusCoin
         quantity: 5
 
+  - key: learnEconFromJKJZ
+    title: Learn economics from JKJZ
+    prereqs: introJKJZ
+    awards:
+      - key: CorpusCoin
+        quantity: 5
+
   - key: tomatoesForSakana
     title: Sakana needs one tomato
     prereqs: introJKJZ,sayHiToSakana

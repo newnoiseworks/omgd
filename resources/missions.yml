@@ -45,6 +45,16 @@ missions:
       - key: CommunityCoin
         quantity: 10
 
+  - key: forageForVio
+    title: Forage 10 pieces of stone for Violine
+    prereqs: introJKJZ
+    reqs:
+      - key: Stone
+        quantity: 10
+    awards:
+      - key: CommunityCoin
+        quantity: 10
+
   - key: tomatoesForSakana
     title: Sakana needs one tomato
     prereqs: introJKJZ,sayHiToSakana

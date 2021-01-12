@@ -11,7 +11,7 @@ import (
 var serverPath string
 
 // DeployServer d
-func DeployServer(environment string, buildPath string) {
+func DeployServer(environment string, buildPath string, volumeReset bool) {
 	fmt.Println("deploying server")
 
 	_serverPath, err := filepath.Abs(fmt.Sprintf("%s/server", buildPath))
@@ -28,19 +28,25 @@ func DeployServer(environment string, buildPath string) {
 		break
 	case "production":
 		fmt.Println("Do special production deployment stuff?")
-		deployServerBasedOnProfile(environment, buildPath)
+		deployServerBasedOnProfile(environment, buildPath, volumeReset)
 		break
 	default:
-		deployServerBasedOnProfile(environment, buildPath)
+		deployServerBasedOnProfile(environment, buildPath, volumeReset)
 		break
 	}
 }
 
-func deployServerBasedOnProfile(environment string, buildPath string) {
+func deployServerBasedOnProfile(environment string, buildPath string, volumeReset bool) {
 	var config = utils.GetProfile(environment)
 
+	var cmd = "down"
+
+	if volumeReset {
+		cmd = "down -v"
+	}
+
 	runDockerComposeCmdOnServerDir(
-		`down`,
+		cmd,
 		"docker-compose down on remote nakama servers",
 		config,
 	)

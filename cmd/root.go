@@ -15,6 +15,9 @@ var cfgFile string
 // OutputDir this is where all builds and build artifacts will be written to
 var OutputDir string
 
+// VolumeReset whether or not to reset docker volumes on deploy
+var VolumeReset bool
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "tpl-fred",
@@ -47,6 +50,7 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.tpl-fred.yaml)")
 	rootCmd.PersistentFlags().StringVar(&OutputDir, "output", ".tmp", "Output durr")
+	rootCmd.PersistentFlags().BoolVar(&VolumeReset, "volume-reset", false, "Resets docker volumes on deploy -- set as true or false")
 
 	if _, err := os.Stat(OutputDir); os.IsNotExist(err) {
 		os.Mkdir(OutputDir, 0700)

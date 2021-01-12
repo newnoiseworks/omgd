@@ -42,7 +42,7 @@ to quickly create a Cobra application.`,
 		builder.BuildServer(environment, OutputDir)
 
 		deployer.DeployGame(environment, OutputDir)
-		deployer.DeployServer(environment, OutputDir)
+		deployer.DeployServer(environment, OutputDir, VolumeReset)
 	},
 }
 

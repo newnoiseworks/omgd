@@ -26,7 +26,7 @@ to quickly create a Cobra application.`,
 
 		switch project {
 		case "server":
-			deployer.DeployServer(environment, OutputDir)
+			deployer.DeployServer(environment, OutputDir, VolumeReset)
 			break
 		case "game":
 			deployer.DeployGame(environment, OutputDir)

@@ -35,6 +35,16 @@ missions:
       - key: CorpusCoin
         quantity: 5
 
+  - key: catchGilAFish
+    title: Catch a fish for Gil
+    prereqs: introJKJZ
+    reqs:
+      - key: Fish
+        quantity: 1
+    awards:
+      - key: CommunityCoin
+        quantity: 10
+
   - key: tomatoesForSakana
     title: Sakana needs one tomato
     prereqs: introJKJZ,sayHiToSakana

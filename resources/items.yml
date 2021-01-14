@@ -10,6 +10,7 @@ items:
   # CURRENCY TYPES
   - key: CorpusCoin
   - key: CommunityCoin
+  - key: ExperienceCoin
 
   # DROP ITEMS - MISSION
   - key: YorkHeart

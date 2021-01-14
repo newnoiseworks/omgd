@@ -7,12 +7,16 @@ missions:
     awards:
       - key: CorpusCoin
         quantity: 10
+      - key: ExperienceCoin
+        quantity: 100
 
   - key: visitTown
     title: Visit town by walking down the road
     awards:
       - key: CorpusCoin
         quantity: 5
+      - key: ExperienceCoin
+        quantity: 100
 
   - key: sayHiToSakana
     title: Say hello to Sakana
@@ -20,6 +24,8 @@ missions:
     awards:
       - key: CorpusCoin
         quantity: 5
+      - key: ExperienceCoin
+        quantity: 100
 
   - key: sayHiToBaph
     title: Say hello to Baph
@@ -27,6 +33,8 @@ missions:
     awards:
       - key: CorpusCoin
         quantity: 5
+      - key: ExperienceCoin
+        quantity: 100
 
   - key: learnEconFromJKJZ
     title: Learn economics from JKJZ
@@ -34,6 +42,8 @@ missions:
     awards:
       - key: CorpusCoin
         quantity: 5
+      - key: ExperienceCoin
+        quantity: 100
 
   - key: catchGilAFish
     title: Catch a fish for Gil
@@ -44,6 +54,8 @@ missions:
     awards:
       - key: CommunityCoin
         quantity: 10
+      - key: ExperienceCoin
+        quantity: 100
 
   - key: forageForVio
     title: Forage 10 pieces of stone for Violine
@@ -54,6 +66,8 @@ missions:
     awards:
       - key: CommunityCoin
         quantity: 10
+      - key: ExperienceCoin
+        quantity: 100
 
   - key: tomatoesForSakana
     title: Sakana needs one tomato
@@ -64,6 +78,8 @@ missions:
     awards:
       - key: CommunityCoin
         quantity: 10
+      - key: ExperienceCoin
+        quantity: 100
 
   - key: pickupYorksHearts
     title: Pickup the five hearts York dropped in town
@@ -73,3 +89,5 @@ missions:
     awards:
       - key: CommunityCoin
         quantity: 10
+      - key: ExperienceCoin
+        quantity: 100

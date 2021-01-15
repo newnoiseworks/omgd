@@ -38,11 +38,22 @@ const name_to_enum_map = {
 	{{- end }}
 }
 
+
+func get_label_from_int(id: int):
+	for label in name_to_enum_map:
+		if name_to_enum_map[label] == id:
+			return label
+
+	return null
+
+
 func get_hash_from_int(id: int):
 	return id_to_hash_map[id]
 
+
 func get_int_from_hash(id: String):
 	return hash_to_id_map[id]
+
 
 func get_int_from_name(id: String):
 	return name_to_enum_map[id]

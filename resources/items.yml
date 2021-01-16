@@ -74,6 +74,30 @@ items:
     price:
       - item: CommunityCoin
         quantity: 25
+  - key: Blueprint_StonePile
+    price:
+      - item: CommunityCoin
+        quantity: 50
+  - key: Blueprint_ModernStatue
+    price:
+      - item: CommunityCoin
+        quantity: 500
+  - key: Blueprint_Scarecrow
+    price:
+      - item: CommunityCoin
+        quantity: 150
+  - key: Blueprint_Spook
+    price:
+      - item: CommunityCoin
+        quantity: 250
+  - key: Blueprint_Spook2
+    price:
+      - item: CommunityCoin
+        quantity: 250
+  - key: Blueprint_Flamingo
+    price:
+      - item: CommunityCoin
+        quantity: 75
 
   # CRAFTED ITEMS
   - key: Crafted_StonePath
@@ -127,29 +151,89 @@ items:
       - item: Stone
         quantity: 12
   - key: Crafted_SittingGnome
+    purchase_validation: true
+    combo_price: true
     price:
       - item: CommunityCoin
         quantity: 5
       - item: Wood
         quantity: 6
   - key: Crafted_SittingGnome2
+    purchase_validation: true
+    combo_price: true
     price:
       - item: CommunityCoin
         quantity: 5
       - item: Wood
         quantity: 6
   - key: Crafted_StandingGnome
+    purchase_validation: true
+    combo_price: true
     price:
       - item: CommunityCoin
         quantity: 5
       - item: Wood
         quantity: 6
   - key: Crafted_StandingGnome2
+    purchase_validation: true
+    combo_price: true
     price:
       - item: CommunityCoin
         quantity: 5
       - item: Wood
         quantity: 6
+  - key: Crafted_StonePile
+    purchase_validation: true
+    combo_price: true
+    price:
+      - item: CommunityCoin
+        quantity: 5
+      - item: Stone
+        quantity: 5
+  - key: Crafted_ModernStatue
+    purchase_validation: true
+    combo_price: true
+    price:
+      - item: CommunityCoin
+        quantity: 10
+      - item: Stone
+        quantity: 8
+  - key: Crafted_Scarecrow
+    purchase_validation: true
+    combo_price: true
+    price:
+      - item: CommunityCoin
+        quantity: 5
+      - item: Wood
+        quantity: 10
+      - item: Fern
+        quantity: 2
+  - key: Crafted_Spook
+    purchase_validation: true
+    combo_price: true
+    price:
+      - item: CommunityCoin
+        quantity: 10
+      - item: Stone
+        quantity: 5
+  - key: Crafted_Spook2
+    purchase_validation: true
+    combo_price: true
+    price:
+      - item: CommunityCoin
+        quantity: 10
+      - item: Stone
+        quantity: 5
+  - key: Crafted_Flamingo
+    purchase_validation: true
+    combo_price: true
+    price:
+      - item: CommunityCoin
+        quantity: 3
+      - item: Stone
+        quantity: 2
+      - item: Wood
+        quantity: 2
 
   # FISH
   - key: Fish

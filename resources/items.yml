@@ -42,6 +42,22 @@ items:
     price:
       - item: CommunityCoin
         quantity: 50
+  - key: Blueprint_Lamp2
+    price:
+      - item: CommunityCoin
+        quantity: 50
+  - key: Blueprint_Lamp3
+    price:
+      - item: CommunityCoin
+        quantity: 50
+  - key: Blueprint_Lamp4
+    price:
+      - item: CommunityCoin
+        quantity: 50
+  - key: Blueprint_Lamp5
+    price:
+      - item: CommunityCoin
+        quantity: 50
 
   # CRAFTED ITEMS
   - key: Crafted_StonePath
@@ -55,6 +71,38 @@ items:
       - item: Wood
         quantity: 2
   - key: Crafted_Lamp
+    purchase_validation: true
+    combo_price: true
+    price:
+      - item: Wood
+        quantity: 12
+      - item: Stone
+        quantity: 12
+  - key: Crafted_Lamp2
+    purchase_validation: true
+    combo_price: true
+    price:
+      - item: Wood
+        quantity: 12
+      - item: Stone
+        quantity: 12
+  - key: Crafted_Lamp3
+    purchase_validation: true
+    combo_price: true
+    price:
+      - item: Wood
+        quantity: 12
+      - item: Stone
+        quantity: 12
+  - key: Crafted_Lamp4
+    purchase_validation: true
+    combo_price: true
+    price:
+      - item: Wood
+        quantity: 12
+      - item: Stone
+        quantity: 12
+  - key: Crafted_Lamp5
     purchase_validation: true
     combo_price: true
     price:

@@ -58,6 +58,22 @@ items:
     price:
       - item: CommunityCoin
         quantity: 50
+  - key: Blueprint_SittingGnome
+    price:
+      - item: CommunityCoin
+        quantity: 25
+  - key: Blueprint_SittingGnome2
+    price:
+      - item: CommunityCoin
+        quantity: 25
+  - key: Blueprint_StandingGnome
+    price:
+      - item: CommunityCoin
+        quantity: 25
+  - key: Blueprint_StandingGnome2
+    price:
+      - item: CommunityCoin
+        quantity: 25
 
   # CRAFTED ITEMS
   - key: Crafted_StonePath
@@ -110,6 +126,30 @@ items:
         quantity: 12
       - item: Stone
         quantity: 12
+  - key: Crafted_SittingGnome
+    price:
+      - item: CommunityCoin
+        quantity: 5
+      - item: Wood
+        quantity: 6
+  - key: Crafted_SittingGnome2
+    price:
+      - item: CommunityCoin
+        quantity: 5
+      - item: Wood
+        quantity: 6
+  - key: Crafted_StandingGnome
+    price:
+      - item: CommunityCoin
+        quantity: 5
+      - item: Wood
+        quantity: 6
+  - key: Crafted_StandingGnome2
+    price:
+      - item: CommunityCoin
+        quantity: 5
+      - item: Wood
+        quantity: 6
 
   # FISH
   - key: Fish

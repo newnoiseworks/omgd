@@ -45,12 +45,33 @@ missions:
       - key: ExperienceCoin
         quantity: 100
 
+  - key: meetComputerHaus
+    title: Meet ComputerHaus
+    prereqs: learnEconFromJKJZ
+    awards:
+      - key: CorpusCoin
+        quantity: 5
+      - key: ExperienceCoin
+        quantity: 100
+
   - key: catchGilAFish
     title: Catch a fish for Gil
     prereqs: introJKJZ
     reqs:
       - key: Fish
         quantity: 1
+    awards:
+      - key: CommunityCoin
+        quantity: 10
+      - key: ExperienceCoin
+        quantity: 100
+
+  - key: farmGilPotatoes
+    title: Get Gil 10 potatoes
+    prereqs: catchGilAFish
+    reqs:
+      - key: Potato
+        quantity: 10
     awards:
       - key: CommunityCoin
         quantity: 10

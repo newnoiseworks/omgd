@@ -1,6 +1,6 @@
 extends Node
 
-var list = {
+const list = {
 	{{- range $i, $mission := .Missions }}
 	"{{.Key}}": {
     "title": "{{.Title}}",

@@ -29,27 +29,40 @@ import (
 // cloneCmd represents the clone command
 var cloneCmd = &cobra.Command{
 	Use:   "clone",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Clones repositories for build and deploy cycles, or local setup",
+	Long: `Clones repos for the build, or for local steup
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Arguments: 
+  tpl clone [environment (string)] [is local setup (true|false)] [skip tpl-fred repo (true|false)]
+
+	Example:
+	go run main.go clone local
+	go run main.go clone staging true --output=../
+	go run main.go clone local true false 
+	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var environment = args[0]
+		var localSetup = len(args) > 1 && args[1] == "true"
+		var skipTplFred = len(args) > 2 && args[2] == "true"
 
-		CloneLibs(environment)
+		CloneLibs(environment, localSetup, skipTplFred)
 	},
 }
 
 // CloneLibs clones dem libs
-func CloneLibs(environment string) {
+func CloneLibs(environment string, localSetup bool, skipTplFred bool) {
 	conf := utils.GetProfile(environment)
-	// cloneTPLFred()
 	cloneGame(conf)
 	cloneServer(conf)
-	// cloneWebsite()
+
+	if localSetup {
+
+		if !skipTplFred {
+			cloneTPLFred()
+		}
+
+		cloneWebsite()
+	}
 }
 
 func cloneGame(conf utils.ProfileConf) {

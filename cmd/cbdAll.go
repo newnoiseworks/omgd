@@ -36,7 +36,7 @@ to quickly create a Cobra application.`,
 
 		var environment = args[0]
 
-		CloneLibs(environment)
+		CloneLibs(environment, false, false)
 
 		builder.BuildGame(environment, OutputDir)
 		builder.BuildServer(environment, OutputDir)

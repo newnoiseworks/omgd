@@ -34,6 +34,14 @@ missions:
       - key: ExperienceCoin
         quantity: 50
 
+  - key: tutorialForaging
+    title: Learn how to forage
+    awards:
+      - key: CorpusCoin
+        quantity: 15
+      - key: ExperienceCoin
+        quantity: 150
+
   - key: introJKJZ
     title: Talk to the floating robot on the road
     awards:

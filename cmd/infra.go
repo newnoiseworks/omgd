@@ -16,6 +16,7 @@ limitations under the License.
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os/exec"
@@ -40,11 +41,9 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		environment := args[0]
-		// conf := utils.GetProfile(environment)
 
 		config.ServerConfig(environment, OutputDir)
 
-		// 1. run terraform plan -detailed-exitcode in server dir
 		path, err := filepath.Abs(fmt.Sprintf("%s/server", OutputDir))
 		if err != nil {
 			log.Fatal(err)
@@ -52,13 +51,49 @@ to quickly create a Cobra application.`,
 		}
 
 		utils.CmdOnDir("terraform init", "Initing terraform...", path)
+		utils.CmdOnDir("./gcp_tf_import.sh", "Importing existing resources into terraform...", path)
 
 		exitCode := terraformPlan(path)
-
 		if exitCode == 2 {
 			utils.CmdOnDir("terraform apply -auto-approve", "Applying changes to infra", path)
 		}
+
+		getAndSetHostIPFromTerraform(path, environment)
 	},
+}
+
+func getAndSetHostIPFromTerraform(path string, environment string) {
+	type ServerIPData struct {
+		Value string `json:"value"`
+	}
+
+	type InfraResponse struct {
+		ServerIP ServerIPData `json:"server_ip"`
+	}
+
+	cmd := exec.Command("bash", "-c", "terraform output -json")
+	cmd.Dir = path
+
+	fmt.Print(aurora.Cyan("Getting IP from terraform... "))
+
+	out, err := cmd.Output()
+
+	if err != nil {
+		fmt.Print(aurora.Red("Error!\n"))
+		fmt.Printf("%s", out)
+		fmt.Println(err)
+		log.Fatal("Error getting IP from terraform")
+	}
+
+	var response InfraResponse
+	json.Unmarshal(out, &response)
+
+	conf := utils.GetProfile(environment)
+	conf.Nakama.Host = response.ServerIP.Value
+	utils.SaveProfile(conf, environment)
+
+	fmt.Println(aurora.Green("Success!"))
+	fmt.Println(fmt.Printf("Check your profile, Nakama.host should be set to %s", response.ServerIP.Value))
 }
 
 func terraformPlan(path string) int {
@@ -73,14 +108,16 @@ func terraformPlan(path string) int {
 		if strings.Contains(err.Error(), "exit status 2") {
 			return 2
 		} else if strings.Contains(err.Error(), "exit status 0") {
-			return 1
+			return 0
 		}
-	}
 
-	fmt.Println(aurora.Red("error executing terraform plan -detailed-exitcode"))
-	fmt.Println(out)
-	log.Fatal(err)
-	return -1
+		fmt.Println(aurora.Red("error executing terraform plan -detailed-exitcode"))
+		fmt.Println(string(out[:]))
+		log.Fatal(err)
+		return -1
+	} else {
+		return 0
+	}
 }
 
 func init() {

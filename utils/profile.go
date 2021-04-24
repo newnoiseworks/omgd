@@ -58,3 +58,18 @@ func GetProfile(env string) ProfileConf {
 
 	return c
 }
+
+// SaveProfile saves that profile to yml
+func SaveProfile(profile ProfileConf, env string) {
+	yamlBytes, err := yaml.Marshal(&profile)
+
+	if err != nil {
+		log.Fatal("Error marshalling from data to saving profile to yaml!")
+	}
+
+	err = ioutil.WriteFile(fmt.Sprintf("build/profiles/%s.yml", env), yamlBytes, 0755)
+
+	if err != nil {
+		log.Fatal("Error on file write to saving profile to yaml!")
+	}
+}

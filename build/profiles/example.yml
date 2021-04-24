@@ -13,8 +13,5 @@ game:
 
 # gcloud:
 #   project: projectname
-#   instance: instancename
+#   region: us-east1
 #   cloudZone: us-east1-b
-
-# firebase:
-#   project: firebaseproject

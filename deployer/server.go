@@ -58,13 +58,13 @@ func deployServerBasedOnProfile(environment string, buildPath string, volumeRese
 	)
 
 	utils.CmdOnDir(
-		fmt.Sprintf(`gcloud compute scp --project %s --zone %s --recurse --force-key-file-overwrite ./nakama %s:`, config.Gcloud.Project, config.Gcloud.CloudZone, config.Gcloud.Instance),
+		fmt.Sprintf(`gcloud compute scp --project %s --zone %s --recurse --force-key-file-overwrite ./nakama %s:`, config.Gcloud.Project, config.Gcloud.Zone, "nakama-instance"),
 		"scp up nakama module folder",
 		serverPath,
 	)
 
 	utils.CmdOnDir(
-		fmt.Sprintf(`gcloud compute scp --project %s --zone %s --force-key-file-overwrite docker-compose.yml %s:`, config.Gcloud.Project, config.Gcloud.CloudZone, config.Gcloud.Instance),
+		fmt.Sprintf(`gcloud compute scp --project %s --zone %s --force-key-file-overwrite docker-compose.yml %s:`, config.Gcloud.Project, config.Gcloud.Zone, "nakama-instance"),
 		"scp up docker-compose file",
 		serverPath,
 	)
@@ -78,7 +78,7 @@ func deployServerBasedOnProfile(environment string, buildPath string, volumeRese
 
 func runDockerComposeCmdOnServerDir(cmdStr string, cmdDesc string, config utils.ProfileConf) {
 	utils.CmdOnDir(
-		fmt.Sprintf(`gcloud compute ssh --zone %s --project %s --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "\$PWD:\$PWD" -w="\$PWD" docker/compose:1.24.0 %s" %s`, config.Gcloud.CloudZone, config.Gcloud.Project, cmdStr, config.Gcloud.Instance),
+		fmt.Sprintf(`gcloud compute ssh --zone %s --project %s --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "\$PWD:\$PWD" -w="\$PWD" docker/compose:1.24.0 %s" %s`, config.Gcloud.Zone, config.Gcloud.Project, cmdStr, "nakama-instance"),
 		cmdDesc,
 		serverPath,
 	)
@@ -86,7 +86,7 @@ func runDockerComposeCmdOnServerDir(cmdStr string, cmdDesc string, config utils.
 
 func runCmdOnServerDir(cmdStr string, cmdDesc string, config utils.ProfileConf) {
 	utils.CmdOnDir(
-		fmt.Sprintf(`gcloud compute ssh --zone %s --project %s --command "%s" %s`, config.Gcloud.CloudZone, config.Gcloud.Project, cmdStr, config.Gcloud.Instance),
+		fmt.Sprintf(`gcloud compute ssh --zone %s --project %s --command "%s" %s`, config.Gcloud.Zone, config.Gcloud.Project, cmdStr, "nakama-instance"),
 		cmdDesc,
 		serverPath,
 	)

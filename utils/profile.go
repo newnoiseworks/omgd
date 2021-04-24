@@ -18,9 +18,9 @@ type ProfileConf struct {
 		Secure bool   `yaml:"secure"`
 	}
 	Gcloud struct {
-		Project   string `yaml:"project"`
-		Instance  string `yaml:"instance"`
-		CloudZone string `yaml:"cloudZone"`
+		Project string `yaml:"project"`
+		Region  string `yaml:"region"`
+		Zone    string `yaml:"zone"`
 	}
 	Firebase struct {
 		Project string `yaml:"project"`

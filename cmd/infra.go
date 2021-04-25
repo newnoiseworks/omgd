@@ -62,15 +62,15 @@ to quickly create a Cobra application.`,
 	},
 }
 
+type serverIPData struct {
+	Value string `json:"value"`
+}
+
+type infraResponse struct {
+	ServerIP serverIPData `json:"server_ip"`
+}
+
 func getAndSetHostIPFromTerraform(path string, environment string) {
-	type ServerIPData struct {
-		Value string `json:"value"`
-	}
-
-	type InfraResponse struct {
-		ServerIP ServerIPData `json:"server_ip"`
-	}
-
 	cmd := exec.Command("bash", "-c", "terraform output -json")
 	cmd.Dir = path
 
@@ -85,7 +85,7 @@ func getAndSetHostIPFromTerraform(path string, environment string) {
 		log.Fatal("Error getting IP from terraform")
 	}
 
-	var response InfraResponse
+	var response infraResponse
 	json.Unmarshal(out, &response)
 
 	conf := utils.GetProfile(environment)

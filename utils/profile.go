@@ -22,9 +22,6 @@ type ProfileConf struct {
 		Region  string `yaml:"region"`
 		Zone    string `yaml:"zone"`
 	}
-	Firebase struct {
-		Project string `yaml:"project"`
-	}
 	Game struct {
 		RealWorldSecondsPerDay string `yaml:"real_world_seconds_per_day"`
 		Version                string `yaml:"version"`

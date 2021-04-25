@@ -2,6 +2,38 @@ missions:
   - key: createAvatar
     title: Create an avatar
 
+  - key: tutorialFarmingTilling
+    title: Learn how to till soil
+    awards:
+      - key: CorpusCoin
+        quantity: 5
+      - key: ExperienceCoin
+        quantity: 50
+
+  - key: tutorialFarmingPlanting
+    title: Learn how to plant seeds
+    awards:
+      - key: CorpusCoin
+        quantity: 5
+      - key: ExperienceCoin
+        quantity: 50
+
+  - key: tutorialFarmingWatering
+    title: Learn how to water plants
+    awards:
+      - key: CorpusCoin
+        quantity: 5
+      - key: ExperienceCoin
+        quantity: 50
+
+  - key: tutorialFarmingHarvesting
+    title: Learn how to harvest plants
+    awards:
+      - key: CorpusCoin
+        quantity: 5
+      - key: ExperienceCoin
+        quantity: 50
+
   - key: introJKJZ
     title: Talk to the floating robot on the road
     awards:

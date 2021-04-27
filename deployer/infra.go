@@ -17,7 +17,7 @@ import (
 func DeployInfra(environment string, buildPath string) {
 	fmt.Println("deploying server")
 
-	serverPath, err := filepath.Abs(fmt.Sprintf("%s/server", buildPath))
+	serverPath, err := filepath.Abs(fmt.Sprintf("%s/server/infra/gcp", buildPath))
 	if err != nil {
 		log.Fatal(err)
 		return
@@ -39,21 +39,15 @@ func DeployInfra(environment string, buildPath string) {
 func deployInfraBasedOnProfile(environment string, buildPath string, serverPath string) {
 	config.InfraConfig(environment, buildPath)
 
-	path, err := filepath.Abs(fmt.Sprintf("%s/server", buildPath))
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
+	utils.CmdOnDir("terraform init", "Initing terraform...", serverPath)
+	utils.CmdOnDir("./tf_import.sh", "Importing existing resources into terraform...", serverPath)
 
-	utils.CmdOnDir("terraform init", "Initing terraform...", path)
-	utils.CmdOnDir("./gcp_tf_import.sh", "Importing existing resources into terraform...", path)
-
-	exitCode := terraformPlan(path)
+	exitCode := terraformPlan(serverPath)
 	if exitCode == 2 {
-		utils.CmdOnDir("terraform apply -auto-approve", "Applying changes to infra", path)
+		utils.CmdOnDir("terraform apply -auto-approve", "Applying changes to infra", serverPath)
 	}
 
-	getAndSetHostIPFromTerraform(path, environment)
+	getAndSetHostIPFromTerraform(serverPath, environment)
 }
 
 type serverIPData struct {

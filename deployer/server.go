@@ -8,19 +8,15 @@ import (
 	"github.com/newnoiseworks/tpl-fred/utils"
 )
 
-var serverPath string
-
 // DeployServer d
 func DeployServer(environment string, buildPath string, volumeReset bool) {
 	fmt.Println("deploying server")
 
-	_serverPath, err := filepath.Abs(fmt.Sprintf("%s/server", buildPath))
+	serverPath, err := filepath.Abs(fmt.Sprintf("%s/server/deploy/gcp", buildPath))
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
-
-	serverPath = _serverPath
 
 	switch environment {
 	case "local":
@@ -28,10 +24,10 @@ func DeployServer(environment string, buildPath string, volumeReset bool) {
 		break
 	case "production":
 		fmt.Println("Do special production deployment stuff?")
-		deployServerBasedOnProfile(environment, buildPath, volumeReset)
+		deployServerBasedOnProfile(environment, serverPath, volumeReset)
 		break
 	default:
-		deployServerBasedOnProfile(environment, buildPath, volumeReset)
+		deployServerBasedOnProfile(environment, serverPath, volumeReset)
 		break
 	}
 }
@@ -39,7 +35,7 @@ func DeployServer(environment string, buildPath string, volumeReset bool) {
 func deployServerBasedOnProfile(environment string, buildPath string, volumeReset bool) {
 	var config = utils.GetProfile(environment)
 
-	var cmdString = fmt.Sprintf("GCP_UPDATE=true GCP_PROJECT=%s GCP_ZONE=%s ./gcp_init.sh", config.Gcloud.Project, config.Gcloud.Zone)
+	var cmdString = fmt.Sprintf("GCP_UPDATE=true GCP_PROJECT=%s GCP_ZONE=%s ./deploy.sh", config.Gcloud.Project, config.Gcloud.Zone)
 
 	if volumeReset {
 		cmdString = "GCP_UPDATE_REMOVE_VOLUME=true " + cmdString
@@ -47,7 +43,7 @@ func deployServerBasedOnProfile(environment string, buildPath string, volumeRese
 
 	utils.CmdOnDir(
 		cmdString,
-		"running gcp_init.sh script in server dir",
-		serverPath,
+		"running deploy.sh script in server dir",
+		buildPath,
 	)
 }

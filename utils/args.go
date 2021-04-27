@@ -11,7 +11,7 @@ func CheckProjectAndEnv(args []string) bool {
 
 	var project = args[0]
 
-	if project != "game" && project != "server" && project != "website" && project != "config-files" {
+	if project != "game" && project != "server" && project != "website" && project != "infra" {
 		fmt.Println("Invalid project name")
 		return false
 	}

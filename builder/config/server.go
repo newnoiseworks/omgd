@@ -26,9 +26,6 @@ func ServerConfig(environment string, buildPath string) {
 		"nakamaPort":             strconv.Itoa(profile.Nakama.Port),
 		"nakamaSecure":           strconv.FormatBool(profile.Nakama.Secure),
 		"gameVersion":            profile.Game.Version,
-		"gcpProject":             profile.Gcloud.Project,
-		"gcpRegion":              profile.Gcloud.Region,
-		"gcpZone":                profile.Gcloud.Zone,
 	}
 
 	fmt.Println(aurora.Green("building server config files"))
@@ -38,31 +35,6 @@ func ServerConfig(environment string, buildPath string) {
 	buildServerVersionFile(buildPath, config)
 	buildServerItemsFile(buildPath)
 	buildServerMissionList(buildPath)
-	buildTerraformVarsFile(buildPath, config)
-}
-
-func buildTerraformVarsFile(buildPath string, config map[string]string) {
-	fmt.Println(aurora.Yellow(" >> building terraform.tfvars.tmpl >> server/terraform.tfvars"))
-
-	t, err := template.ParseFiles("builder/config/templates/terraform.tfvars.tmpl")
-	if err != nil {
-		log.Print(err)
-		return
-	}
-
-	path := fmt.Sprintf("%s/server/terraform.tfvars", buildPath)
-
-	f, err := os.Create(path)
-	if err != nil {
-		log.Println("create file: ", err)
-		return
-	}
-
-	err = t.Execute(f, config)
-	if err != nil {
-		log.Print("execute: ", err)
-		return
-	}
 }
 
 func buildServerGameConfig(buildPath string, config map[string]string) {

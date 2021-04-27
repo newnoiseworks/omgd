@@ -31,6 +31,9 @@ to quickly create a Cobra application.`,
 		case "game":
 			deployer.DeployGame(environment, OutputDir)
 			break
+		case "infra":
+			deployer.DeployInfra(environment, OutputDir)
+			break
 		}
 	},
 }

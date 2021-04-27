@@ -27,7 +27,7 @@ func InfraConfig(environment string, buildPath string) {
 }
 
 func buildTerraformVarsFile(buildPath string, config map[string]string) {
-	fmt.Println(aurora.Yellow(" >> building terraform.tfvars.tmpl >> server/terraform.tfvars"))
+	fmt.Println(aurora.Yellow(" >> building terraform.tfvars.tmpl >> server/infra/gcp/terraform.tfvars"))
 
 	t, err := template.ParseFiles("builder/config/templates/terraform.tfvars.tmpl")
 	if err != nil {
@@ -35,7 +35,7 @@ func buildTerraformVarsFile(buildPath string, config map[string]string) {
 		return
 	}
 
-	path := fmt.Sprintf("%s/server/terraform.tfvars", buildPath)
+	path := fmt.Sprintf("%s/server/infra/gcp/terraform.tfvars", buildPath)
 
 	f, err := os.Create(path)
 	if err != nil {

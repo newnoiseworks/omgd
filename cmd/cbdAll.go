@@ -38,6 +38,8 @@ to quickly create a Cobra application.`,
 
 		CloneLibs(environment, false, false)
 
+		deployer.DeployInfra(environment, OutputDir)
+
 		builder.BuildGame(environment, OutputDir)
 		builder.BuildServer(environment, OutputDir)
 

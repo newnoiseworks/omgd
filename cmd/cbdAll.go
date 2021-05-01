@@ -35,38 +35,36 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		var environment = args[0]
-
-		CloneLibs(environment, false, false)
+		CloneLibs()
 
 		// We "deploy" infra on the first step by checking if we need to make changes.
 		// Then, we get the IP address of the server and put that into the yml profile
 		deployer.Infra{
-			Environment: environment,
+			Environment: Profile,
 			OutputDir:   OutputDir,
 			CmdOnDir:    utils.CmdOnDir,
 		}.Deploy()
 
 		builder.Game{
-			Environment: environment,
+			Environment: Profile,
 			OutputDir:   OutputDir,
 			CmdOnDir:    utils.CmdOnDir,
 		}.Build()
 
 		builder.Server{
-			Environment: environment,
+			Environment: Profile,
 			OutputDir:   OutputDir,
 			CmdOnDir:    utils.CmdOnDir,
 		}.Build()
 
 		deployer.Game{
-			Environment: environment,
+			Environment: Profile,
 			OutputDir:   OutputDir,
 			CmdOnDir:    utils.CmdOnDir,
 		}.Deploy()
 
 		deployer.Server{
-			Environment: environment,
+			Environment: Profile,
 			OutputDir:   OutputDir,
 			CmdOnDir:    utils.CmdOnDir,
 			VolumeReset: VolumeReset,

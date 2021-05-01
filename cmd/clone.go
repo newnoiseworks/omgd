@@ -33,36 +33,20 @@ var cloneCmd = &cobra.Command{
 	Long: `Clones repos for the build, or for local steup
 
 	Arguments: 
-  tpl clone [environment (string)] [is local setup (true|false)] [skip tpl-fred repo (true|false)]
 
 	Example:
-	go run main.go clone local
-	go run main.go clone staging true --output=../
-	go run main.go clone local true false 
+	tpl clone --profile=[profile]
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		var environment = args[0]
-		var localSetup = len(args) > 1 && args[1] == "true"
-		var skipTplFred = len(args) > 2 && args[2] == "true"
-
-		CloneLibs(environment, localSetup, skipTplFred)
+		CloneLibs()
 	},
 }
 
 // CloneLibs clones dem libs
-func CloneLibs(environment string, localSetup bool, skipTplFred bool) {
-	conf := utils.GetProfile(environment)
+func CloneLibs() {
+	conf := utils.GetProfile(Profile)
 	cloneGame(conf)
 	cloneServer(conf)
-
-	if localSetup {
-
-		if !skipTplFred {
-			cloneTPLFred()
-		}
-
-		cloneWebsite()
-	}
 }
 
 func cloneGame(conf utils.ProfileConf) {
@@ -71,14 +55,6 @@ func cloneGame(conf utils.ProfileConf) {
 
 func cloneServer(conf utils.ProfileConf) {
 	gitClone("git@github.com:newnoiseworks/not-stardew-backend.git", "server", conf.Git.ServerBranch)
-}
-
-func cloneWebsite() {
-	gitClone("git@github.com:newnoiseworks/tpl-website.git", "website", "")
-}
-
-func cloneTPLFred() {
-	gitClone("git@github.com:newnoiseworks/tpl-fred.git", "tpl-fred", "")
 }
 
 func gitClone(repo string, dir string, confBranch string) {

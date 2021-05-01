@@ -12,6 +12,9 @@ import (
 
 var cfgFile string
 
+// Profile this is the yml profile you're using
+var Profile string
+
 // OutputDir this is where all builds and build artifacts will be written to
 var OutputDir string
 
@@ -49,12 +52,9 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.tpl-fred.yaml)")
-	rootCmd.PersistentFlags().StringVar(&OutputDir, "output", ".tmp", "Output durr")
+	rootCmd.PersistentFlags().StringVar(&OutputDir, "output", ".tmp", "Output directory containing the project")
+	rootCmd.PersistentFlags().StringVar(&Profile, "profile", "local", "yml profile representing this build in the build/profiles folder")
 	rootCmd.PersistentFlags().BoolVar(&VolumeReset, "volume-reset", false, "Resets docker volumes on deploy -- set as true or false")
-
-	if _, err := os.Stat(OutputDir); os.IsNotExist(err) {
-		os.Mkdir(OutputDir, 0700)
-	}
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.

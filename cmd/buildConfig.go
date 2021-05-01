@@ -15,7 +15,7 @@ var buildConfigCmd = &cobra.Command{
 Builds all config files and artifacts needed to build 
 and run full applications
 
-Usage: $ tpl-fred build-config [project] [environment] [target]
+Usage: $ tpl-fred build-config [project] [target]
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		if utils.CheckProjectAndEnv(args) == false {
@@ -23,17 +23,16 @@ Usage: $ tpl-fred build-config [project] [environment] [target]
 		}
 
 		var project = args[0]
-		var environment = args[1]
 
 		switch project {
 		case "game":
-			config.GameConfig(environment, OutputDir)
+			config.GameConfig(Profile, OutputDir)
 			break
 		case "server":
-			config.ServerConfig(environment, OutputDir)
+			config.ServerConfig(Profile, OutputDir)
 			break
 		case "infra":
-			config.InfraConfig(environment, OutputDir)
+			config.InfraConfig(Profile, OutputDir)
 			break
 		}
 	},

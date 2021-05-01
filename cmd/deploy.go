@@ -22,12 +22,11 @@ to quickly create a Cobra application.`,
 		}
 
 		var project = args[0]
-		var environment = args[1]
 
 		switch project {
 		case "server":
 			deployer.Server{
-				Environment: environment,
+				Environment: Profile,
 				OutputDir:   OutputDir,
 				CmdOnDir:    utils.CmdOnDir,
 				VolumeReset: VolumeReset,
@@ -35,14 +34,14 @@ to quickly create a Cobra application.`,
 			break
 		case "game":
 			deployer.Game{
-				Environment: environment,
+				Environment: Profile,
 				OutputDir:   OutputDir,
 				CmdOnDir:    utils.CmdOnDir,
 			}.Deploy()
 			break
 		case "infra":
 			deployer.Infra{
-				Environment: environment,
+				Environment: Profile,
 				OutputDir:   OutputDir,
 				CmdOnDir:    utils.CmdOnDir,
 			}.Deploy()

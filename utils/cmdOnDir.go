@@ -15,11 +15,14 @@ func CmdOnDir(cmdStr string, cmdDesc string, cmdDir string) {
 
 	fmt.Print(aurora.Cyan(fmt.Sprintf("Running %s... ", cmdDesc)))
 
-	out, err := cmd.Output()
+	// TODO: Setup verbose output flags, echo as required
+	// cmd.Stdout = os.Stdout
+	// cmd.Stderr = os.Stderr
+
+	err := cmd.Run()
 
 	if err != nil {
 		fmt.Print(aurora.Red("Error!\n"))
-		fmt.Printf("%s", out)
 		fmt.Println(err)
 		log.Fatal(aurora.Yellow(fmt.Sprintf("Attempted to run: %s\n on dir: %s\n", cmdStr, cmdDir)))
 	}

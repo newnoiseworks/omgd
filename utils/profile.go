@@ -18,12 +18,9 @@ type ProfileConf struct {
 		Secure bool   `yaml:"secure"`
 	}
 	Gcloud struct {
-		Project   string `yaml:"project"`
-		Instance  string `yaml:"instance"`
-		CloudZone string `yaml:"cloudZone"`
-	}
-	Firebase struct {
 		Project string `yaml:"project"`
+		Region  string `yaml:"region"`
+		Zone    string `yaml:"zone"`
 	}
 	Game struct {
 		RealWorldSecondsPerDay string `yaml:"real_world_seconds_per_day"`
@@ -57,4 +54,19 @@ func GetProfile(env string) ProfileConf {
 	}
 
 	return c
+}
+
+// SaveProfile saves that profile to yml
+func SaveProfile(profile ProfileConf, env string) {
+	yamlBytes, err := yaml.Marshal(&profile)
+
+	if err != nil {
+		log.Fatal("Error marshalling from data to saving profile to yaml!")
+	}
+
+	err = ioutil.WriteFile(fmt.Sprintf("build/profiles/%s.yml", env), yamlBytes, 0755)
+
+	if err != nil {
+		log.Fatal("Error on file write to saving profile to yaml!")
+	}
 }

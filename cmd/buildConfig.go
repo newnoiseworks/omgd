@@ -32,6 +32,9 @@ Usage: $ tpl-fred build-config [project] [environment] [target]
 		case "server":
 			config.ServerConfig(environment, OutputDir)
 			break
+		case "infra":
+			config.InfraConfig(environment, OutputDir)
+			break
 		}
 	},
 }

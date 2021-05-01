@@ -8,42 +8,48 @@ import (
 	"github.com/newnoiseworks/tpl-fred/utils"
 )
 
-// DeployServer d
-func DeployServer(environment string, buildPath string, volumeReset bool) {
+type Server struct {
+	Environment string
+	OutputDir   string
+	VolumeReset bool
+	CmdOnDir    func(string, string, string)
+}
+
+func (ds Server) Deploy() {
 	fmt.Println("deploying server")
 
-	serverPath, err := filepath.Abs(fmt.Sprintf("%s/server/deploy/gcp", buildPath))
+	serverPath, err := filepath.Abs(fmt.Sprintf("%s/server/deploy/gcp", ds.OutputDir))
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 
-	switch environment {
+	switch ds.Environment {
 	case "local":
 		fmt.Println("Need to make local deployment commands")
 		break
 	case "production":
 		fmt.Println("Do special production deployment stuff?")
-		deployServerBasedOnProfile(environment, serverPath, volumeReset)
+		ds.deployServerBasedOnProfile(serverPath)
 		break
 	default:
-		deployServerBasedOnProfile(environment, serverPath, volumeReset)
+		ds.deployServerBasedOnProfile(serverPath)
 		break
 	}
 }
 
-func deployServerBasedOnProfile(environment string, buildPath string, volumeReset bool) {
-	var config = utils.GetProfile(environment)
+func (ds Server) deployServerBasedOnProfile(serverPath string) {
+	var config = utils.GetProfile(ds.Environment)
 
 	var cmdString = fmt.Sprintf("GCP_UPDATE=true GCP_PROJECT=%s GCP_ZONE=%s ./deploy.sh", config.Gcloud.Project, config.Gcloud.Zone)
 
-	if volumeReset {
+	if ds.VolumeReset {
 		cmdString = "GCP_UPDATE_REMOVE_VOLUME=true " + cmdString
 	}
 
-	utils.CmdOnDir(
+	ds.CmdOnDir(
 		cmdString,
 		"running deploy.sh script in server dir",
-		buildPath,
+		serverPath,
 	)
 }

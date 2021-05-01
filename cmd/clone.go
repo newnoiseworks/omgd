@@ -99,7 +99,6 @@ func gitClone(repo string, dir string, confBranch string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
 
 func init() {

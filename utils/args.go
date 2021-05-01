@@ -2,6 +2,11 @@ package utils
 
 import "fmt"
 
+type BasicArgs struct {
+	Environment string
+	OutputDir   string
+}
+
 // CheckProjectAndEnv doc
 func CheckProjectAndEnv(args []string) bool {
 	if len(args) < 2 {

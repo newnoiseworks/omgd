@@ -2,42 +2,35 @@ package deployer
 
 import (
 	"fmt"
-	"log"
-	"path/filepath"
 
 	"github.com/newnoiseworks/tpl-fred/utils"
 )
 
-var gamePath string
+type Game struct {
+	Environment string
+	OutputDir   string
+	CmdOnDir    func(string, string, string)
+}
 
-// DeployGame d
-func DeployGame(environment string, buildPath string) {
+func (dg Game) Deploy() {
 	fmt.Println("deploying game")
 
-	_gamePath, err := filepath.Abs(fmt.Sprintf("%s/game", buildPath))
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-
-	gamePath = _gamePath
-
-	switch environment {
+	switch dg.Environment {
 	case "local":
 		fmt.Println("Need to make local deployment commands")
 		break
 	default:
-		deployGameBasedOnProfile(environment, buildPath, "mac")
-		deployGameBasedOnProfile(environment, buildPath, "windows")
-		deployGameBasedOnProfile(environment, buildPath, "x11")
+		dg.deployGameBasedOnProfile("mac")
+		dg.deployGameBasedOnProfile("windows")
+		dg.deployGameBasedOnProfile("x11")
 		break
 	}
 }
 
-func deployGameBasedOnProfile(environment string, buildPath string, distro string) {
+func (dg Game) deployGameBasedOnProfile(distro string) {
 	itchGame := "the-promised-land"
 
-	if environment != "production" {
+	if dg.Environment != "production" {
 		itchGame = itchGame + "-dev"
 	}
 
@@ -49,19 +42,16 @@ func deployGameBasedOnProfile(environment string, buildPath string, distro strin
 
 	cmd := fmt.Sprintf("butler push ./dist/%s newnoiseworks/%s:%s", distro, itchGame, itchDistro)
 
-	if environment == "production" {
-		config := utils.GetProfile(environment)
+	if dg.Environment == "production" {
+		config := utils.GetProfile(dg.Environment)
 		cmd = fmt.Sprintf("%s --userversion %s", cmd, config.Game.Version)
 	} else {
-		cmd = fmt.Sprintf("%s-%s", cmd, environment)
+		cmd = fmt.Sprintf("%s-%s", cmd, dg.Environment)
 	}
 
-	runCmdOnGameDir(
+	dg.CmdOnDir(
 		cmd,
 		fmt.Sprintf("butler push on %s build", distro),
+		fmt.Sprintf("%s/game", dg.OutputDir),
 	)
-}
-
-func runCmdOnGameDir(cmdStr string, cmdDesc string) {
-	utils.CmdOnDir(cmdStr, cmdDesc, gamePath)
 }

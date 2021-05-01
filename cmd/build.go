@@ -22,10 +22,6 @@ Usage: $ tpl-fred build [project] [target]
 }
 
 func run(cmd *cobra.Command, args []string) {
-	if utils.CheckProjectAndEnv(args) == false {
-		return
-	}
-
 	var project = args[0]
 
 	fmt.Println(fmt.Sprintf("build called with args %s %s", project, Profile))

@@ -18,6 +18,7 @@ package cmd
 import (
 	"github.com/newnoiseworks/tpl-fred/builder"
 	"github.com/newnoiseworks/tpl-fred/deployer"
+	"github.com/newnoiseworks/tpl-fred/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -38,13 +39,39 @@ to quickly create a Cobra application.`,
 
 		CloneLibs(environment, false, false)
 
-		deployer.DeployInfra(environment, OutputDir)
+		// We "deploy" infra on the first step by checking if we need to make changes.
+		// Then, we get the IP address of the server and put that into the yml profile
+		deployer.Infra{
+			Environment: environment,
+			OutputDir:   OutputDir,
+			CmdOnDir:    utils.CmdOnDir,
+		}.Deploy()
 
-		builder.BuildGame(environment, OutputDir)
-		builder.BuildServer(environment, OutputDir)
+		builder.Game{
+			Environment: environment,
+			OutputDir:   OutputDir,
+			CmdOnDir:    utils.CmdOnDir,
+		}.Build()
 
-		deployer.DeployGame(environment, OutputDir)
-		deployer.DeployServer(environment, OutputDir, VolumeReset)
+		builder.Server{
+			Environment: environment,
+			OutputDir:   OutputDir,
+			CmdOnDir:    utils.CmdOnDir,
+		}.Build()
+
+		deployer.Game{
+			Environment: environment,
+			OutputDir:   OutputDir,
+			CmdOnDir:    utils.CmdOnDir,
+		}.Deploy()
+
+		deployer.Server{
+			Environment: environment,
+			OutputDir:   OutputDir,
+			CmdOnDir:    utils.CmdOnDir,
+			VolumeReset: VolumeReset,
+		}.Deploy()
+
 	},
 }
 

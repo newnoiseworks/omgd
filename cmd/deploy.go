@@ -26,13 +26,26 @@ to quickly create a Cobra application.`,
 
 		switch project {
 		case "server":
-			deployer.DeployServer(environment, OutputDir, VolumeReset)
+			deployer.Server{
+				Environment: environment,
+				OutputDir:   OutputDir,
+				CmdOnDir:    utils.CmdOnDir,
+				VolumeReset: VolumeReset,
+			}.Deploy()
 			break
 		case "game":
-			deployer.DeployGame(environment, OutputDir)
+			deployer.Game{
+				Environment: environment,
+				OutputDir:   OutputDir,
+				CmdOnDir:    utils.CmdOnDir,
+			}.Deploy()
 			break
 		case "infra":
-			deployer.DeployInfra(environment, OutputDir)
+			deployer.Infra{
+				Environment: environment,
+				OutputDir:   OutputDir,
+				CmdOnDir:    utils.CmdOnDir,
+			}.Deploy()
 			break
 		}
 	},

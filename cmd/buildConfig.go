@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"github.com/newnoiseworks/tpl-fred/builder/config"
-	"github.com/newnoiseworks/tpl-fred/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -18,10 +17,6 @@ and run full applications
 Usage: $ tpl-fred build-config [project] [target]
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		if utils.CheckProjectAndEnv(args) == false {
-			return
-		}
-
 		var project = args[0]
 
 		switch project {

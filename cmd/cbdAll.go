@@ -18,6 +18,7 @@ package cmd
 import (
 	"github.com/newnoiseworks/tpl-fred/builder"
 	"github.com/newnoiseworks/tpl-fred/deployer"
+	"github.com/newnoiseworks/tpl-fred/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -34,17 +35,41 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		var environment = args[0]
+		CloneLibs()
 
-		CloneLibs(environment, false, false)
+		// We "deploy" infra on the first step by checking if we need to make changes.
+		// Then, we get the IP address of the server and put that into the yml profile
+		deployer.Infra{
+			Environment: Profile,
+			OutputDir:   OutputDir,
+			CmdOnDir:    utils.CmdOnDir,
+		}.Deploy()
 
-		deployer.DeployInfra(environment, OutputDir)
+		builder.Game{
+			Environment: Profile,
+			OutputDir:   OutputDir,
+			CmdOnDir:    utils.CmdOnDir,
+		}.Build()
 
-		builder.BuildGame(environment, OutputDir)
-		builder.BuildServer(environment, OutputDir)
+		builder.Server{
+			Environment: Profile,
+			OutputDir:   OutputDir,
+			CmdOnDir:    utils.CmdOnDir,
+		}.Build()
 
-		deployer.DeployGame(environment, OutputDir)
-		deployer.DeployServer(environment, OutputDir, VolumeReset)
+		deployer.Game{
+			Environment: Profile,
+			OutputDir:   OutputDir,
+			CmdOnDir:    utils.CmdOnDir,
+		}.Deploy()
+
+		deployer.Server{
+			Environment: Profile,
+			OutputDir:   OutputDir,
+			CmdOnDir:    utils.CmdOnDir,
+			VolumeReset: VolumeReset,
+		}.Deploy()
+
 	},
 }
 
@@ -56,6 +81,7 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// cbdAllCmd.PersistentFlags().String("foo", "", "A help for foo")
+	cbdAllCmd.PersistentFlags().BoolVar(&VolumeReset, "volume-reset", false, "Resets docker volumes on deploy if present")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:

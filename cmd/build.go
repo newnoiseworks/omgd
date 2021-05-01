@@ -16,26 +16,29 @@ var buildCmd = &cobra.Command{
 
 The main command. Builds all components of the stack.
 
-Usage: $ tpl-fred build [project] [environment] [target]
+Usage: $ tpl-fred build [project] [target]
 `,
 	Run: run,
 }
 
 func run(cmd *cobra.Command, args []string) {
-	if utils.CheckProjectAndEnv(args) == false {
-		return
-	}
-
 	var project = args[0]
-	var environment = args[1]
 
-	fmt.Println(fmt.Sprintf("build called with args %s %s", project, environment))
+	fmt.Println(fmt.Sprintf("build called with args %s %s", project, Profile))
 	switch project {
 	case "game":
-		builder.BuildGame(environment, OutputDir)
+		builder.Game{
+			Environment: Profile,
+			OutputDir:   OutputDir,
+			CmdOnDir:    utils.CmdOnDir,
+		}.Build()
 		break
 	case "server":
-		builder.BuildServer(environment, OutputDir)
+		builder.Server{
+			Environment: Profile,
+			OutputDir:   OutputDir,
+			CmdOnDir:    utils.CmdOnDir,
+		}.Build()
 		break
 	}
 }

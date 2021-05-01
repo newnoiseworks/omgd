@@ -4,15 +4,18 @@ import (
 	"fmt"
 
 	"github.com/newnoiseworks/tpl-fred/builder/config"
-	"github.com/newnoiseworks/tpl-fred/utils"
 )
 
-// BuildServer doinit
-func BuildServer(environment string, buildPath string) {
-	config.ServerConfig(environment, buildPath)
+type Server struct {
+	Environment string
+	OutputDir   string
+	CmdOnDir    func(string, string, string)
+}
 
-	cmdStr := fmt.Sprintf("cp -rf game/dist/web-%s/* server/nakama/website", environment)
+func (s Server) Build() {
+	config.ServerConfig(s.Environment, s.OutputDir)
 
-	utils.CmdOnDir(cmdStr, fmt.Sprintf("copy web build into nakama folder..."), buildPath)
-	// no need to do anything more, just static files
+	cmdStr := fmt.Sprintf("cp -rf game/dist/web-%s/* server/nakama/website", s.Environment)
+
+	s.CmdOnDir(cmdStr, fmt.Sprintf("copy web build into nakama folder..."), s.OutputDir)
 }

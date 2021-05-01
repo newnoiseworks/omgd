@@ -6,6 +6,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// VolumeReset whether or not to reset docker volumes on deploy
+var VolumeReset bool
+
 // deployCmd represents the deploy command
 var deployCmd = &cobra.Command{
 	Use:   "deploy",
@@ -58,6 +61,7 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// deployCmd.PersistentFlags().String("foo", "", "A help for foo")
+	deployCmd.PersistentFlags().BoolVar(&VolumeReset, "volume-reset", false, "Resets docker volumes on deploy if present")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:

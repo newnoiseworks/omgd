@@ -81,6 +81,7 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// cbdAllCmd.PersistentFlags().String("foo", "", "A help for foo")
+	cbdAllCmd.PersistentFlags().BoolVar(&VolumeReset, "volume-reset", false, "Resets docker volumes on deploy if present")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:

@@ -15,9 +15,6 @@ var Profile string
 // OutputDir this is where all builds and build artifacts will be written to
 var OutputDir string
 
-// VolumeReset whether or not to reset docker volumes on deploy
-var VolumeReset bool
-
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "tpl-fred",
@@ -49,7 +46,6 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&Profile, "profile", "local", "yml profile representing this build in the build/profiles folder")
-	rootCmd.PersistentFlags().BoolVar(&VolumeReset, "volume-reset", false, "Resets docker volumes on deploy -- set as true or false")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.

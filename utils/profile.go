@@ -27,8 +27,8 @@ type ProfileConf struct {
 		Version                string `yaml:"version"`
 	}
 	Git struct {
-		GameBranch   string `yaml:"game"`
-		ServerBranch string `yaml:"server"`
+		GameBranch string `yaml:"branch"`
+		Repo       string `yaml:"repo"`
 	}
 }
 
@@ -36,7 +36,7 @@ type ProfileConf struct {
 func GetProfile(env string) ProfileConf {
 	c := ProfileConf{}
 
-	yamlFile, err := ioutil.ReadFile(fmt.Sprintf("build/profiles/%s.yml", env))
+	yamlFile, err := ioutil.ReadFile(fmt.Sprintf("profiles/%s.yml", env))
 	if err != nil {
 		log.Printf("yamlFile Get err: #%v ", err)
 	}
@@ -64,7 +64,7 @@ func SaveProfile(profile ProfileConf, env string) {
 		log.Fatal("Error marshalling from data to saving profile to yaml!")
 	}
 
-	err = ioutil.WriteFile(fmt.Sprintf("build/profiles/%s.yml", env), yamlBytes, 0755)
+	err = ioutil.WriteFile(fmt.Sprintf("profiles/%s.yml", env), yamlBytes, 0755)
 
 	if err != nil {
 		log.Fatal("Error on file write to saving profile to yaml!")

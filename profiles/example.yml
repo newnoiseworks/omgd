@@ -4,12 +4,14 @@ nakama:
   secure: false
 
 game:
-  real_world_seconds_per_day: 12
+  real_world_seconds_per_day: 12 * 60
   version: 0.1.23
 
-# git:
-#   game: branchname 
-#   server: branchname
+git:
+  branch: master
+  repo: git@github.com:newnoiseworks/tpl-game-gd.git
+  # repo: .
+
 
 # gcloud:
 #   project: projectname

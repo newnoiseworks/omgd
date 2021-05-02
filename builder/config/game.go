@@ -40,7 +40,7 @@ func GameConfig(environment string, buildPath string) {
 func buildGameClientConfig(buildPath string, config map[string]string) {
 	fmt.Println(" >> build GameConfig.gd.tmpl >> game/Utils/GameConfig.gd")
 
-	t, err := template.ParseFiles("builder/config/templates/GameConfig.gd.tmpl")
+	t, err := template.ParseFiles("templates/GameConfig.gd.tmpl")
 	if err != nil {
 		log.Print(err)
 		return
@@ -69,7 +69,7 @@ func buildGameGDItemsFile(buildPath string) {
 
 	fmt.Println(" >> build InventoryItems.gd.tmpl >> game/Utils/InventoryItems.gd")
 
-	var tmpl = "builder/config/templates/InventoryItems.gd.tmpl"
+	var tmpl = "templates/InventoryItems.gd.tmpl"
 	t, err := template.New(path.Base(tmpl)).Funcs(template.FuncMap{
 		"md5": func(text string) string {
 			hash := md5.Sum([]byte(text))
@@ -106,7 +106,7 @@ func buildMissionListFile(buildPath string) {
 
 	fmt.Println(" >> build MissionList.gd.tmpl >> game/Utils/MissionList.gd")
 
-	var tmpl = "builder/config/templates/MissionList.gd.tmpl"
+	var tmpl = "templates/MissionList.gd.tmpl"
 	t, err := template.New(path.Base(tmpl)).Funcs(template.FuncMap{
 		"upperSnake": func(text string) string {
 			snake := matchFirstCap.ReplaceAllString(text, "${1}_${2}")

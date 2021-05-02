@@ -12,7 +12,7 @@ var VolumeReset bool
 // deployCmd represents the deploy command
 var deployCmd = &cobra.Command{
 	Use:   "deploy",
-	Short: "A brief description of your command",
+	Short: "Direct deploy command for the projects and infrastructure",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 

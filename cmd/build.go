@@ -16,7 +16,7 @@ var buildCmd = &cobra.Command{
 
 The main command. Builds all components of the stack.
 
-Usage: $ tpl-fred build [project] [target]
+Usage: $ tpl-fred build [project]
 `,
 	Run: run,
 }

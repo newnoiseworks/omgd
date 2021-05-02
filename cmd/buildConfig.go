@@ -14,7 +14,7 @@ var buildConfigCmd = &cobra.Command{
 Builds all config files and artifacts needed to build 
 and run full applications
 
-Usage: $ tpl-fred build-config [project] [target]
+Usage: $ tpl-fred build-config [project]
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		var project = args[0]

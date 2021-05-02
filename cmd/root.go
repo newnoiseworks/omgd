@@ -54,8 +54,8 @@ func init() {
 
 func initConfig() {
 	if Profile == "local" {
-		OutputDir = "../"
+		OutputDir = "./"
 	} else {
-		OutputDir = fmt.Sprintf(".tmp/%s", Profile)
+		OutputDir = fmt.Sprintf(".omgd/%s", Profile)
 	}
 }

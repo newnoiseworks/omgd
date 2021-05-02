@@ -1,5 +1,5 @@
-build/profiles/*
-!build/profiles/example.yml
+profiles/*
+!profiles/example.yml
 
 .tmp
 

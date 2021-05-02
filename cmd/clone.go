@@ -45,19 +45,23 @@ var cloneCmd = &cobra.Command{
 // CloneLibs clones dem libs
 func CloneLibs() {
 	conf := utils.GetProfile(Profile)
-	cloneGame(conf)
-	cloneServer(conf)
+
+	repo := conf.Git.Repo
+
+	if repo == "" {
+		repo = "."
+	}
+
+	err := os.RemoveAll(OutputDir)
+
+	if err != nil {
+		log.Fatalf("Failure on removing directory at %s \r\n %s", OutputDir, err)
+	}
+
+	gitClone(repo, conf.Git.GameBranch)
 }
 
-func cloneGame(conf utils.ProfileConf) {
-	gitClone("git@github.com:newnoiseworks/tpl-game-gd.git", "game", conf.Git.GameBranch)
-}
-
-func cloneServer(conf utils.ProfileConf) {
-	gitClone("git@github.com:newnoiseworks/not-stardew-backend.git", "server", conf.Git.ServerBranch)
-}
-
-func gitClone(repo string, dir string, confBranch string) {
+func gitClone(repo string, confBranch string) {
 	branchName := "master"
 
 	if confBranch != "" {
@@ -66,7 +70,7 @@ func gitClone(repo string, dir string, confBranch string) {
 
 	refVal := plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", branchName))
 
-	_, err := git.PlainClone(fmt.Sprintf("%s/%s", OutputDir, dir), false, &git.CloneOptions{
+	_, err := git.PlainClone(OutputDir, false, &git.CloneOptions{
 		URL:           repo,
 		Progress:      os.Stdout,
 		ReferenceName: refVal,

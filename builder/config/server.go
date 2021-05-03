@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"path"
-	"strconv"
 	"text/template"
 
 	"github.com/newnoiseworks/tpl-fred/utils"
@@ -17,27 +16,18 @@ import (
 
 // ServerConfig go brr
 func ServerConfig(environment string, buildPath string) {
-	var profile = utils.GetProfile(environment)
-
-	config := map[string]string{
-		"realWorldSecondsPerDay": profile.Game.RealWorldSecondsPerDay,
-		"nakamaHost":             profile.Nakama.Host,
-		"nakamaKey":              profile.Nakama.Key,
-		"nakamaPort":             strconv.Itoa(profile.Nakama.Port),
-		"nakamaSecure":           strconv.FormatBool(profile.Nakama.Secure),
-		"gameVersion":            profile.Game.Version,
-	}
+	var profile = utils.GetProfileAsMap(environment)
 
 	fmt.Println(aurora.Green("building server config files"))
 
-	buildServerGameConfig(buildPath, config)
-	buildServerConfig(buildPath, config)
-	buildServerVersionFile(buildPath, config)
+	buildServerGameConfig(buildPath, profile)
+	buildServerConfig(buildPath, profile)
+	buildServerVersionFile(buildPath, profile)
 	buildServerItemsFile(buildPath)
 	buildServerMissionList(buildPath)
 }
 
-func buildServerGameConfig(buildPath string, config map[string]string) {
+func buildServerGameConfig(buildPath string, config map[interface{}]interface{}) {
 	fmt.Println(aurora.Yellow(" >> building game_config.lua.tmpl >> server/nakama/data/modules/game_config.lua"))
 
 	t, err := template.ParseFiles("templates/game_config.lua.tmpl")
@@ -91,7 +81,7 @@ func buildServerItemsFile(buildPath string) {
 	}
 }
 
-func buildServerConfig(buildPath string, config map[string]string) {
+func buildServerConfig(buildPath string, config map[interface{}]interface{}) {
 	fmt.Println(" >> build config.yml.tmpl >> server/nakama/data/config.yml")
 	t, err := template.ParseFiles("templates/config.yml.tmpl")
 	if err != nil {
@@ -114,7 +104,7 @@ func buildServerConfig(buildPath string, config map[string]string) {
 	}
 }
 
-func buildServerVersionFile(buildPath string, config map[string]string) {
+func buildServerVersionFile(buildPath string, config map[interface{}]interface{}) {
 	fmt.Println(" >> build version.lua.tmpl >> /server/nakama/data/modules/version.lua")
 
 	t, err := template.ParseFiles("templates/version.lua.tmpl")

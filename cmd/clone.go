@@ -50,7 +50,9 @@ func CloneLibs() {
 
 	if repo == "" {
 		repo = "."
-	} else {
+	}
+
+	if Profile != "local" {
 		err := os.RemoveAll(OutputDir)
 
 		if err != nil {

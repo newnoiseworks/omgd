@@ -7,29 +7,9 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// MissionItem struct
-type MissionItem struct {
-	Key      string `yaml:"key"`
-	Quantity int    `yaml:"quantity"`
-}
-
-// Mission struct
-type Mission struct {
-	Key     string        `yaml:"key"`
-	Title   string        `yaml:"title"`
-	Prereqs string        `yaml:"prereqs"`
-	Reqs    []MissionItem `yaml:"reqs"`
-	Awards  []MissionItem `yaml:"awards"`
-}
-
-// MissionData dem missions
-type MissionData struct {
-	Missions []Mission `yaml:"missions"`
-}
-
 // GetMissions d
-func GetMissions() MissionData {
-	c := MissionData{}
+func GetMissions() map[interface{}]interface{} {
+	c := make(map[interface{}]interface{})
 
 	yamlFile, err := ioutil.ReadFile("resources/missions.yml")
 	if err != nil {

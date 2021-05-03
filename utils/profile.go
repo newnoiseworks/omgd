@@ -32,7 +32,25 @@ type ProfileConf struct {
 	}
 }
 
-// GetProfile d
+func GetProfileAsMap(env string) map[interface{}]interface{} {
+	profile := GetProfile(env)
+
+	yamlBytes, err := yaml.Marshal(&profile)
+
+	if err != nil {
+		log.Fatal("Error marshalling from data back to yaml!")
+	}
+
+	c := make(map[interface{}]interface{})
+
+	err = yaml.Unmarshal(yamlBytes, &c)
+	if err != nil {
+		log.Fatalf("Unmarshal err: %v", err)
+	}
+
+	return c
+}
+
 func GetProfile(env string) ProfileConf {
 	c := ProfileConf{}
 

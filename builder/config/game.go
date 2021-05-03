@@ -8,7 +8,6 @@ import (
 	"os"
 	"path"
 	"regexp"
-	"strconv"
 	"strings"
 	"text/template"
 
@@ -17,27 +16,18 @@ import (
 
 // GameConfig go brr
 func GameConfig(environment string, buildPath string) {
-	var profile = utils.GetProfile(environment)
-
-	config := map[string]string{
-		"realWorldSecondsPerDay": profile.Game.RealWorldSecondsPerDay,
-		"nakamaHost":             profile.Nakama.Host,
-		"nakamaKey":              profile.Nakama.Key,
-		"nakamaPort":             strconv.Itoa(profile.Nakama.Port),
-		"nakamaSecure":           strconv.FormatBool(profile.Nakama.Secure),
-		"gameVersion":            profile.Game.Version,
-	}
+	var profile = utils.GetProfileAsMap(environment)
 
 	fmt.Println("build game config files")
 
-	buildGameClientConfig(buildPath, config)
+	buildGameClientConfig(buildPath, profile)
 
 	buildGameGDItemsFile(buildPath)
 
 	buildMissionListFile(buildPath)
 }
 
-func buildGameClientConfig(buildPath string, config map[string]string) {
+func buildGameClientConfig(buildPath string, config map[interface{}]interface{}) {
 	fmt.Println(" >> build GameConfig.gd.tmpl >> game/Utils/GameConfig.gd")
 
 	t, err := template.ParseFiles("templates/GameConfig.gd.tmpl")

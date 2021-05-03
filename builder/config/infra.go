@@ -13,20 +13,14 @@ import (
 
 // InfraConfig - builds config files needed for infrastructure
 func InfraConfig(environment string, buildPath string) {
-	var profile = utils.GetProfile(environment)
-
-	config := map[string]string{
-		"gcpProject": profile.Gcloud.Project,
-		"gcpRegion":  profile.Gcloud.Region,
-		"gcpZone":    profile.Gcloud.Zone,
-	}
+	var profile = utils.GetProfileAsMap(environment)
 
 	fmt.Println(aurora.Green("building server config files"))
 
-	buildTerraformVarsFile(buildPath, config)
+	buildTerraformVarsFile(buildPath, profile)
 }
 
-func buildTerraformVarsFile(buildPath string, config map[string]string) {
+func buildTerraformVarsFile(buildPath string, config map[interface{}]interface{}) {
 	fmt.Println(aurora.Yellow(" >> building terraform.tfvars.tmpl >> server/infra/gcp/terraform.tfvars"))
 
 	t, err := template.ParseFiles("templates/terraform.tfvars.tmpl")

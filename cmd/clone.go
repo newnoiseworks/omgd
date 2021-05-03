@@ -50,12 +50,12 @@ func CloneLibs() {
 
 	if repo == "" {
 		repo = "."
-	}
+	} else {
+		err := os.RemoveAll(OutputDir)
 
-	err := os.RemoveAll(OutputDir)
-
-	if err != nil {
-		log.Fatalf("Failure on removing directory at %s \r\n %s", OutputDir, err)
+		if err != nil {
+			log.Fatalf("Failure on removing directory at %s \r\n %s", OutputDir, err)
+		}
 	}
 
 	gitClone(repo, conf.Git.GameBranch)

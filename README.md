@@ -1,42 +1,17 @@
-# TPL-Fred
+# GG
+### GameDev Glue
 
-#### A build and deployment tool for _The Promised Land_'s game client, server, and potentially (one day) it's website
+#### Automated build and deploy of your game's clients, servers, and server infrastructure
 
-## Initial project setup instructions
+## Vision
 
-For now we'll be storing this info here though it's likely to move and this README will be exclusively focused on the build tool.
+`gg` is a task runner meant to "glue" together your game server's infrastructure setup, game client build, and client / server deployments via a standardized YML configuration file for each "profile" or environment you wish to deploy to.
 
-That said:
+Useful as a wrapper tool to setup git branch based deployment to new servers for easier testing. You still need to provide your own build, deploy, and infrastrucure processes, but `gg` will run them for you via a simple command structure.
 
-0. Pull this repository down into an empty parent directory for the project. E.g.:
+See `omgd` for a project which uses the `gg` runner base in setting up projects for you with a preconfigured build, deploy, and infra setup process using Godot, Nakama, and Terraform.
 
-```
-TPLProjectFolder
-  | tpl-fred
-```
+## Usage
+#### Warning: In development!
 
-1. In the `build/profiles` folder of this library, make a copy of `example.yml` and call it `local.yml` -- edit it only if you altered your local nakama server config for some reason, but otherwise leave it alone.
 
-2. Within this repo, run this command:
-   <br>
-   `$ go run main.go clone local --output=../`
-
-   This will clone the game and server repositories into the parent directory w/ appropriate names for this build tool.
-
-3. In the same directory, run these commands:
-   <br>
-   ```$ go run main.go build-config game local --output=../```
-   <br>
-   ```$ go run main.go build-config server local --output=../```
-
-   They setup the necessary build artifacts (item lists, mission info, more, see `builder/config/templates` within this repo for details) so the game and server can run.
-
-4. Now, assuming you have docker running with the `docker-compose` CLI available:
-   <br>
-   ```$ cd ../server```
-   <br>
-   ```$ docker-compose up -d```
-
-   This will stand up the nakama server locally as well as a local instance of the database it uses, CockroachDB. Try running `docker-compose ps` in the same repo to ensure they're both up stably.
-
-5. Assuming that went well, open the freshly cloned `game` repository folder w/n Godot. Try running the game with the play button, and you should be able to log in.

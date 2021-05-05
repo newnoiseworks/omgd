@@ -1,5 +1,7 @@
-# OMGD
+# omgd
 ### Open Multiplayer Game Development
+
+#### Making multiplayer game dev easier, including infrastructure deployment
 
 ## Vision
 
@@ -35,4 +37,4 @@ For engines, we're starting with Godot 3 for the game client and Heroic Labs' Na
 ### Prereqs
 
 1. Rust w/ `cargo` cli tool
-2. 
+2

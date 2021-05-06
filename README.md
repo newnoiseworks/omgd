@@ -7,7 +7,7 @@
 
 `omgd` aims to make it easy to develop multiplayer games. It's not a game engine - `omgd` is an opinionated boilerplate and code generation tool that wraps around existing game and server engines to make multiplayer game development easier, including the creation and deployment of servers on the cloud.
 
-For engines, we're starting with Godot 3 for the game client, Heroic Labs' Nakama for the server framework, and Google Cloud for a server host.
+For engines, we're starting with Godot 3 for the game client, Heroic Labs' Nakama for the server framework, and Google Cloud for ~~our favorite big brother~~ a cloud backend.
 
 ## Usage
 #### Warning: In development! The below are just proposals
@@ -19,6 +19,8 @@ For engines, we're starting with Godot 3 for the game client, Heroic Labs' Nakam
 - `$ omgd generate dungeon-event [dungeon name] [event name] [event args]`
 
 ## Installation
+
+Currently you must download the repo and build the binary via `cargo` (TODO: insert more details here about getting that into ~/.local/bin perhaps, or some other rust-approved method of running this on example projects)
 
 ### Prereqs
 
@@ -40,4 +42,4 @@ For engines, we're starting with Godot 3 for the game client, Heroic Labs' Nakam
 ### Prereqs
 
 1. Rust w/ `cargo` cli tool
-2
+2. 

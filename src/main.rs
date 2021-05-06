@@ -1,5 +1,7 @@
 use structopt::StructOpt;
 
+mod repo_resource_fetcher;
+
 // omgd new
 // omgd generate thing [argsAsSplat]
 
@@ -23,7 +25,7 @@ fn main() {
 
     match args.commands {
         Command::New { name } => {
-            println!("howdy, {}", name)
+            repo_resource_fetcher::get_directory(name)
         }
     }
 }

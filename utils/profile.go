@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"crypto/md5"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -9,30 +8,25 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// ProfileConf docs
+type Command struct {
+	Cmd string `yaml:"cmd"`
+	Dir string `yaml:"dir"`
+}
+
+type ProjectConfig struct {
+	Dir   string    `yaml:"dir"`
+	Steps []Command `yaml:"steps"`
+}
+
 type ProfileConf struct {
-	Nakama struct {
-		Host   string `yaml:"host"`
-		Key    string `yaml:"key"`
-		Port   int    `yaml:"port"`
-		Secure bool   `yaml:"secure"`
-	}
-	Gcloud struct {
-		Project string `yaml:"project"`
-		Region  string `yaml:"region"`
-		Zone    string `yaml:"zone"`
-	}
-	Game struct {
-		RealWorldSecondsPerDay string `yaml:"real_world_seconds_per_day"`
-		Version                string `yaml:"version"`
-	}
 	Git struct {
 		GameBranch string `yaml:"branch"`
 		Repo       string `yaml:"repo"`
 	}
+	Projects []ProjectConfig `yaml:"projects"`
 }
 
-func GetProfileAsMap(env string) map[interface{}]interface{} {
+func GetProfileAsMap(env string) *map[interface{}]interface{} {
 	profile := GetProfile(env)
 
 	yamlBytes, err := yaml.Marshal(&profile)
@@ -48,10 +42,10 @@ func GetProfileAsMap(env string) map[interface{}]interface{} {
 		log.Fatalf("Unmarshal err: %v", err)
 	}
 
-	return c
+	return &c
 }
 
-func GetProfile(env string) ProfileConf {
+func GetProfile(env string) *ProfileConf {
 	c := ProfileConf{}
 
 	yamlFile, err := ioutil.ReadFile(fmt.Sprintf("profiles/%s.yml", env))
@@ -63,15 +57,7 @@ func GetProfile(env string) ProfileConf {
 		log.Fatalf("Unmarshal err: %v", err)
 	}
 
-	if env != "local" {
-		var key = fmt.Sprintf("the-promised-land-%s-v%s", env, c.Game.Version)
-		data := []byte(key)
-		c.Nakama.Key = fmt.Sprintf("%x", md5.Sum(data))
-	} else {
-		c.Nakama.Key = "defaultkey"
-	}
-
-	return c
+	return &c
 }
 
 // SaveProfile saves that profile to yml

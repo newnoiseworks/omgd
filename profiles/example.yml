@@ -5,20 +5,21 @@ git:
 
 
 projects:
-  - directory: infra
-    build: ./setup_infra.sh
-    deploy: ./infra_deploy.sh
+  - dir: server/infra
+    steps: 
+      - cmd: ./infra_deploy.sh
     ## Updating infra based stuff gets weird then no?
     ## Could be solvable by a CLI based command to update the profile
     ## which is used by the script / user
-  - directory: game
-    build:
-      cmd: ./build_clients.sh
-      dir: .build # infers ./game/.build based on top level dir
-    deploy: ./deploy_clients.sh
-  - directory: server
-    build: ./build_server.sh
-    deploy: ./deploy/gcp/deploy.sh
+  - dir: game
+    steps: 
+      - cmd: ./build_clients.sh
+        dir: .build # infers ./game/.build based on top level dir
+      - cmd: ./deploy_clients.sh
+  - dir: server
+    steps: 
+      - cmd: ./build_server.sh
+      - cmd: ./deploy/gcp/deploy.sh
 
 
 ## TPL stuff to remove?

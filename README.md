@@ -15,8 +15,8 @@ For engines, we're starting with Godot 3 for the game client, Heroic Labs' Nakam
 `$ omgd new [project name]` - creates a new project in a folder named after the first argument
 
 `$ omgd generate [type]` - generates project assets, e.g.:
-  `$ omgd generate dungeon [dungeon name]`
-  `$ omgd generate dungeon-event [dungeon name] [event name] [event args]`
+- `$ omgd generate dungeon [dungeon name]`
+- `$ omgd generate dungeon-event [dungeon name] [event name] [event args]`
 
 ## Installation
 

@@ -1,25 +1,29 @@
 use structopt::StructOpt;
 
-/// omgd new
-/// omgd generate thing [argsAsSplat]
+// omgd new
+// omgd generate thing [argsAsSplat]
 
 #[derive(StructOpt)]
 struct Cli {
-    /// The pattern to look for
-    pattern: String,
-    /// The path to the file
-    #[structopt(parse(from_os_str))]
-    path: std::path::PathBuf,
+    #[structopt(subcommand)]
+    commands: Command
+}
+
+#[derive(StructOpt)]
+enum Command {
+    /// Spawns a new project yall
+    New {
+        /// The name of the project, will create a folder in this name in the current directory
+        name: String,
+    },
 }
 
 fn main() {
     let args = Cli::from_args();
-    let content = std::fs::read_to_string(&args.path)
-        .expect("could not read file");
 
-    for line in content.lines() {
-        if line.contains(&args.pattern) {
-            println!("{}", line);
+    match args.commands {
+        Command::New { name } => {
+            println!("howdy, {}", name)
         }
     }
 }

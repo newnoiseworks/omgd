@@ -31,8 +31,6 @@ Projects for now must be setup as follows, though the goal is to get to a more c
 /               (your project folder root)
 - /game         (your game client)
 - /server       (your server program)
-  - /infra
-  - /deploy
 - /profiles     (yml files containing deployment profiles)
 - /resources    (yml files containing data for templates in game & server folders)
 ```

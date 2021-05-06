@@ -1,3 +1,34 @@
+git:
+  branch: master
+  repo: git@github.com:newnoiseworks/tpl-game-gd.git
+  # repo: .
+
+
+projects:
+  - directory: infra
+    build: ./setup_infra.sh
+    deploy: ./infra_deploy.sh
+    ## Updating infra based stuff gets weird then no?
+    ## Could be solvable by a CLI based command to update the profile
+    ## which is used by the script / user
+  - directory: game
+    build:
+      cmd: ./build_clients.sh
+      dir: .build # infers ./game/.build based on top level dir
+    deploy: ./deploy_clients.sh
+  - directory: server
+    build: ./build_server.sh
+    deploy: ./deploy/gcp/deploy.sh
+
+
+## TPL stuff to remove?
+
+# gcloud:
+#   project: projectname
+#   region: us-east1
+#   cloudZone: us-east1-b
+#
+
 nakama:
   host: 127.0.0.1
   port: 7350
@@ -6,14 +37,3 @@ nakama:
 game:
   real_world_seconds_per_day: 12 * 60
   version: 0.1.23
-
-git:
-  branch: master
-  repo: git@github.com:newnoiseworks/tpl-game-gd.git
-  # repo: .
-
-
-# gcloud:
-#   project: projectname
-#   region: us-east1
-#   cloudZone: us-east1-b

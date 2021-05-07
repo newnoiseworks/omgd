@@ -13,7 +13,8 @@ type Command struct {
 	Dir string `yaml:"dir"`
 }
 
-type ProjectConfig struct {
+type CommandConfig struct {
+	Name  string    `yaml:"name"`
 	Dir   string    `yaml:"dir"`
 	Steps []Command `yaml:"steps"`
 }
@@ -23,7 +24,8 @@ type ProfileConf struct {
 		GameBranch string `yaml:"branch"`
 		Repo       string `yaml:"repo"`
 	}
-	Projects []ProjectConfig `yaml:"projects"`
+	Project []CommandConfig `yaml:"project"`
+	Tasks   []CommandConfig `yaml:"tasks"`
 }
 
 func GetProfileAsMap(env string) *map[interface{}]interface{} {

@@ -20,7 +20,8 @@ type CommandConfig struct {
 }
 
 type ProfileConf struct {
-	Git struct {
+	Name string
+	Git  struct {
 		GameBranch string `yaml:"branch"`
 		Repo       string `yaml:"repo"`
 	}
@@ -44,13 +45,15 @@ func GetProfileAsMap(env string) *map[interface{}]interface{} {
 		log.Fatalf("Unmarshal err: %v", err)
 	}
 
+	c["name"] = env
+
 	return &c
 }
 
 func GetProfile(env string) *ProfileConf {
 	c := ProfileConf{}
 
-	yamlFile, err := ioutil.ReadFile(fmt.Sprintf("%s.yml", env))
+	yamlFile, err := ioutil.ReadFile(fmt.Sprintf("profiles/%s.yml", env))
 	if err != nil {
 		log.Printf("yamlFile Get err: #%v ", err)
 	}
@@ -58,6 +61,8 @@ func GetProfile(env string) *ProfileConf {
 	if err != nil {
 		log.Fatalf("Unmarshal err: %v", err)
 	}
+
+	c.Name = env
 
 	return &c
 }

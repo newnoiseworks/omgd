@@ -17,6 +17,8 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+	"strconv"
 
 	"github.com/newnoiseworks/tpl-fred/utils"
 	"github.com/spf13/cobra"
@@ -37,27 +39,42 @@ Run part of project:
 $ gg run [name-of-project-step] [number-of-step (optional)]
 
 Run task:
-$ gg run task [name-of-task] [number-of-step]
+$ gg run task [name-of-task] [number-of-step (optional)]
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("run called")
 
-		profile := utils.GetProfile(Profile)
+		runner := utils.Run{
+			Profile:   Profile,
+			OutputDir: OutputDir,
+			CmdDir:    utils.CmdOnDir,
+		}
 
-		dir := OutputDir
+		switch len(args) {
+		case 0:
+			runner.Run()
+		case 1:
+			runner.RunProjectStep(args[0])
+		case 2:
+			if args[0] == "task" {
+				runner.RunTask(args[1])
+			} else {
+				idx, err := strconv.Atoi(args[1])
 
-		for _, project := range profile.Project {
-			if project.Dir != "" {
-				dir = fmt.Sprintf("%s/%s", dir, project.Dir)
-			}
-
-			for _, step := range project.Steps {
-				if step.Dir != "" {
-					dir = fmt.Sprintf("%s/%s", dir, step.Dir)
+				if err != nil {
+					log.Fatal(err)
 				}
 
-				utils.CmdOnDir(step.Cmd, "", dir)
+				runner.RunProjectSubStep(args[0], idx)
 			}
+		case 3:
+			idx, err := strconv.Atoi(args[2])
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			runner.RunTaskSubStep(args[1], idx)
 		}
 	},
 }

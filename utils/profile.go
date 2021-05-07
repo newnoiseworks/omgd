@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 )
@@ -45,7 +46,8 @@ func GetProfileAsMap(env string) *map[interface{}]interface{} {
 		log.Fatalf("Unmarshal err: %v", err)
 	}
 
-	c["name"] = env
+	splits := strings.Split(env, "/")
+	c["name"] = splits[len(splits)-1]
 
 	return &c
 }
@@ -53,7 +55,7 @@ func GetProfileAsMap(env string) *map[interface{}]interface{} {
 func GetProfile(env string) *ProfileConf {
 	c := ProfileConf{}
 
-	yamlFile, err := ioutil.ReadFile(fmt.Sprintf("profiles/%s.yml", env))
+	yamlFile, err := ioutil.ReadFile(fmt.Sprintf("%s.yml", env))
 	if err != nil {
 		log.Printf("yamlFile Get err: #%v ", err)
 	}
@@ -62,7 +64,8 @@ func GetProfile(env string) *ProfileConf {
 		log.Fatalf("Unmarshal err: %v", err)
 	}
 
-	c.Name = env
+	splits := strings.Split(env, "/")
+	c.Name = splits[len(splits)-1]
 
 	return &c
 }

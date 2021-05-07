@@ -32,10 +32,12 @@ func validCompare(expected interface{}, received interface{}) {
 func TestRunnerCmd(t *testing.T) {
 	cmdResponses = nil
 
+	profile := GetProfile("test")
+
 	runner := Run{
-		Profile:   "../profiles/test",
 		OutputDir: ".tmp",
 		CmdDir:    cmdOnDir,
+		Profile:   profile,
 	}
 
 	validResponseSet := []cmdOnDirResponse{

@@ -1,17 +1,42 @@
 package utils
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type Run struct {
-	Profile   string
+	Profile   *ProfileConf
 	OutputDir string
 	CmdDir    func(string, string, string)
 }
 
-func (r *Run) Run() {
-	profile := GetProfile(r.Profile)
+func (r *Run) runCmdOnDir(cmd string, cmdDesc string, cmdDir string) {
+	baseCmd := strings.Split(cmd, " ")[0]
 
-	for _, project := range profile.Main {
+	if strings.HasSuffix(baseCmd, "gg") {
+		if strings.HasPrefix(cmdDir, "/") {
+			cmdDir = cmdDir[1:]
+		}
+
+		if strings.HasSuffix(cmd, "/") {
+			cmdDir = cmdDir[:len(cmdDir)-1]
+		}
+
+		path_prepend := "../"
+
+		for i := 0; i < len(strings.Split(cmdDir, "/"))-1; i++ {
+			path_prepend += "../"
+		}
+
+		cmd = cmd + " --profile=" + path_prepend + "profiles/" + r.Profile.Name
+	}
+
+	r.CmdDir(cmd, cmdDesc, cmdDir)
+}
+
+func (r *Run) Run() {
+	for _, project := range r.Profile.Main {
 		dir := r.OutputDir
 
 		if project.Dir != "" {
@@ -23,15 +48,13 @@ func (r *Run) Run() {
 				dir = fmt.Sprintf("%s/%s", dir, step.Dir)
 			}
 
-			r.CmdDir(step.Cmd, "", dir)
+			r.runCmdOnDir(step.Cmd, "", dir)
 		}
 	}
 }
 
 func (r *Run) RunProjectStep(projectStep string) {
-	profile := GetProfile(r.Profile)
-
-	for _, project := range profile.Main {
+	for _, project := range r.Profile.Main {
 		dir := r.OutputDir
 
 		if project.Name != projectStep {
@@ -47,15 +70,13 @@ func (r *Run) RunProjectStep(projectStep string) {
 				dir = fmt.Sprintf("%s/%s", dir, step.Dir)
 			}
 
-			r.CmdDir(step.Cmd, "", dir)
+			r.runCmdOnDir(step.Cmd, "", dir)
 		}
 	}
 }
 
 func (r *Run) RunProjectSubStep(projectStep string, index int) {
-	profile := GetProfile(r.Profile)
-
-	for _, project := range profile.Main {
+	for _, project := range r.Profile.Main {
 		dir := r.OutputDir
 
 		if project.Name != projectStep {
@@ -75,15 +96,13 @@ func (r *Run) RunProjectSubStep(projectStep string, index int) {
 				dir = fmt.Sprintf("%s/%s", dir, step.Dir)
 			}
 
-			r.CmdDir(step.Cmd, "", dir)
+			r.runCmdOnDir(step.Cmd, "", dir)
 		}
 	}
 }
 
 func (r *Run) RunTask(task string) {
-	profile := GetProfile(r.Profile)
-
-	for _, project := range profile.Tasks {
+	for _, project := range r.Profile.Tasks {
 		dir := r.OutputDir
 
 		if project.Name != task {
@@ -99,15 +118,13 @@ func (r *Run) RunTask(task string) {
 				dir = fmt.Sprintf("%s/%s", dir, step.Dir)
 			}
 
-			r.CmdDir(step.Cmd, "", dir)
+			r.runCmdOnDir(step.Cmd, "", dir)
 		}
 	}
 }
 
 func (r *Run) RunTaskSubStep(task string, index int) {
-	profile := GetProfile(r.Profile)
-
-	for _, project := range profile.Tasks {
+	for _, project := range r.Profile.Tasks {
 		dir := r.OutputDir
 
 		if project.Name != task {
@@ -127,7 +144,7 @@ func (r *Run) RunTaskSubStep(task string, index int) {
 				dir = fmt.Sprintf("%s/%s", dir, step.Dir)
 			}
 
-			r.CmdDir(step.Cmd, "", dir)
+			r.runCmdOnDir(step.Cmd, "", dir)
 		}
 	}
 }

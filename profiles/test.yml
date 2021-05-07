@@ -5,11 +5,12 @@ git:
 
 main:
   - name: infra
-    dir: server/infra
+    dir: server
     steps: 
       - cmd: gg build-templates .
+        dir: infra
       - cmd: ./infra_deploy.sh
-        dir: gcp 
+        dir: infra/gcp
   - name: game-client
     dir: game
     steps: 

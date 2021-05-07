@@ -24,8 +24,8 @@ type ProfileConf struct {
 		GameBranch string `yaml:"branch"`
 		Repo       string `yaml:"repo"`
 	}
-	Project []CommandConfig `yaml:"project"`
-	Tasks   []CommandConfig `yaml:"tasks"`
+	Main  []CommandConfig `yaml:"main"`
+	Tasks []CommandConfig `yaml:"tasks"`
 }
 
 func GetProfileAsMap(env string) *map[interface{}]interface{} {
@@ -50,7 +50,7 @@ func GetProfileAsMap(env string) *map[interface{}]interface{} {
 func GetProfile(env string) *ProfileConf {
 	c := ProfileConf{}
 
-	yamlFile, err := ioutil.ReadFile(fmt.Sprintf("profiles/%s.yml", env))
+	yamlFile, err := ioutil.ReadFile(fmt.Sprintf("%s.yml", env))
 	if err != nil {
 		log.Printf("yamlFile Get err: #%v ", err)
 	}

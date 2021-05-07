@@ -8,20 +8,22 @@ main:
   - name: infra
     dir: server/infra
     steps: 
-      - cmd: gg build-templates . --profile=example
+      - cmd: gg build-templates .
       - cmd: ./infra_deploy.sh
         dir: gcp # infers ./server/infra/gcp based on top level dir
+  - name: setup-ip
+    steps:
       - cmd: gg update-resource profiles/example.yml nakama.host $(./get_ip.sh)
   - name: game-client
     dir: game
     steps: 
-      - cmd: gg build-templates . --profile=example
+      - cmd: gg build-templates .
       - cmd: ./build_clients.sh
       - cmd: ./deploy_clients.sh
   - name: nakama-server
     dir: server
     steps: 
-      - cmd: gg build-templates . --profile=example
+      - cmd: gg build-templates .
       - cmd: ./build_server.sh
       - cmd: ./deploy/gcp/deploy.sh
 

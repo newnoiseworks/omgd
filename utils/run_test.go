@@ -32,7 +32,7 @@ func validCompare(expected interface{}, received interface{}) {
 func TestRunnerCmd(t *testing.T) {
 	cmdResponses = nil
 
-	profile := GetProfile("test")
+	profile := GetProfile("../profiles/test")
 
 	runner := Run{
 		OutputDir: ".tmp",

@@ -44,11 +44,13 @@ func (r *Run) Run() {
 		}
 
 		for _, step := range project.Steps {
+			stepDir := dir
+
 			if step.Dir != "" {
-				dir = fmt.Sprintf("%s/%s", dir, step.Dir)
+				stepDir = fmt.Sprintf("%s/%s", stepDir, step.Dir)
 			}
 
-			r.runCmdOnDir(step.Cmd, "", dir)
+			r.runCmdOnDir(step.Cmd, "", stepDir)
 		}
 	}
 }
@@ -66,11 +68,13 @@ func (r *Run) RunProjectStep(projectStep string) {
 		}
 
 		for _, step := range project.Steps {
+			stepDir := dir
+
 			if step.Dir != "" {
-				dir = fmt.Sprintf("%s/%s", dir, step.Dir)
+				stepDir = fmt.Sprintf("%s/%s", stepDir, step.Dir)
 			}
 
-			r.runCmdOnDir(step.Cmd, "", dir)
+			r.runCmdOnDir(step.Cmd, "", stepDir)
 		}
 	}
 }
@@ -114,11 +118,13 @@ func (r *Run) RunTask(task string) {
 		}
 
 		for _, step := range project.Steps {
+			stepDir := dir
+
 			if step.Dir != "" {
-				dir = fmt.Sprintf("%s/%s", dir, step.Dir)
+				stepDir = fmt.Sprintf("%s/%s", stepDir, step.Dir)
 			}
 
-			r.runCmdOnDir(step.Cmd, "", dir)
+			r.runCmdOnDir(step.Cmd, "", stepDir)
 		}
 	}
 }

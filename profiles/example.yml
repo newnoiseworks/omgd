@@ -4,22 +4,33 @@ git:
   # repo: .
 
 
-projects:
-  - dir: server/infra
+project:
+  - name: infra
+    dir: server/infra
     steps: 
+      - cmd: gg build-templates . --profile=example
       - cmd: ./infra_deploy.sh
-    ## Updating infra based stuff gets weird then no?
-    ## Could be solvable by a CLI based command to update the profile
-    ## which is used by the script / user
-  - dir: game
+        dir: gcp # infers ./server/infra/gcp based on top level dir
+      - cmd: gg update-resource profiles/example.yml nakama.host $(./get_ip.sh)
+  - name: game-client
+    dir: game
     steps: 
+      - cmd: gg build-templates . --profile=example
       - cmd: ./build_clients.sh
-        dir: .build # infers ./game/.build based on top level dir
       - cmd: ./deploy_clients.sh
-  - dir: server
+  - name: nakama-server
+    dir: server
     steps: 
+      - cmd: gg build-templates . --profile=example
       - cmd: ./build_server.sh
       - cmd: ./deploy/gcp/deploy.sh
+
+
+tasks:
+  - name: destroy-infra
+    cmd: ./destroy_infra.sh
+    dir: server/infra
+
 
 
 ## TPL stuff to remove?

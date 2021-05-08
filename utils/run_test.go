@@ -35,31 +35,31 @@ func TestRunnerCmd(t *testing.T) {
 	profile := GetProfile("../profiles/test")
 
 	runner := Run{
-		OutputDir: ".tmp",
+		OutputDir: ".",
 		CmdDir:    cmdOnDir,
 		Profile:   profile,
 	}
 
 	validResponseSet := []cmdOnDirResponse{
 		{
-			cmdStr:  "gg build-templates . --profile=../../../profiles/test",
+			cmdStr:  "gg build-templates . --profile=../../profiles/test",
 			cmdDesc: "",
-			cmdDir:  ".tmp/server/infra",
+			cmdDir:  "./server/infra",
 		},
 		{
 			cmdStr:  "./infra_deploy.sh",
 			cmdDesc: "",
-			cmdDir:  ".tmp/server/infra/gcp",
+			cmdDir:  "./server/infra/gcp",
 		},
 		{
-			cmdStr:  "gg build-templates . --profile=../../profiles/test",
+			cmdStr:  "gg build-templates . --profile=../profiles/test",
 			cmdDesc: "",
-			cmdDir:  ".tmp/game",
+			cmdDir:  "./game",
 		},
 		{
 			cmdStr:  "./deploy/gcp/deploy.sh",
 			cmdDesc: "",
-			cmdDir:  ".tmp/server",
+			cmdDir:  "./server",
 		},
 	}
 

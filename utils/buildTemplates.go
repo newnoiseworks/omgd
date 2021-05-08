@@ -24,7 +24,13 @@ func getData(environment string, buildPath string) *map[interface{}]interface{} 
 	fp := make(map[interface{}]interface{})
 	fp["profile"] = GetProfile(environment).GetProfileAsMap()
 
-	err := filepath.Walk(fmt.Sprintf("%s/resources/", buildPath), func(tmpl string, info fs.FileInfo, err error) error {
+	resourceDir := buildPath
+
+	if strings.HasPrefix(environment, "..") {
+		resourceDir = strings.Split(environment, "/profiles")[0]
+	}
+
+	err := filepath.Walk(fmt.Sprintf("%s/resources/", resourceDir), func(tmpl string, info fs.FileInfo, err error) error {
 		if err != nil {
 			log.Fatal(err)
 		}

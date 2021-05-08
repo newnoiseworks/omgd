@@ -22,7 +22,7 @@ var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
 
 func getData(environment string, buildPath string) *map[interface{}]interface{} {
 	fp := make(map[interface{}]interface{})
-	fp["profile"] = GetProfileAsMap(environment)
+	fp["profile"] = GetProfile(environment).GetProfileAsMap()
 
 	err := filepath.Walk(fmt.Sprintf("%s/resources/", buildPath), func(tmpl string, info fs.FileInfo, err error) error {
 		if err != nil {

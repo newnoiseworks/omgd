@@ -1,19 +1,13 @@
-git:
-  branch: master
-  repo: git@github.com:newnoiseworks/tpl-game-gd.git
-  # repo: .
-
-
 main:
   - name: infra
     dir: server/infra
     steps: 
       - cmd: gg build-templates .
-      - cmd: ./infra_deploy.sh
+      - cmd: ./infra_deploy_if_needed.sh
         dir: gcp # infers ./server/infra/gcp based on top level dir
   - name: setup-ip
     steps:
-      - cmd: gg update-resource profiles/example.yml nakama.host $(./get_ip.sh)
+      - cmd: gg update-profile nakama.host $(./server/infra/get_ip.sh)
   - name: game-client
     dir: game
     steps: 

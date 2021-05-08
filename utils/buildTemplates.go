@@ -1,4 +1,4 @@
-package config
+package utils
 
 import (
 	"crypto/md5"
@@ -14,7 +14,6 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/newnoiseworks/tpl-fred/utils"
 	"gopkg.in/yaml.v2"
 )
 
@@ -23,7 +22,7 @@ var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
 
 func getData(environment string, buildPath string) *map[interface{}]interface{} {
 	fp := make(map[interface{}]interface{})
-	fp["profile"] = utils.GetProfileAsMap(environment)
+	fp["profile"] = GetProfileAsMap(environment)
 
 	err := filepath.Walk(fmt.Sprintf("%s/resources/", buildPath), func(tmpl string, info fs.FileInfo, err error) error {
 		if err != nil {

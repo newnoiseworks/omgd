@@ -28,6 +28,8 @@ type ProfileConf struct {
 	}
 	Main  []CommandConfig `yaml:"main"`
 	Tasks []CommandConfig `yaml:"tasks"`
+	path  string
+	env   string
 }
 
 func GetProfileAsMap(env string) *map[interface{}]interface{} {
@@ -55,7 +57,10 @@ func GetProfileAsMap(env string) *map[interface{}]interface{} {
 func GetProfile(env string) *ProfileConf {
 	c := ProfileConf{}
 
-	yamlFile, err := ioutil.ReadFile(fmt.Sprintf("%s.yml", env))
+	c.env = env
+	c.path = fmt.Sprintf("%s.yml", env)
+
+	yamlFile, err := ioutil.ReadFile(c.path)
 	if err != nil {
 		log.Printf("yamlFile Get err: #%v ", err)
 	}
@@ -70,15 +75,14 @@ func GetProfile(env string) *ProfileConf {
 	return &c
 }
 
-// SaveProfile saves that profile to yml
-func SaveProfile(profile ProfileConf, env string) {
+func (profile *ProfileConf) SaveProfile() {
 	yamlBytes, err := yaml.Marshal(&profile)
 
 	if err != nil {
 		log.Fatal("Error marshalling from data to saving profile to yaml!")
 	}
 
-	err = ioutil.WriteFile(fmt.Sprintf("profiles/%s.yml", env), yamlBytes, 0755)
+	err = ioutil.WriteFile(profile.path, yamlBytes, 0755)
 
 	if err != nil {
 		log.Fatal("Error on file write to saving profile to yaml!")

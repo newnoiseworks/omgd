@@ -33,6 +33,10 @@ func (r *Run) runCmdOnDir(cmd string, cmdDesc string, cmdDir string) {
 	}
 
 	r.CmdDir(cmd, cmdDesc, cmdDir)
+
+	if strings.HasSuffix(baseCmd, "gg") && strings.Contains(cmd, "update-profile") {
+		r.Profile = GetProfile(r.Profile.env)
+	}
 }
 
 func (r *Run) Run() {

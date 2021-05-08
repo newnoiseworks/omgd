@@ -15,17 +15,25 @@ func (r *Run) runCmdOnDir(cmd string, cmdDesc string, cmdDir string) {
 	baseCmd := strings.Split(cmd, " ")[0]
 
 	if strings.HasSuffix(baseCmd, "gg") {
-		if strings.HasPrefix(cmdDir, "/") {
-			cmdDir = cmdDir[1:]
+		dir := r.OutputDir
+
+		dir = fmt.Sprintf("%s/%s", dir, cmdDir)
+
+		if strings.HasPrefix(dir, "/") {
+			dir = dir[1:]
 		}
 
-		if strings.HasSuffix(cmd, "/") {
-			cmdDir = cmdDir[:len(cmdDir)-1]
+		if strings.HasPrefix(dir, "./") {
+			dir = dir[2:]
 		}
 
-		path_prepend := "../"
+		if strings.HasSuffix(dir, "/") {
+			dir = dir[:len(dir)-1]
+		}
 
-		for i := 0; i < len(strings.Split(cmdDir, "/"))-1; i++ {
+		path_prepend := ""
+
+		for i := 0; i < len(strings.Split(dir, "/"))-1; i++ {
 			path_prepend += "../"
 		}
 
@@ -41,7 +49,11 @@ func (r *Run) runCmdOnDir(cmd string, cmdDesc string, cmdDir string) {
 
 func (r *Run) Run() {
 	for _, project := range r.Profile.Main {
-		dir := r.OutputDir
+		dir := "."
+
+		if r.OutputDir != "" {
+			dir = r.OutputDir
+		}
 
 		if project.Dir != "" {
 			dir = fmt.Sprintf("%s/%s", dir, project.Dir)

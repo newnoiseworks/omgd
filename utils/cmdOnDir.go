@@ -11,7 +11,12 @@ import (
 // CmdOnDir d
 func CmdOnDir(cmdStr string, cmdDesc string, cmdDir string) {
 	cmd := exec.Command("bash", "-c", cmdStr)
-	cmd.Dir = cmdDir
+
+	if cmdDir == "" {
+		cmd.Dir = "."
+	} else {
+		cmd.Dir = cmdDir
+	}
 
 	fmt.Print(aurora.Cyan(fmt.Sprintf("Running %s... ", cmdDesc)))
 

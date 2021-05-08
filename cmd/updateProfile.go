@@ -38,23 +38,24 @@ to quickly create a Cobra application.`,
 
 		keys := strings.Split(args[0], ".")
 
-		// TODO: The below should work recursively
-		for k, v := range profileMap {
-			if key, ok := k.(string); ok {
-				if key == keys[0] {
-					for kA := range v.(map[interface{}]interface{}) {
-						if keyTwo, ok := kA.(string); ok {
-							if keyTwo == keys[1] {
-								v.(map[interface{}]interface{})[keyTwo] = args[1]
-							}
-						}
-					}
+		setValueToKeyWithArray(keys, 0, profileMap, args[1])
+
+		utils.GetProfile(Profile).SaveProfileFromMap(&profileMap)
+	},
+}
+
+func setValueToKeyWithArray(keys []string, keyIndex int, obj map[interface{}]interface{}, value string) {
+	for k, v := range obj {
+		if key, ok := k.(string); ok {
+			if key == keys[keyIndex] {
+				if keyIndex == len(keys)-1 {
+					obj[k] = value
+				} else {
+					setValueToKeyWithArray(keys, keyIndex+1, v.(map[interface{}]interface{}), value)
 				}
 			}
 		}
-
-		profile.SaveProfileFromMap(&profileMap)
-	},
+	}
 }
 
 func init() {

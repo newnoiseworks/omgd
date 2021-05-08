@@ -16,14 +16,15 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
+	"strings"
 
+	"github.com/newnoiseworks/tpl-fred/utils"
 	"github.com/spf13/cobra"
 )
 
 // updateProfileCmd represents the updateProfile command
 var updateProfileCmd = &cobra.Command{
-	Use:   "updateProfile",
+	Use:   "update-profile",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -32,7 +33,27 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("updateProfile called")
+		profile := utils.GetProfile(Profile)
+		profileMap := profile.GetProfileAsMap()
+
+		keys := strings.Split(args[0], ".")
+
+		// TODO: The below should work recursively
+		for k, v := range profileMap {
+			if key, ok := k.(string); ok {
+				if key == keys[0] {
+					for kA := range v.(map[interface{}]interface{}) {
+						if keyTwo, ok := kA.(string); ok {
+							if keyTwo == keys[1] {
+								v.(map[interface{}]interface{})[keyTwo] = args[1]
+							}
+						}
+					}
+				}
+			}
+		}
+
+		profile.SaveProfileFromMap(&profileMap)
 	},
 }
 

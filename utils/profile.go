@@ -32,26 +32,21 @@ type ProfileConf struct {
 	env   string
 }
 
-func GetProfileAsMap(env string) *map[interface{}]interface{} {
-	profile := GetProfile(env)
-
-	yamlBytes, err := yaml.Marshal(&profile)
-
-	if err != nil {
-		log.Fatal("Error marshalling from data back to yaml!")
-	}
-
+func (pc ProfileConf) GetProfileAsMap() map[interface{}]interface{} {
 	c := make(map[interface{}]interface{})
 
-	err = yaml.Unmarshal(yamlBytes, &c)
+	yamlFile, err := ioutil.ReadFile(pc.path)
+
+	if err != nil {
+		log.Printf("yamlFile Get err: #%v ", err)
+	}
+	err = yaml.Unmarshal(yamlFile, &c)
+
 	if err != nil {
 		log.Fatalf("Unmarshal err: %v", err)
 	}
 
-	splits := strings.Split(env, "/")
-	c["name"] = splits[len(splits)-1]
-
-	return &c
+	return c
 }
 
 func GetProfile(env string) *ProfileConf {
@@ -75,8 +70,8 @@ func GetProfile(env string) *ProfileConf {
 	return &c
 }
 
-func (profile *ProfileConf) SaveProfile() {
-	yamlBytes, err := yaml.Marshal(&profile)
+func (profile ProfileConf) SaveProfileFromMap(profileMap *map[interface{}]interface{}) {
+	yamlBytes, err := yaml.Marshal(profileMap)
 
 	if err != nil {
 		log.Fatal("Error marshalling from data to saving profile to yaml!")

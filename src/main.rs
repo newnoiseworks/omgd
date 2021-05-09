@@ -44,7 +44,7 @@ fn main() {
             if tail {
                 run_cmd_on_dir::run("docker-compose up", "start them servers", "server", true);
             } else {
-                run_cmd_on_dir::run("docker-compose up -d", "start them servers", "server", true);
+                run_cmd_on_dir::run("docker-compose up -d", "start them servers", "server", false);
             }
         }
     }

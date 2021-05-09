@@ -3,13 +3,26 @@ use std::process::{Command, Stdio};
 pub fn run(cmd: &str, cmd_desc: &str, cmd_dir: &str, verbose: bool) {
     println!("{} ...", cmd_desc);
 
-    let mut command = Command::new(cmd);
+    let cmds: Vec<&str> = cmd
+        .split(|c| c == ' ')
+        .collect();
 
-    if verbose {
-        command.stdout(Stdio::null());
+    let mut command = Command::new(cmds[0]);
+
+    for n in 1..cmds.len() {
+        command.arg(cmds[n]);
     }
 
-    command.current_dir(cmd_dir)
+    if verbose {
+        command.stdout(Stdio::piped());
+    }
+     
+    let mut running_command = command.current_dir(cmd_dir)
             .spawn()
-            .expect("Command failed");
+            .unwrap();
+
+    running_command.wait().unwrap();
+
+    println!("Success!")
 }
+

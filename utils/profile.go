@@ -10,8 +10,9 @@ import (
 )
 
 type Command struct {
-	Cmd string `yaml:"cmd"`
-	Dir string `yaml:"dir"`
+	Cmd  string `yaml:"cmd"`
+	Dir  string `yaml:"dir"`
+	Desc string `yaml:"desc"`
 }
 
 type CommandConfig struct {

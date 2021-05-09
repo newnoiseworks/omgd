@@ -14,7 +14,7 @@ type cmdOnDirResponse struct {
 
 var cmdResponses = []cmdOnDirResponse{}
 
-var cmdOnDir = func(cmdStr string, cmdDesc string, cmdDir string) {
+var cmdOnDir = func(cmdStr string, cmdDesc string, cmdDir string, verbosity bool) {
 	cmdResponses = append(cmdResponses, cmdOnDirResponse{
 		cmdStr:  cmdStr,
 		cmdDesc: cmdDesc,
@@ -38,12 +38,13 @@ func TestRunnerCmd(t *testing.T) {
 		OutputDir: ".",
 		CmdDir:    cmdOnDir,
 		Profile:   profile,
+		Verbosity: false,
 	}
 
 	validResponseSet := []cmdOnDirResponse{
 		{
 			cmdStr:  "gg build-templates . --profile=../../profiles/test",
-			cmdDesc: "",
+			cmdDesc: "builds infra templates",
 			cmdDir:  "./server/infra",
 		},
 		{

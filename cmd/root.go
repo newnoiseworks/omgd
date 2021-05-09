@@ -15,6 +15,9 @@ var Profile string
 // OutputDir this is where all builds and build artifacts will be written to
 var OutputDir string
 
+// Verbosity how verbose should output be
+var Verbosity bool
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "tpl-fred",
@@ -46,6 +49,8 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&Profile, "profile", "profiles/local", "yml profile representing this build in the build/profiles folder")
+
+	rootCmd.PersistentFlags().BoolVar(&Verbosity, "verbose", false, "include for verbose output of commands")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.

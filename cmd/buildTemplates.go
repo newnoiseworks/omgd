@@ -16,15 +16,13 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/newnoiseworks/tpl-fred/utils"
 	"github.com/spf13/cobra"
 )
 
-// destroyCmd represents the destroy command
-var destroyCmd = &cobra.Command{
-	Use:   "destroy",
+// buildTemplatesCmd represents the buildTemplates command
+var buildTemplatesCmd = &cobra.Command{
+	Use:   "build-templates",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -33,30 +31,20 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("destroy called")
-
-		project := args[0]
-
-		switch project {
-		case "infra":
-			// TODO: Organize the below elsewhere, probably, one day
-			utils.CmdOnDir("./tf_import.sh", "Importing existing terraform resources", OutputDir+"/server/infra/gcp/")
-			utils.CmdOnDir("terraform destroy -auto-approve", "Destroys infrastructure", OutputDir+"/server/infra/gcp/")
-			break
-		}
+		utils.BuildTemplatesFromPath(args[0], Profile, OutputDir)
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(destroyCmd)
+	rootCmd.AddCommand(buildTemplatesCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// destroyCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// buildTemplatesCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// destroyCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// buildTemplatesCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

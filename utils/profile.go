@@ -1,49 +1,47 @@
 package utils
 
 import (
-	"crypto/md5"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 )
 
-// ProfileConf docs
+type Command struct {
+	Cmd string `yaml:"cmd"`
+	Dir string `yaml:"dir"`
+}
+
+type CommandConfig struct {
+	Name  string    `yaml:"name"`
+	Dir   string    `yaml:"dir"`
+	Steps []Command `yaml:"steps"`
+}
+
 type ProfileConf struct {
-	Nakama struct {
-		Host   string `yaml:"host"`
-		Key    string `yaml:"key"`
-		Port   int    `yaml:"port"`
-		Secure bool   `yaml:"secure"`
-	}
-	Gcloud struct {
-		Project string `yaml:"project"`
-		Region  string `yaml:"region"`
-		Zone    string `yaml:"zone"`
-	}
-	Game struct {
-		RealWorldSecondsPerDay string `yaml:"real_world_seconds_per_day"`
-		Version                string `yaml:"version"`
-	}
-	Git struct {
+	Name string
+	Git  struct {
 		GameBranch string `yaml:"branch"`
 		Repo       string `yaml:"repo"`
 	}
+	Main  []CommandConfig `yaml:"main"`
+	Tasks []CommandConfig `yaml:"tasks"`
+	path  string
+	env   string
 }
 
-func GetProfileAsMap(env string) map[interface{}]interface{} {
-	profile := GetProfile(env)
-
-	yamlBytes, err := yaml.Marshal(&profile)
-
-	if err != nil {
-		log.Fatal("Error marshalling from data back to yaml!")
-	}
-
+func (pc ProfileConf) GetProfileAsMap() map[interface{}]interface{} {
 	c := make(map[interface{}]interface{})
 
-	err = yaml.Unmarshal(yamlBytes, &c)
+	yamlFile, err := ioutil.ReadFile(pc.path)
+
+	if err != nil {
+		log.Printf("yamlFile Get err: #%v ", err)
+	}
+	err = yaml.Unmarshal(yamlFile, &c)
+
 	if err != nil {
 		log.Fatalf("Unmarshal err: %v", err)
 	}
@@ -51,10 +49,13 @@ func GetProfileAsMap(env string) map[interface{}]interface{} {
 	return c
 }
 
-func GetProfile(env string) ProfileConf {
+func GetProfile(env string) *ProfileConf {
 	c := ProfileConf{}
 
-	yamlFile, err := ioutil.ReadFile(fmt.Sprintf("profiles/%s.yml", env))
+	c.env = env
+	c.path = fmt.Sprintf("%s.yml", env)
+
+	yamlFile, err := ioutil.ReadFile(c.path)
 	if err != nil {
 		log.Printf("yamlFile Get err: #%v ", err)
 	}
@@ -63,26 +64,20 @@ func GetProfile(env string) ProfileConf {
 		log.Fatalf("Unmarshal err: %v", err)
 	}
 
-	if env != "local" {
-		var key = fmt.Sprintf("the-promised-land-%s-v%s", env, c.Game.Version)
-		data := []byte(key)
-		c.Nakama.Key = fmt.Sprintf("%x", md5.Sum(data))
-	} else {
-		c.Nakama.Key = "defaultkey"
-	}
+	splits := strings.Split(env, "/")
+	c.Name = splits[len(splits)-1]
 
-	return c
+	return &c
 }
 
-// SaveProfile saves that profile to yml
-func SaveProfile(profile ProfileConf, env string) {
-	yamlBytes, err := yaml.Marshal(&profile)
+func (profile ProfileConf) SaveProfileFromMap(profileMap *map[interface{}]interface{}) {
+	yamlBytes, err := yaml.Marshal(profileMap)
 
 	if err != nil {
 		log.Fatal("Error marshalling from data to saving profile to yaml!")
 	}
 
-	err = ioutil.WriteFile(fmt.Sprintf("profiles/%s.yml", env), yamlBytes, 0755)
+	err = ioutil.WriteFile(profile.path, yamlBytes, 0755)
 
 	if err != nil {
 		log.Fatal("Error on file write to saving profile to yaml!")

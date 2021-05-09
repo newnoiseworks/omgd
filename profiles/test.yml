@@ -1,24 +1,23 @@
+git:
+  branch: master
+  repo: git@github.com:newnoiseworks/tpl-game-gd.git
+  # repo: .
+
 main:
   - name: infra
-    dir: server/infra
+    dir: server
     steps: 
       - cmd: gg build-templates .
-      - cmd: ./infra_deploy_if_needed.sh
-        dir: gcp # infers ./server/infra/gcp based on top level dir
-  - name: setup-ip
-    steps:
-      - cmd: gg update-profile nakama.host $(./server/infra/get_ip.sh)
+        dir: infra
+      - cmd: ./infra_deploy.sh
+        dir: infra/gcp
   - name: game-client
     dir: game
     steps: 
       - cmd: gg build-templates .
-      - cmd: ./build_clients.sh
-      - cmd: ./deploy_clients.sh
   - name: nakama-server
     dir: server
     steps: 
-      - cmd: gg build-templates .
-      - cmd: ./build_server.sh
       - cmd: ./deploy/gcp/deploy.sh
 
 
@@ -44,4 +43,4 @@ nakama:
 
 game:
   real_world_seconds_per_day: 12 * 60
-  version: 0.1.23
+  version: test

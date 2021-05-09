@@ -45,7 +45,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&Profile, "profile", "local", "yml profile representing this build in the build/profiles folder")
+	rootCmd.PersistentFlags().StringVar(&Profile, "profile", "profiles/local", "yml profile representing this build in the build/profiles folder")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -53,9 +53,5 @@ func init() {
 }
 
 func initConfig() {
-	if Profile == "local" {
-		OutputDir = "./"
-	} else {
-		OutputDir = fmt.Sprintf(".tmp/%s", Profile)
-	}
+	OutputDir = "."
 }

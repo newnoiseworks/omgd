@@ -1,15 +1,13 @@
 # gg
 ### GameDev Glue
 
-#### Automated build and deploy of your game's clients, servers, and server infrastructure
+#### Automation by configuration for your multi tiered game development projects
 
 ## Vision
 
-`gg` is a task runner meant to "glue" together your game servers' infrastructure setup, game client builds, and client / server deployments via a standardized YML configuration file for each "profile" or environment you wish to deploy to, and omitting any of the things you don't need.
+`gg` is a task runner meant to "glue" together your game's various projects -- infrastructure setup, game client, game servers, more, maybe less -- with your existing build and deploy processes into a single configuration file meant to reflect an environment -- your local computer, a demo server, production - whatever -- and store it in a repository for everyone on the team to share.
 
-Useful as a wrapper tool to setup git branch based deployment to new servers for easier testing. You still need to provide your own build, deploy, and infrastrucure processes, but `gg` will run them for you via a simple command structure directed by a `YML` file.
-
-`gg` also adds resource backed templating, so you can share data between your game and server before building - including infrastructure setup e.g. IP addresses of newly created servers, but also for simpler things like inventory, where item prices are only on the server for instance. Helps to deploy as well as bootstrap local infrastructure for local development.
+`gg` also adds resource backed templating, so you can share data between your projects and easily spawn several "versions" of your game all using different configurations for your testing needs.
 
 See [`omgd`](https://github.com/newnoiseworks/omgd) for a project which uses the `gg` runner base in setting up projects for you with a preconfigured build, deploy, and infra setup process using Godot, Nakama, and Terraform.
 

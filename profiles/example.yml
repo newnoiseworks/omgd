@@ -3,23 +3,32 @@ main:
     dir: server/infra
     steps: 
       - cmd: gg build-templates .
+        desc: building templates for infra
       - cmd: ./infra_deploy_if_needed.sh
         dir: gcp # infers ./server/infra/gcp based on top level dir
+        desc: deploying infra if needed
   - name: setup-ip
     steps:
-      - cmd: gg update-profile nakama.host $(./server/infra/get_ip.sh)
+      - cmd: gg update-profile server.host $(./server/infra/get_ip.sh)
+        desc: updates IP address on current profile
   - name: game-client
     dir: game
     steps: 
       - cmd: gg build-templates .
+        desc: building game templates
       - cmd: ./build_clients.sh
+        desc: building game clients
       - cmd: ./deploy_clients.sh
+        desc: deploying game clients
   - name: nakama-server
     dir: server
     steps: 
       - cmd: gg build-templates .
+        desc: building server templates
       - cmd: ./build_server.sh
+        desc: building server
       - cmd: ./deploy/gcp/deploy.sh
+        desc: deploying to GCP
 
 
 tasks:
@@ -37,7 +46,7 @@ tasks:
 #   cloudZone: us-east1-b
 #
 
-nakama:
+server:
   host: 127.0.0.1
   port: 7350
   secure: false

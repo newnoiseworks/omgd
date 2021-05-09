@@ -50,6 +50,7 @@ $ gg run task [name-of-task] [number-of-step (optional)]
 			Profile:   profile,
 			OutputDir: OutputDir,
 			CmdDir:    utils.CmdOnDir,
+			Verbosity: Verbosity,
 		}
 
 		switch len(args) {

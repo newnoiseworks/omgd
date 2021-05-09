@@ -9,6 +9,7 @@ main:
     steps: 
       - cmd: gg build-templates .
         dir: infra
+        desc: "builds infra templates"
       - cmd: ./infra_deploy.sh
         dir: infra/gcp
   - name: game-client

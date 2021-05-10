@@ -1,6 +1,6 @@
-use std::process::{Command, Stdio};
+use std::process::Command;
 
-pub fn run(cmd: &str, cmd_desc: &str, cmd_dir: &str, verbose: bool) {
+pub fn run(cmd: &str, cmd_desc: &str, cmd_dir: &str) {
     println!("{} ...", cmd_desc);
 
     let cmds: Vec<&str> = cmd
@@ -12,16 +12,10 @@ pub fn run(cmd: &str, cmd_desc: &str, cmd_dir: &str, verbose: bool) {
     for n in 1..cmds.len() {
         command.arg(cmds[n]);
     }
-
-    if verbose {
-        command.stdout(Stdio::piped());
-    }
      
-    let mut running_command = command.current_dir(cmd_dir)
-            .spawn()
+    command.current_dir(cmd_dir)
+            .status()
             .unwrap();
-
-    running_command.wait().unwrap();
 
     println!("Success!")
 }

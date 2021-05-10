@@ -42,9 +42,9 @@ fn main() {
         Command::ServerStart { tail } => {
             println!("Start that server");
             if tail {
-                run_cmd_on_dir::run("docker-compose up", "start them servers", "server", true);
+                run_cmd_on_dir::run("docker-compose up", "start them servers", "server");
             } else {
-                run_cmd_on_dir::run("docker-compose up -d", "start them servers", "server", false);
+                run_cmd_on_dir::run("docker-compose up -d", "start them servers", "server");
             }
         }
     }

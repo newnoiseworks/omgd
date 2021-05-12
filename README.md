@@ -14,6 +14,13 @@ For engines, we're starting with Godot 3 for the game client, Heroic Labs' Nakam
 
 `$ omgd new [project name]` - creates a new project in a folder named after the first argument
 
+`$ omgd server-start` - starts the local server
+`$ omgd server-stop` - stops the local server
+`$ omgd build-templates` - builds templates from resources data
+`$ omgd build-clients` - builds game clients to game/dist folder
+`$ omgd deploy [profile]` - builds and deploys, including infra, to the profile set in the profiles/ folder
+`$ omgd destroy-infra [profile]` - destroys the remote infrastructure
+
 `$ omgd generate [type]` - generates project assets, e.g.:
 - `$ omgd generate dungeon [dungeon name]`
 - `$ omgd generate dungeon-event [dungeon name] [event name] [event args]`

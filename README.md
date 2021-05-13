@@ -12,15 +12,23 @@ For engines, we're starting with Godot 3 for the game client, Heroic Labs' Nakam
 ## Usage
 #### Warning: In development! The below are just proposals
 
-`$ omgd new [project name]` - creates a new project in a folder named after the first argument
+- `$ omgd new [project name]` - creates a new project in a folder named after the first argument
+- `$ omgd server-start` - starts the local server
+- `$ omgd server-stop` - stops the local server
+- `$ omgd build-templates` - builds templates from resources data
+- `$ omgd build-clients` - builds game clients to game/dist folder
+- `$ omgd deploy [profile]` - builds and deploys, including infra, to the profile set in the profiles/ folder
+- `$ omgd destroy-infra [profile]` - destroys the remote infrastructure
 
-`$ omgd generate [type]` - generates project assets, e.g.:
+- `$ omgd generate [type]` - generates project assets, e.g.:
 - `$ omgd generate dungeon [dungeon name]`
 - `$ omgd generate dungeon-event [dungeon name] [event name] [event args]`
 
 ## Installation
 
-Currently you must download the repo and build the binary via `cargo` (TODO: insert more details here about getting that into ~/.local/bin perhaps, or some other rust-approved method of running this on example projects)
+Currently you must download the repo and build the binary via `cargo` 
+
+`$ cargo build --release && cp targets/release/omgd ~/.local/bin`
 
 ### Prereqs
 

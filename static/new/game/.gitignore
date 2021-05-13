@@ -1,0 +1,11 @@
+godot.log
+debug.log
+
+# Godot-specific ignores
+.import/
+export.cfg
+
+dist
+
+.cookie
+.DS_Store

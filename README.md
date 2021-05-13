@@ -5,9 +5,11 @@
 
 ## Vision
 
-`omgd` aims to make it easy to develop multiplayer games. It's not a game engine - `omgd` is an opinionated boilerplate and code generation tool that wraps around existing game and server engines to make multiplayer game development easier, including the creation and deployment of servers on the cloud.
+`omgd` aims to make it easy to develop multiplayer games. It's not a game engine - `omgd` is an opinionated boilerplate and code generation tool that wraps around existing game, server, and cloud technologies to make multiplayer game development easier, including the creation and deployment of servers on the cloud.
 
 For engines, we're starting with Godot 3 for the game client, Heroic Labs' Nakama for the server framework, and Google Cloud for ~~our favorite big brother~~ a cloud backend.
+
+The long term vision is to add an [agones](https://agones.dev/site/) layer to the stack with automated server builds, to support "instance" style multiplayer development w/n Godot itself (currently you must write your own server code outside the game engine and w/n Nakam's module system).
 
 ## Usage
 #### Warning: In development! The below are just proposals

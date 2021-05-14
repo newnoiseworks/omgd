@@ -1,7 +1,6 @@
 use structopt::StructOpt;
 
-mod run_cmd_on_dir;
-//mod repo_resource_fetcher;
+mod utils;
 
 #[derive(StructOpt)]
 struct Cli {
@@ -60,48 +59,48 @@ fn main() {
             // repo_resource_fetcher::get_directory(name)
             let cmd = format!("git clone git@github.com:newnoiseworks/tpl-game-gd.git {}", name);
             let desc = format!("generating new project in folder ./{}", name);
-            run_cmd_on_dir::run(&cmd, &desc, ".");
+            utils::run_cmd_on_dir(&cmd, &desc, ".");
         }
         Command::Codegen { plan } => {
             println!("We will generate code from plan {}.", plan)
         }
         Command::ServerStart { tail } => {
             if tail {
-                run_cmd_on_dir::run("docker-compose up", "starting omgd servers...", "server");
+                utils::run_cmd_on_dir("docker-compose up", "starting omgd servers...", "server");
             } else {
-                run_cmd_on_dir::run("docker-compose up -d", "starting omgd servers...", "server");
+                utils::run_cmd_on_dir("docker-compose up -d", "starting omgd servers...", "server");
             }
         }
         Command::ServerStop {} => {
-            run_cmd_on_dir::run("docker-compose down", "stopping omgd servers...", "server");
+            utils::run_cmd_on_dir("docker-compose down", "stopping omgd servers...", "server");
         }
         Command::BuildTemplates { profile } => {
             match profile {
                 Some(p) => {
                     let cmd = format!("gg build-templates . --profile=profiles/{}", p);
-                    run_cmd_on_dir::run(&cmd, "building templates...", ".");
+                    utils::run_cmd_on_dir(&cmd, "building templates...", ".");
                 }
-                None => run_cmd_on_dir::run("gg build-templates .", "building templates...", ".")
+                None => utils::run_cmd_on_dir("gg build-templates .", "building templates...", ".")
             }
         }
         Command::BuildClients { } => {
-            run_cmd_on_dir::run("gg run", "building clients in game/dist folder...", ".");
+            utils::run_cmd_on_dir("gg run", "building clients in game/dist folder...", ".");
         }
         Command::Deploy { profile } => {
-            run_cmd_on_dir::run("mkdir .omgdtmp", "creating temporary dir...", ".");
+            utils::run_cmd_on_dir("mkdir .omgdtmp", "creating temporary dir...", ".");
 
             let dir = format!(".omgdtmp/{}", profile);
             let git_clone_cmd = format!("git clone . {}", dir);
 
-            run_cmd_on_dir::run(&git_clone_cmd, "cloning repo...", ".");
+            utils::run_cmd_on_dir(&git_clone_cmd, "cloning repo...", ".");
 
             let bnd_cmd = format!("gg run --profile=profiles/{}", profile);
-            run_cmd_on_dir::run(&bnd_cmd, "build and deploying repo...", &dir);
+            utils::run_cmd_on_dir(&bnd_cmd, "build and deploying repo...", &dir);
         }
         Command::DestroyInfra { profile } => {
             let dir = format!(".omgdtmp/{}", profile);
             let cmd = format!("gg run task destroy-infra --profile=profiles/{}", profile);
-            run_cmd_on_dir::run(&cmd, "destroying infra...", &dir);
+            utils::run_cmd_on_dir(&cmd, "destroying infra...", &dir);
         }
     }
 }

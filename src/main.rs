@@ -57,9 +57,7 @@ fn main() {
     match args.commands {
         Command::New { name } => {
             // repo_resource_fetcher::get_directory(name)
-            let cmd = format!("git clone git@github.com:newnoiseworks/tpl-game-gd.git {}", name);
-            let desc = format!("generating new project in folder ./{}", name);
-            utils::run_cmd_on_dir(&cmd, &desc, ".");
+            utils::get_directory_from_repo("static/new", &name);
         }
         Command::Codegen { plan } => {
             println!("We will generate code from plan {}.", plan)

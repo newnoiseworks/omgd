@@ -1,5 +1,6 @@
 use std::process::Command;
 use std::env;
+use std::fs;
 
 pub fn run_cmd_on_dir(cmd: &str, cmd_desc: &str, cmd_dir: &str) {
     println!("{} ...", cmd_desc);
@@ -45,9 +46,9 @@ pub fn get_directory_from_repo(sub_folder: &str, target_path: &str) {
 
     run_cmd_on_dir("git config core.sparseCheckout true", "setting folder to sparse checkout", &repo_dir);
 
-    let setup_sparse_checkout = format!("echo \"{}\" >> .git/info/sparse-checkout", sub_folder);
+    let sparse_checkout_path = format!("{}/.git/info/sparse_checkout", repo_dir);
 
-    run_cmd_on_dir(&setup_sparse_checkout, "setting up sparse-checkout file", &repo_dir);
+    fs::write(sparse_checkout_path, sub_folder).expect("Unable to write sparse checkout file");
 
     let setup_origin = format!("git remote add -f origin {}", repo);
 

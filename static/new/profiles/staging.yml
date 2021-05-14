@@ -1,0 +1,52 @@
+game:
+  real_world_seconds_per_day: 12 * 60
+  version: its-a-gg
+gcloud:
+  project: the-promised-land-dev
+  region: us-east4
+  zone: us-east4-c
+main:
+- dir: server/infra/gcp
+  name: infra
+  steps:
+  - cmd: gg build-templates .
+    desc: building templates for infra
+  - cmd: terraform init
+    desc: setting up terraform
+  - cmd: ./tf_import.sh
+    desc: importing existing resources via terraform
+  - cmd: terraform apply -auto-approve
+    desc: updating infrastructure if needed
+  - cmd: gg update-profile nakama.host $(terraform output -raw server_ip)
+    desc: setting IP of host to current profile
+- dir: game
+  name: game-client
+  steps:
+  - cmd: gg build-templates .
+    desc: building templates for game client
+  - cmd: BUILD_ENV=staging ./build_clients.sh
+    desc: building game clients for distros
+  - cmd: ./deploy_clients.sh
+    desc: deploying clients
+- dir: server
+  name: nakama-server
+  steps:
+  - cmd: gg build-templates .
+    desc: building templates for game server
+  - cmd: cp -rf ../game/dist/web-staging/* nakama/website
+    desc: copy web build into server
+  - cmd: GCP_PROJECT=the-promised-land-dev GCP_ZONE=us-east4-c ./deploy.sh
+    desc: deploy game server to GCP
+    dir: deploy/gcp
+nakama:
+  host: 35.245.187.187
+  port: 7350
+  secure: false
+tasks:
+- dir: server/infra/gcp
+  name: destroy-infra
+  steps:
+  - cmd: gg build-templates .
+  - cmd: terraform init
+  - cmd: ./tf_import.sh
+  - cmd: terraform destroy -auto-approve

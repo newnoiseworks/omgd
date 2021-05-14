@@ -1,5 +1,4 @@
 local nk = require("nakama")
-local farm = require("farm_grid")
 local DM = require("dungeon_manager")
 
 local M = {}
@@ -145,19 +144,7 @@ function M.match_loop(context, dispatcher, tick, state, messages)
 end
 
 function perform_message_validation(message, dispatcher, state)
-  if message.op_code == 1 then -- 1 == farming event
-    if farm.handle_match_farm_action(message) == false then
-      dispatcher.broadcast_message(
-        4, -- data reset game event enum ID in client
-        nk.json_encode(
-          {
-            offendingUUID = message.sender.user_id
-          }
-        ),
-        nil
-      )
-    end
-  elseif message.op_code == 0 then -- 0 == movement event
+  if message.op_code == 0 then -- 0 == movement event
     local data = nk.json_decode(message.data)
 
     if (data.ping == "1") then -- 1 == "ping"

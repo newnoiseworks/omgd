@@ -39,12 +39,7 @@ pub fn get_directory_from_repo(sub_folder: &str, target_path: &str) {
         repo = format!("git@github.com:newnoiseworks/omgd.git");
     }
 
-    let home_dir;
-
-    match env::var("HOME") {
-        Ok(h) => home_dir = h,
-        Err(e) => panic!("No $HOME var set! {}", e),
-    }
+    let home_dir = env::var("HOME").expect("$HOME env var not set");
 
     let repo_dir = format!("{}/.omgdtmp/repo", home_dir);
     let mk_repo_dir_cmd = format!("mkdir -p {}", repo_dir);

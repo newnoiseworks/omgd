@@ -23,10 +23,20 @@ pub fn run_cmd_on_dir(cmd: &str, cmd_desc: &str, cmd_dir: &str) {
 }
 
 pub fn get_directory_from_repo(sub_folder: &str, target_path: &str) {
-    let mut repo = "git@github.com:newnoiseworks/omgd.git";
+    let repo;
 
     if cfg!(debug_assertions) {
-        // repo = "."; 
+        let path;
+
+        match env::current_dir() {
+            Ok(d) => path = d,
+            Err(e) => panic!("Couldn't get cwd {}", e),
+        }
+
+        let path_string = path.to_str().unwrap().to_string();
+        repo = format!("{}/.git", &path_string);
+    } else {
+        repo = format!("git@github.com:newnoiseworks/omgd.git");
     }
 
     let home_dir;

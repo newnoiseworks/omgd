@@ -2,6 +2,15 @@ use std::process::Command;
 use std::env;
 use std::fs;
 
+// run_cmd_on_dir simply runs a given command on the directory.
+//
+// Note: Since this splits a string into arguments, certain chain
+// commands e.g. `$ echo 'somestring' >> some_file.txt` may not
+// work out so well.
+//
+// * cmd - The command to run
+// * cmd_desc - The description of the command
+// * cmd_dir - The directory to run the command on
 pub fn run_cmd_on_dir(cmd: &str, cmd_desc: &str, cmd_dir: &str) {
     println!("{} ...", cmd_desc);
 
@@ -22,6 +31,15 @@ pub fn run_cmd_on_dir(cmd: &str, cmd_desc: &str, cmd_dir: &str) {
     println!("Success!")
 }
 
+// get_directory_from_repo downloads sub directories from this repo to the target path.
+//
+// When running in release mode, it will check the live github repo. Locally, it will
+// treat the cwd .git repo as the origin. Either way it will perform a sparse checkout
+// downloading only the folder requested. Afterwards it will move it to the target path
+// and then delete the repo directory.
+//
+// * `sub_folder` - The sub folder within this repo to download, typically w/n static
+// * `target_path` - The final target directory to copy the sub folder to.
 pub fn get_directory_from_repo(sub_folder: &str, target_path: &str) {
     let repo;
 
@@ -29,12 +47,11 @@ pub fn get_directory_from_repo(sub_folder: &str, target_path: &str) {
         let path;
 
         match env::current_dir() {
-            Ok(d) => path = d,
+            Ok(d) => path = d.to_str().unwrap().to_string(),
             Err(e) => panic!("Couldn't get cwd {}", e),
         }
 
-        let path_string = path.to_str().unwrap().to_string();
-        repo = format!("{}/.git", &path_string);
+        repo = format!("{}/.git", &path);
     } else {
         repo = format!("git@github.com:newnoiseworks/omgd.git");
     }
@@ -58,8 +75,17 @@ pub fn get_directory_from_repo(sub_folder: &str, target_path: &str) {
     let setup_origin = format!("git remote add -f origin {}", repo);
 
     run_cmd_on_dir(&setup_origin, "setting up sparse-checkout file", &repo_dir);
+
+    let git_pull_cmd;
+
+    if cfg!(debug_assertions) {
+        // TODO: If running locally / via cargo run, the below should be automated somehow
+        git_pull_cmd = "git pull origin 2-new-project-generator";
+    } else {
+        git_pull_cmd = "git pull origin master";
+    }
     
-    run_cmd_on_dir("git pull origin 2-new-project-generator", "getting files from repo", &repo_dir);
+    run_cmd_on_dir(&git_pull_cmd, "getting files from repo", &repo_dir);
 
     let final_move = format!("mv {}/{} {}", repo_dir, sub_folder, target_path);
 

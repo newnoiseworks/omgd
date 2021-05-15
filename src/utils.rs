@@ -44,13 +44,7 @@ pub fn get_directory_from_repo(sub_folder: &str, target_path: &str) {
     let repo;
 
     if cfg!(debug_assertions) {
-        let path;
-
-        match env::current_dir() {
-            Ok(d) => path = d.to_str().unwrap().to_string(),
-            Err(e) => panic!("Couldn't get cwd {}", e),
-        }
-
+        let path = env::current_dir().expect("Couldn't get cwd").to_str().unwrap().to_string();
         repo = format!("{}/.git", &path);
     } else {
         repo = format!("git@github.com:newnoiseworks/omgd.git");

@@ -6,6 +6,8 @@ var password: String
 
 onready var version_incorrect_modal: WindowDialog = $VersionIncorrect
 
+var game_scene: PackedScene = ResourceLoader.load("res://RootScenes/Game.tscn", "", true)
+
 
 func username_text_changed(new_text: String):
 	username = new_text
@@ -37,6 +39,8 @@ func sign_up_button_pressed():
 
 func handle_post_login(login_successful: bool):
 	if login_successful:
+		get_parent().get_parent().queue_free()
+		get_tree().get_root().call_deferred("add_child", game_scene.instance())
 		print("logged in!")
 	else:
 		print("auth failed!")

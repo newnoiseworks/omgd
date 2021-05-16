@@ -67,7 +67,7 @@ end
 
 function broadcast_state(dispatcher, state)
   dispatcher.broadcast_message(
-    6,
+    1,
     nk.json_encode(
       {
         plotMap = state.plot_map,

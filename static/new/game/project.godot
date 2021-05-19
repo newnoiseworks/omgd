@@ -109,7 +109,6 @@ GameConfig="*res://Autoloads/GameConfig.gd"
 SessionManager="*res://Autoloads/SessionManager.gd"
 MatchManager="*res://Autoloads/MatchManager.gd"
 MatchEvent="*res://Autoloads/MatchEvent.gd"
-MoveTarget="*res://Character/MoveTarget.gd"
 Player="*res://Character/Player.tscn"
 
 [input]

@@ -2,7 +2,7 @@ game:
   real_world_seconds_per_day: 12 * 60
   version: its-a-gg
 gcloud:
-  project: the-promised-land-dev
+  project: omgd-test
   region: us-east4
   zone: us-east4-c
 main:
@@ -26,8 +26,6 @@ main:
     desc: building templates for game client
   - cmd: BUILD_ENV=staging ./build_clients.sh
     desc: building game clients for distros
-  - cmd: ./deploy_clients.sh
-    desc: deploying clients
 - dir: server
   name: nakama-server
   steps:
@@ -35,11 +33,11 @@ main:
     desc: building templates for game server
   - cmd: cp -rf ../game/dist/web-staging/* nakama/website
     desc: copy web build into server
-  - cmd: GCP_PROJECT=the-promised-land-dev GCP_ZONE=us-east4-c ./deploy.sh
+  - cmd: GCP_PROJECT=omgd-test GCP_ZONE=us-east4-c ./deploy.sh
     desc: deploy game server to GCP
     dir: deploy/gcp
 nakama:
-  host: 35.245.187.187
+  host: ???
   port: 7350
   secure: false
 tasks:

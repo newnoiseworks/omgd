@@ -72,7 +72,9 @@ pub fn get_directory_from_repo(sub_folder: &str, target_path: &str) {
         // TODO: If running locally / via cargo run, the below should be automated somehow
         git_pull_cmd = "git pull origin 2-new-project-generator";
     } else {
-        git_pull_cmd = "git pull origin master";
+        git_pull_cmd = "git pull origin 2-new-project-generator";
+        // TODO: on final merge of this branch, go w/ below
+        // git_pull_cmd = "git pull origin master";
     }
     
     run_cmd_on_dir(&git_pull_cmd, "getting files from repo", &repo_dir);

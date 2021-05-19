@@ -1,0 +1,39 @@
+main:
+  - name: game-client
+    dir: game
+    steps: 
+      - cmd: gg build-templates .
+        desc: "building game templates"
+      - cmd: BUILD_ENV=local ./build_clients.sh
+        desc: "building clients into game/dist folder"
+
+tasks:
+  - name: update-templates
+    steps:
+      - cmd: gg build-templates .
+    dir: 
+  - name: start-server
+    steps:
+      - cmd: gg build-templates .
+      - cmd: docker-compose up -d
+    dir: server
+  - name: stop-server
+    steps:
+      - cmd: docker-compose down
+    dir: server
+  - name: reset-server-data
+    steps:
+      - cmd: docker-compose down -v
+    dir: server
+
+
+nakama:
+  host: 127.0.0.1
+  port: 7350
+  secure: false
+  key: default-key
+
+game:
+  real_world_seconds_per_day: 12 * 60
+  version: 0.1.23
+

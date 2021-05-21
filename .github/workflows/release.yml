@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  bumpversion:
+  goreleaser:
     runs-on: ubuntu-latest
     steps:
       -
@@ -19,20 +19,10 @@ jobs:
           fetch-depth: 0
       - 
         name: Bump version and push tag
-        uses: SOLIDSoftworks/semver-tags
-        with:
+        uses: anothrNick/github-tag-action@1.26.0
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          tag-prefix: true 
-          default-version: '0.1.0'
-          prerelease: 'alpha'
-  goreleaser:
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+          WITH_V: true 
       -
         name: Set up Go
         uses: actions/setup-go@v2

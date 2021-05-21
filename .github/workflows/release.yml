@@ -19,10 +19,12 @@ jobs:
           fetch-depth: 0
       - 
         name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.26.0
-        env:
+        uses: SOLIDSoftworks/semver-tags
+        with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true 
+          tag-prefix: true 
+          default-version: '0.1.0'
+          prerelease: 'alpha'
   goreleaser:
     runs-on: ubuntu-latest
     steps:

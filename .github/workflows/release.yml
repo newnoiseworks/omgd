@@ -18,15 +18,6 @@ jobs:
         with:
           fetch-depth: 0
       - 
-        name: GH release action
-        uses: taiki-e/create-gh-release-action@v1
-        # with:
-          # (optional)
-          # changelog: CHANGELOG.md
-        env:
-          # (required)
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - 
         name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.26.0
         env:

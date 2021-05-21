@@ -1,9 +1,10 @@
 name: tagrelease
 
 on:
-  create:
-    tags:
-      - v[0-9]+.*
+  workflow_run:
+    workflows: ["mainpush"]
+    branches: [main]
+    types: [completed]
 
 jobs:
   create-release:

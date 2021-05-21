@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  goreleaser:
+  versionbump:
     runs-on: ubuntu-latest
     steps:
       -

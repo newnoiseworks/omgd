@@ -1,30 +1,22 @@
-name: release
+name: tagrelease
 
 on:
   push:
-    branches:
-      - 9-setup-ci-cd
-
-permissions:
-  contents: write
+    tags:
+      - v[0-9]+.*
 
 jobs:
-  goreleaser:
+  create-release:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - uses: taiki-e/create-gh-release-action@v1
         with:
-          fetch-depth: 0
-      - 
-        name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.26.0
+          # (optional)
+          changelog: CHANGELOG.md
         env:
+          # (required)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true 
-          RELEASE_BRANCHES: main
-          DEFAULT_BUMP: patch
 
   upload-assets:
     strategy:
@@ -39,7 +31,7 @@ jobs:
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
           # (required)
-          bin: all
+          bin: omgd
           # (optional) On which platform to distribute the `.tar.gz` file.
           # [default value: unix]
           # [possible values: all, unix, windows, none]
@@ -53,3 +45,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # (optional)
           CARGO_PROFILE_RELEASE_LTO: true
+

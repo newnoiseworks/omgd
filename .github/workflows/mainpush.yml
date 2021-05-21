@@ -60,6 +60,7 @@ jobs:
   upload-release:
     needs: release-build
     name: Publish latest release
+    runs-on: ubuntu-latest
     steps:
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:

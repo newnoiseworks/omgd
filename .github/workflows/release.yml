@@ -23,6 +23,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true 
+          RELEASE_BRANCHES: main
+          DEFAULT_BUMP: patch
       -
         name: Set up Go
         uses: actions/setup-go@v2

@@ -33,8 +33,7 @@ jobs:
       matrix:
         name: [
             linux,
-            windows,
-            macos
+            windows
         ]
 
         include:
@@ -46,10 +45,6 @@ jobs:
             os: windows-latest
             artifact_name: target/release/omgd.exe
             asset_name: omgd-windows
-          - name: macos
-            os: macos-latest
-            artifact_name: target/release/mac/omgd
-            asset_name: omgd
 
     steps:
     - uses: actions/checkout@v1

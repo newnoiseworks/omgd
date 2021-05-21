@@ -3,7 +3,7 @@ name: mainpush
 on:
   push:
     branches:
-      - 9-setup-ci-cd
+      - main
 
 permissions:
   contents: write

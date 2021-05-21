@@ -23,7 +23,7 @@ import (
 // buildTemplatesCmd represents the buildTemplates command
 var buildTemplatesCmd = &cobra.Command{
 	Use:   "build-templates",
-	Short: "A brief description of your command",
+	Short: "Builds template files into intended output using data from the resources folder",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 

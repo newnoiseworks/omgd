@@ -106,3 +106,4 @@ So the `gg build-templates [dir] --profile=profiles/example` command does the fo
 
 1. Searches your `resources` directory and combines the `yml` files together in one big object, and combines the current chosen profile (`profiles/local.yml` by default) as well so the resulting object has all your `resources` key value pairs as well as your profile under the key `profile` -- note that keys will be overriden should you have repetitions at the root level, so we reccomend each `resources` file leading with one top level "holder" key named after the file.
 2. Looks through the given directory for files ending in `.tmpl`, and when found, write a new file to the same directory shedding the `.tmpl` in the filename and using the object in #1 as a data source for the template. The template uses [go's template solution](https://golang.org/pkg/text/template/) and syntax.
+

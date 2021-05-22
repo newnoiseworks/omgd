@@ -65,7 +65,7 @@ func getData(environment string, buildPath string) *map[interface{}]interface{} 
 	return &fp
 }
 
-func BuildTemplatesFromPath(path string, environment string, buildPath string) {
+func BuildTemplatesFromPath(path string, environment string, buildPath string, templateExtension string) {
 	fp := getData(environment, buildPath)
 
 	fmt.Println(fmt.Sprintf("build %s config files", path))
@@ -78,8 +78,8 @@ func BuildTemplatesFromPath(path string, environment string, buildPath string) {
 
 		name := info.Name()
 
-		if info.IsDir() == false && strings.HasSuffix(name, ".tmpl") {
-			processTemplate(tmpl, name, fp)
+		if info.IsDir() == false && strings.HasSuffix(name, "."+templateExtension) {
+			processTemplate(tmpl, name, fp, templateExtension)
 		}
 
 		return nil
@@ -90,8 +90,8 @@ func BuildTemplatesFromPath(path string, environment string, buildPath string) {
 	}
 }
 
-func processTemplate(tmpl string, name string, fp *map[interface{}]interface{}) {
-	final_path := strings.ReplaceAll(tmpl, ".tmpl", "")
+func processTemplate(tmpl string, name string, fp *map[interface{}]interface{}, templateExtension string) {
+	final_path := strings.ReplaceAll(tmpl, "."+templateExtension, "")
 
 	fmt.Println(fmt.Sprintf(" >> build %s >> %s", tmpl, final_path))
 

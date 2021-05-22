@@ -20,6 +20,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var templateExtension string
+
 // buildTemplatesCmd represents the buildTemplates command
 var buildTemplatesCmd = &cobra.Command{
 	Use:   "build-templates",
@@ -31,7 +33,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.BuildTemplatesFromPath(args[0], Profile, OutputDir)
+		utils.BuildTemplatesFromPath(args[0], Profile, OutputDir, templateExtension)
 	},
 }
 
@@ -47,4 +49,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// buildTemplatesCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	buildTemplatesCmd.Flags().StringVar(&templateExtension, "ext", "tmpl", "File extension used for templates. Don't include the period.")
 }

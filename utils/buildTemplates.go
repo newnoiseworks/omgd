@@ -14,6 +14,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/iancoleman/strcase"
 	"gopkg.in/yaml.v2"
 )
 
@@ -104,6 +105,9 @@ func processTemplate(tmpl string, name string, fp *map[interface{}]interface{}, 
 			snake := matchFirstCap.ReplaceAllString(text, "${1}_${2}")
 			snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
 			return strings.ToUpper(snake)
+		},
+		"camel": func(text string) string {
+			return strcase.ToCamel(text)
 		},
 	}).ParseFiles(tmpl)
 

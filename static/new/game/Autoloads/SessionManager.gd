@@ -4,6 +4,8 @@ var session: NakamaSession
 
 var api_account: NakamaAPI.ApiAccount
 
+signal post_auth
+
 onready var client = Nakama.create_client(
 	GameConfig.nakama_key,
 	GameConfig.nakama_host,
@@ -26,7 +28,7 @@ func login(email: String, password: String):
 		)
 
 	session = yield(client.authenticate_email_async(email, password), "completed")
-	yield(post_auth(), "completed")
+	emit_signal("post_auth")
 
 	return session
 
@@ -41,10 +43,6 @@ func signup(email: String, username: String, password: String):
 		)
 
 	session = yield(client.authenticate_email_async(email, password, username, true), "completed")
-	yield(post_auth(), "completed")
+	emit_signal("post_auth")
 
 	return session
-
-
-func post_auth():
-	yield(MatchManager.connect_socket(), "completed")

@@ -6,7 +6,7 @@ var password: String
 
 onready var version_incorrect_modal: WindowDialog = $VersionIncorrect
 
-var game_scene: PackedScene = ResourceLoader.load("res://RootScenes/Game.tscn", "", true)
+export var game_scene: PackedScene
 
 
 func username_text_changed(new_text: String):

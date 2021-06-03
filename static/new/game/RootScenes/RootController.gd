@@ -1,15 +1,17 @@
 extends Node2D
 
+export var player_scene: PackedScene
+
 onready var player_entry_node: Node2D = find_node("PlayerEntry")
 onready var environment_items = find_node("EnvironmentItems")
 onready var ground = find_node("Ground")
 
+var player: Node2D
+
 
 func _ready():
 	window_size_setup()
-
-	if ! "dungeon" in self:
-		_add_player_to_scene()
+	_add_player_to_scene()
 
 
 func _exit_tree():
@@ -24,11 +26,14 @@ func no_children():
 
 
 func _add_player_to_scene():
-	Player.position = player_entry_node.position
-	Player.name = SessionManager.session.user_id
-	Player.user_id = SessionManager.session.user_id
-	environment_items.call_deferred("add_child", Player)
-	Player.restrict_camera_to_tile_map(ground)
+	if player == null:
+		player = player_scene.instance()
+
+	player.position = player_entry_node.position
+	player.name = SessionManager.session.user_id
+	player.user_id = SessionManager.session.user_id
+	environment_items.call_deferred("add_child", player)
+	player.call_deferred("restrict_camera_to_tile_map", ground)
 	get_tree().root.emit_signal("size_changed")
 
 
@@ -46,8 +51,8 @@ func on_window_resize():
 	vp.set_size_override(true, Vector2(OS.window_size.x, OS.window_size.y))
 	vp.size_override_stretch = true
 
-	if Player.is_inside_tree():
-		var camera: Camera2D = Player.camera
+	if player.is_inside_tree():
+		var camera: Camera2D = player.camera
 		var width: int = int(abs(camera.limit_left) + abs(camera.limit_right))
 
 		if OS.window_size.x > width:

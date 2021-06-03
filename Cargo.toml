@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 structopt = "0.3.13"
+convert_case = "0.4.0"

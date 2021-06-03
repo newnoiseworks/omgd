@@ -1,5 +1,5 @@
 local nk = require("nakama")
-local DM = require("dungeon_manager")
+local DM = require("{{.profile.omgd.channel_name}}_manager")
 
 local M = {}
 
@@ -9,15 +9,11 @@ local max_empty_room_ticks = 150
 function M.match_init(context, setupstate)
   local gamestate = {
     presences = {},
-    plot_map = {},
-    avatar_map = {},
-    movement_targets = {},
-    positions = {}
   }
 
   local tickrate = 15 -- per sec
 
-  nk.logger_info("Dungeon started")
+  nk.logger_info("{{.profile.omgd.channel_name}} started")
 
   return gamestate, tickrate, setupstate.label
 end
@@ -27,16 +23,10 @@ function M.match_join_attempt(context, dispatcher, tick, state, presence, metada
 
   local presence_count = get_presence_count(state)
 
-  if (presence_count >= DM.max_dungeon_size) then
+  if (presence_count >= DM.max_{{.profile.omgd.channel_name}}_size) then
     acceptuser = false
   else
-    set_plot_id(state, presence)
     state.presences[presence.session_id] = presence
-    state.avatar_map[presence.user_id] = metadata.avatarName
-    state.positions[presence.user_id] = {
-      x = metadata.x,
-      y = metadata.y
-    }
   end
 
   return state, acceptuser
@@ -54,10 +44,6 @@ end
 function M.match_leave(context, dispatcher, tick, state, presences)
   for _, presence in pairs(presences) do
     state.presences[presence.session_id] = nil
-    state.plot_map[presence.user_id] = nil
-    state.avatar_map[presence.user_id] = nil
-    state.movement_targets[presence.user_id] = nil
-    state.positions[presence.user_id] = nil
   end
 
   broadcast_state(dispatcher, state)
@@ -66,36 +52,6 @@ function M.match_leave(context, dispatcher, tick, state, presences)
 end
 
 function broadcast_state(dispatcher, state)
-  dispatcher.broadcast_message(
-    1,
-    nk.json_encode(
-      {
-        plotMap = state.plot_map,
-        avatarMap = state.avatar_map,
-        movementTargets = state.movement_targets,
-        positions = state.positions
-      }
-    ),
-    nil
-  )
-end
-
-function set_plot_id(state, presence)
-  local plot_id = 0
-  local taken_plots = {}
-
-  for user, plot in pairs(state.plot_map) do
-    taken_plots[plot] = plot
-  end
-
-  for i = 0, DM.max_dungeon_size, 1 do
-    if (taken_plots[i] == nil) then
-      plot_id = i
-      break
-    end
-  end
-
-  state.plot_map[presence.user_id] = plot_id
 end
 
 function get_presence_count(state)
@@ -144,21 +100,8 @@ function M.match_loop(context, dispatcher, tick, state, messages)
 end
 
 function perform_message_validation(message, dispatcher, state)
-  if message.op_code == 0 then -- 0 == movement event
-    local data = nk.json_decode(message.data)
-
-    if (data.ping == "1") then -- 1 == "ping"
-      state.positions[message.sender.user_id] = {
-        x = data.x,
-        y = data.y
-      }
-    else
-      state.movement_targets[message.sender.user_id] = {
-        x = data.x,
-        y = data.y
-      }
-    end
-  end
+  -- if message.op_code == 0 then
+  -- end
 
   return state
 end
@@ -166,8 +109,6 @@ end
 function M.match_terminate(context, dispatcher, tick, state, grace_seconds)
   nk.logger_info("terminating match")
   local message = "Server shutting down match in " .. grace_seconds .. " seconds"
-  -- TODO: implement message and opcode for server messaging
-  -- dispatcher.broadcast_message(2, message)
   return nil
 end
 

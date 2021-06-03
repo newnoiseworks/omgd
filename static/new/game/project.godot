@@ -107,9 +107,6 @@ config/icon="res://icon.png"
 Nakama="*res://addons/com.heroiclabs.nakama/Nakama.gd"
 GameConfig="*res://Autoloads/GameConfig.gd"
 SessionManager="*res://Autoloads/SessionManager.gd"
-MatchManager="*res://Autoloads/MatchManager.gd"
-MatchEvent="*res://Autoloads/MatchEvent.gd"
-Player="*res://Character/Player.tscn"
 
 [input]
 

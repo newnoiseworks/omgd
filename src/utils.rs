@@ -70,15 +70,16 @@ pub fn get_directory_from_repo(sub_folder: &str, target_path: &str) {
 
     if cfg!(debug_assertions) {
         // TODO: If running locally / via cargo run, the below should be automated somehow
-        git_pull_cmd = "git pull origin 2-new-project-generator";
+        // git_pull_cmd = "git pull origin 3-channel-generator";
+        git_pull_cmd = "git pull origin master";
     } else {
         git_pull_cmd = "git pull origin master";
     }
     
     run_cmd_on_dir(&git_pull_cmd, "getting files from repo", &repo_dir);
-
-    let final_move = format!("mv {}/{} {}", repo_dir, sub_folder, target_path);
-    run_cmd_on_dir(&final_move, "moving folder", ".");
+    
+    let final_move = format!("rsync -a {}/{}/ {}", repo_dir, sub_folder, target_path);
+    run_cmd_on_dir(&final_move, "rsync'ing folder", ".");
 
     let final_cleanup = format!("rm -rf {}", repo_dir);
     run_cmd_on_dir(&final_cleanup, "cleaning up original folder", ".");

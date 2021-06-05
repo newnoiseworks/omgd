@@ -67,6 +67,7 @@ nakama:
 {{- end }}
   port: 7350
   secure: false
+  key: default-key
 
 
 tasks:

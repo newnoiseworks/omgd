@@ -95,11 +95,11 @@ fn main() {
                     let cmd = format!("gg build-templates . --profile=.gg/{}", p);
                     utils::run_cmd_on_dir(&cmd, "building templates...", ".");
                 }
-                None => utils::run_cmd_on_dir("gg build-templates . --profile=.gg/local.yml", "building templates...", ".")
+                None => utils::run_cmd_on_dir("gg build-templates . --profile=.gg/local", "building templates...", ".")
             }
         }
         Command::BuildClients { } => {
-            utils::run_cmd_on_dir("gg run --profile=.gg/local.yml", "building clients in game/dist folder...", ".");
+            utils::run_cmd_on_dir("gg run --profile=.gg/local", "building clients in game/dist folder...", ".");
         }
         Command::Deploy { profile } => {
             utils::run_cmd_on_dir("mkdir .omgdtmp", "creating temporary dir...", ".");

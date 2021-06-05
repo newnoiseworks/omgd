@@ -106,8 +106,12 @@ fn main() {
 
             let dir = format!(".omgdtmp/{}", profile);
             let git_clone_cmd = format!("git clone . {}", dir);
-
             utils::run_cmd_on_dir(&git_clone_cmd, "cloning repo...", ".");
+
+            let profile_copy = format!("cp -rf profiles {}", dir);
+            utils::run_cmd_on_dir(&profile_copy, "copying profile dir...", ".");
+
+            utils::run_cmd_on_dir("omgd build-profiles", "building profiles...", &dir);
 
             let bnd_cmd = format!("gg run --profile=.gg/{}", profile);
             utils::run_cmd_on_dir(&bnd_cmd, "build and deploying repo...", &dir);

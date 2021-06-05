@@ -28,12 +28,20 @@ func getData(environment string, buildPath string) *map[interface{}]interface{} 
 	resourceDir := buildPath
 
 	if strings.HasPrefix(environment, "..") {
-		resourceDir = strings.Split(environment, "/profiles")[0]
+		paths := strings.Split(environment, "./")
+
+		resourceDir = ""
+
+		for _, p := range paths {
+			if p == "." {
+				resourceDir += "../"
+			}
+		}
 	}
 
 	err := filepath.Walk(fmt.Sprintf("%s/resources/", resourceDir), func(tmpl string, info fs.FileInfo, err error) error {
 		if err != nil {
-			log.Println("no resources directory found.")
+			log.Printf("no resources directory found in %v. in buildpath %v", resourceDir, buildPath)
 			return nil
 		}
 

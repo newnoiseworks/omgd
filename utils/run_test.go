@@ -35,10 +35,11 @@ func TestRunnerCmd(t *testing.T) {
 	profile := GetProfile("../profiles/test")
 
 	runner := Run{
-		OutputDir: ".",
-		CmdDir:    cmdOnDir,
-		Profile:   profile,
-		Verbosity: false,
+		OutputDir:   ".",
+		CmdDir:      cmdOnDir,
+		Profile:     profile,
+		ProfilePath: "profiles/test",
+		Verbosity:   false,
 	}
 
 	validResponseSet := []cmdOnDirResponse{

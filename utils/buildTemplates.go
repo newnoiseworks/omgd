@@ -33,7 +33,8 @@ func getData(environment string, buildPath string) *map[interface{}]interface{} 
 
 	err := filepath.Walk(fmt.Sprintf("%s/resources/", resourceDir), func(tmpl string, info fs.FileInfo, err error) error {
 		if err != nil {
-			log.Fatal(err)
+			log.Println("no resources directory found.")
+			return nil
 		}
 
 		name := info.Name()

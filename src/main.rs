@@ -1,5 +1,6 @@
 use structopt::StructOpt;
 use convert_case::{Case, Casing};
+use glob::glob;
 
 mod utils;
 
@@ -51,12 +52,26 @@ enum Command {
         /// e.g. "staging" == "profiles/staging.yml"
         profile: String
     },
+    /// Builds profiles from profile/ directory
+    BuildProfiles {}
 }
 
 fn main() {
     let args = Cli::from_args();
 
     match args.commands {
+        Command::BuildProfiles {} => {
+            for e in glob("profiles/*.yml").expect("Failed to read glob pattern") {
+                let full_path_buf = e.unwrap();
+                let full_path = full_path_buf.display().to_string();
+                let file_name = str::replace(&full_path, "profiles/", "");
+                let name = str::replace(&file_name, ".yml", "");
+                let mut cmd = format!("gg build-templates .gg --ext=omgdtpl --profile=profiles/{}", &name);
+                utils::run_cmd_on_dir(&cmd, "building profile templates...", ".");
+                cmd = format!("mv .gg/profile.yml .gg/{}.yml", &name);
+                utils::run_cmd_on_dir(&cmd, "building profile templates...", ".");
+            }
+        }
         Command::New { name } => {
             // repo_resource_fetcher::get_directory(name)
             utils::get_directory_from_repo("static/new", &name);
@@ -77,14 +92,14 @@ fn main() {
         Command::BuildTemplates { profile } => {
             match profile {
                 Some(p) => {
-                    let cmd = format!("gg build-templates . --profile=profiles/{}", p);
+                    let cmd = format!("gg build-templates . --profile=.gg/{}", p);
                     utils::run_cmd_on_dir(&cmd, "building templates...", ".");
                 }
-                None => utils::run_cmd_on_dir("gg build-templates .", "building templates...", ".")
+                None => utils::run_cmd_on_dir("gg build-templates . --profile=.gg/local.yml", "building templates...", ".")
             }
         }
         Command::BuildClients { } => {
-            utils::run_cmd_on_dir("gg run", "building clients in game/dist folder...", ".");
+            utils::run_cmd_on_dir("gg run --profile=.gg/local.yml", "building clients in game/dist folder...", ".");
         }
         Command::Deploy { profile } => {
             utils::run_cmd_on_dir("mkdir .omgdtmp", "creating temporary dir...", ".");
@@ -94,12 +109,12 @@ fn main() {
 
             utils::run_cmd_on_dir(&git_clone_cmd, "cloning repo...", ".");
 
-            let bnd_cmd = format!("gg run --profile=profiles/{}", profile);
+            let bnd_cmd = format!("gg run --profile=.gg/{}", profile);
             utils::run_cmd_on_dir(&bnd_cmd, "build and deploying repo...", &dir);
         }
         Command::DestroyInfra { profile } => {
             let dir = format!(".omgdtmp/{}", profile);
-            let cmd = format!("gg run task destroy-infra --profile=profiles/{}", profile);
+            let cmd = format!("gg run task destroy-infra --profile=.gg/{}", profile);
             utils::run_cmd_on_dir(&cmd, "destroying infra...", &dir);
         }
     }

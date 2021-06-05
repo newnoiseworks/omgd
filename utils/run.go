@@ -7,10 +7,11 @@ import (
 
 // Run doc
 type Run struct {
-	Profile   *ProfileConf
-	OutputDir string
-	CmdDir    func(string, string, string, bool)
-	Verbosity bool
+	Profile     *ProfileConf
+	ProfilePath string
+	OutputDir   string
+	CmdDir      func(string, string, string, bool)
+	Verbosity   bool
 }
 
 func (r *Run) runCmdOnDir(cmd string, cmdDesc string, cmdDir string) {
@@ -39,7 +40,7 @@ func (r *Run) runCmdOnDir(cmd string, cmdDesc string, cmdDir string) {
 			pathPrepend += "../"
 		}
 
-		cmd = cmd + " --profile=" + pathPrepend + "profiles/" + r.Profile.Name
+		cmd = cmd + " --profile=" + pathPrepend + r.ProfilePath
 	}
 
 	r.CmdDir(cmd, cmdDesc, cmdDir, r.Verbosity)

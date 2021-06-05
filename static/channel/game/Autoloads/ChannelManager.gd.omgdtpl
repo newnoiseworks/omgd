@@ -5,8 +5,8 @@ var game_match: NakamaRTAPI.Match
 
 
 func connect_socket():
-    if socket != null:
-        return
+	if socket != null:
+		return
 
 	socket = Nakama.create_socket_from(SessionManager.client)
 	yield(socket.connect_async(SessionManager.session), "completed")

@@ -1,7 +1,7 @@
 extends Node
 
-const nakama_host = "127.0.0.1"
-const nakama_key = "default-key"
-const nakama_port = 7350
-const nakama_secure = false
-const version = "0.1.23"
+const nakama_host = "<no value>"
+const nakama_key = "<no value>"
+const nakama_port = <no value>
+const nakama_secure = <no value>
+const version = "<no value>"

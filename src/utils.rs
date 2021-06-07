@@ -71,10 +71,10 @@ pub fn get_directory_from_repo(sub_folder: &str, target_path: &str) {
     if cfg!(debug_assertions) {
         // TODO: If running locally / via cargo run, the below should be automated somehow
         // git_pull_cmd = "git pull origin 3-channel-generator";
-        git_pull_cmd = "git pull origin master";
+        git_pull_cmd = "git pull origin main";
     } else {
         // git_pull_cmd = "git pull origin 11-dynamic-gg-profiles";
-        git_pull_cmd = "git pull origin master";
+        git_pull_cmd = "git pull origin main";
     }
     
     run_cmd_on_dir(&git_pull_cmd, "getting files from repo", &repo_dir);

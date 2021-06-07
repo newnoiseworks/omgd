@@ -36,6 +36,14 @@ main:
     desc: building templates for game client
   - cmd: BUILD_ENV=staging ./build_clients.sh
     desc: building game clients for distros
+  {{- if .profile.omgd.deploy.game.itchio }}
+  - cmd: butler push ./dist/mac {{ .profile.omgd.deploy.game.itchio.user }}/{{ .profile.omgd.deploy.game.itchio.project }}:mac
+    desc: itch.io butler push on mac build
+  - cmd: butler push ./dist/windows {{ .profile.omgd.deploy.game.itchio.user }}/{{ .profile.omgd.deploy.game.itchio.project }}:windows
+    desc: itch.io butler push on windows build
+  - cmd: butler push ./dist/x11 {{ .profile.omgd.deploy.game.itchio.user }}/{{ .profile.omgd.deploy.game.itchio.project }}:linux
+    desc: itch.io butler push on x11 build
+  {{- end }}
 - dir: server
   name: nakama-server
   steps:

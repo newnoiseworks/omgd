@@ -10,6 +10,10 @@ variable "gcp_zone" {
   type = string
 }
 
+variable "gcp_type" {
+  type = string
+}
+
 output "server_ip" {
   value = google_compute_instance.nakama_instance.network_interface[0].access_config[0].nat_ip
 }
@@ -45,7 +49,7 @@ resource "google_compute_firewall" "default" {
 
 resource "google_compute_instance" "nakama_instance" {
   name         = "nakama-instance"
-  machine_type = "f1-micro"
+  machine_type = var.gcp_type
 
   tags = ["nakama"]
 

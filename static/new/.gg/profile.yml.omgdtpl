@@ -10,6 +10,9 @@ game:
 gcloud:
   project: {{ .profile.omgd.deploy.server.gcloud.project }}
   zone: {{ .profile.omgd.deploy.server.gcloud.zone }}
+  {{ if .profile.omgd.deploy.server.gcloud.machine_type }}
+  machine_type: {{ .profile.omgd.deploy.server.gcloud.machine_type }}
+  {{ end }}
 {{- end }}
 
 

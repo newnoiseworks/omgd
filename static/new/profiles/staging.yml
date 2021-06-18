@@ -1,9 +1,4 @@
 omgd:
-  target:
-  - mac
-  - windows
-  - linux
-  - web
   deploy:
     server:
       gcloud:
@@ -16,5 +11,5 @@ omgd:
 
 ####
 game:
-  version: its-a-gg
+  version: staging
     

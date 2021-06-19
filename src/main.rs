@@ -102,9 +102,13 @@ fn main() {
             utils::run_cmd_on_dir("gg run --profile=.gg/local", "building clients in game/dist folder...", ".");
         }
         Command::Deploy { profile } => {
+            let dir = format!(".omgdtmp/{}", profile);
+
+            let rm_dir_cmd = format!("rm -rf {}", dir);
+            utils::run_cmd_on_dir(&rm_dir_cmd, "rm'ing old tmp repo...", ".");
+
             utils::run_cmd_on_dir("mkdir .omgdtmp", "creating temporary dir...", ".");
 
-            let dir = format!(".omgdtmp/{}", profile);
             let git_clone_cmd = format!("git clone . {}", dir);
             utils::run_cmd_on_dir(&git_clone_cmd, "cloning repo...", ".");
 
@@ -118,6 +122,20 @@ fn main() {
         }
         Command::DestroyInfra { profile } => {
             let dir = format!(".omgdtmp/{}", profile);
+
+            let rm_dir_cmd = format!("rm -rf {}", dir);
+            utils::run_cmd_on_dir(&rm_dir_cmd, "rm'ing old tmp repo...", ".");
+
+            utils::run_cmd_on_dir("mkdir .omgdtmp", "creating temporary dir...", ".");
+
+            let git_clone_cmd = format!("git clone . {}", dir);
+            utils::run_cmd_on_dir(&git_clone_cmd, "cloning repo...", ".");
+
+            let profile_copy = format!("cp -rf profiles {}", dir);
+            utils::run_cmd_on_dir(&profile_copy, "copying profile dir...", ".");
+
+            utils::run_cmd_on_dir("omgd build-profiles", "building profiles...", &dir);
+
             let cmd = format!("gg run task destroy-infra --profile=.gg/{}", profile);
             utils::run_cmd_on_dir(&cmd, "destroying infra...", &dir);
         }

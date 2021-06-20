@@ -80,8 +80,8 @@ fn main() {
             let update_profile = format!("gg update-profile game.name {}", &name);
             utils::run_cmd_on_dir(&update_profile, "updates profile w/ game name", &name);
 
-            utils::run_cmd_on_dir("gg build-templates . --ext=omgdtpl", "builds templates", &name);
-            utils::run_cmd_on_dir("rm -rf **/*.omgdtpl", "cleaning...", &name);
+            utils::run_cmd_on_dir("gg build-templates . --ext=newomgdtpl", "builds templates", &name);
+            utils::run_cmd_on_dir("rm -rf **/*.newomgdtpl", "cleaning...", &name);
         }
         Command::Codegen { plan, args } => {
             if Path::new("profiles").exists() && Path::new("resources").exists() && Path::new(".gg").exists() {

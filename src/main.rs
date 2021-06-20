@@ -1,6 +1,7 @@
 use structopt::StructOpt;
 use convert_case::{Case, Casing};
 use glob::glob;
+use std::path::Path;
 
 mod utils;
 
@@ -77,7 +78,11 @@ fn main() {
             utils::get_directory_from_repo("static/new", &name);
         }
         Command::Codegen { plan, args } => {
-            run_codegen_cmds(&plan, &args);
+            if Path::new("profiles").exists() && Path::new("resources").exists() && Path::new(".gg").exists() {
+                run_codegen_cmds(&plan, &args);
+            } else {
+                println!("error -- not in an omgd directory (found no profiles, resources, or .gg directories)")
+            }
         }
         Command::ServerStart { tail } => {
             if tail {

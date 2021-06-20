@@ -73,8 +73,8 @@ pub fn get_directory_from_repo(sub_folder: &str, target_path: &str) {
         // git_pull_cmd = "git pull origin 3-channel-generator";
         git_pull_cmd = "git pull origin main";
     } else {
-        // git_pull_cmd = "git pull origin 11-dynamic-gg-profiles";
-        git_pull_cmd = "git pull origin main";
+        git_pull_cmd = "git pull origin 13-new-project-should-embed-name-into-project-files-via-gg-template";
+        // git_pull_cmd = "git pull origin main";
     }
     
     run_cmd_on_dir(&git_pull_cmd, "getting files from repo", &repo_dir);

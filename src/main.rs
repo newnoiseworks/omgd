@@ -76,6 +76,12 @@ fn main() {
         Command::New { name } => {
             // repo_resource_fetcher::get_directory(name)
             utils::get_directory_from_repo("static/new", &name);
+
+            let update_profile = format!("gg update-profile game.name {}", &name);
+            utils::run_cmd_on_dir(&update_profile, "updates profile w/ game name", &name);
+
+            utils::run_cmd_on_dir("gg build-templates . --ext=newomgdtpl", "builds templates", &name);
+            utils::run_cmd_on_dir("rm -rf **/*.newomgdtpl", "cleaning...", &name);
         }
         Command::Codegen { plan, args } => {
             if Path::new("profiles").exists() && Path::new("resources").exists() && Path::new(".gg").exists() {

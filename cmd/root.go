@@ -20,13 +20,13 @@ var Verbosity bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "tpl-fred",
-	Short: "Build tool for The Promised Land",
-	Long: `This tool builds the game The Promised Land, it's server, the
-website, and helps deploy each to various targets. Also, it
-should setup the project for you if you're just starting. Maybe.
-	
-`,
+	Use:   "omgd",
+	Short: "Open Multiplayer Game Development",
+	Long: `Open Multiplayer Game Development aims to make multiplayer game development easier, as well as multiverse development, if you're into that sort of thing.
+
+omgd uses open source game and cloud frameworks to help you start development quickly and scale as needed before production, with a focus on development across teams.
+
+Godot is the current game engine of focus with a likelihood of expansion to Unity next, then Unreal.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },

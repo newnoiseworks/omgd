@@ -6,3 +6,4 @@ build-prod:
 
 test:
 	go test ./... -v
+

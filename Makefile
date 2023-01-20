@@ -1,8 +1,8 @@
 build:
-	go build -o ${GOROOT}/bin/omgdd
+	go build -o ${GOPATH}/bin/omgdd
 
 build-prod:
-	go build -o ${GOROOT}/bin/omgd
+	go build -o ${GOPATH}/bin/omgd
 
 test:
 	go test ./... -v

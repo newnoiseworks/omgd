@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Character/Godot_icon.svg" type="Texture" id=1]
+[ext_resource path="res://Character/CharacterController.gd" type="Script" id=2]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 12.3733, 11.6746 )
+
+[node name="Character" type="KinematicBody2D"]
+collision_mask = 0
+script = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="UsernameLabel" type="Label" parent="."]
+margin_left = -19.9179
+margin_top = -14.6206
+margin_right = 20.0821
+margin_bottom = -0.620594
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Godot_icon" type="Sprite" parent="."]
+position = Vector2( -0.323273, -0.215964 )
+scale = Vector2( 0.0451975, 0.0451975 )
+texture = ExtResource( 1 )
+
+[node name="PositionComparator" type="Timer" parent="."]

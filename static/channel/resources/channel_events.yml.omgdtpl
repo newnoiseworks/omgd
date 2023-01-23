@@ -1,0 +1,2 @@
+{{.profile.omgd.channel_name}}_events:
+  # - key: movement

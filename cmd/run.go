@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"log"
 	"strconv"
 
@@ -27,7 +26,7 @@ Run task:
 $ gg run task [name-of-task] [number-of-step (optional)]
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("run called")
+		log.Println("run called")
 
 		profile := utils.GetProfile(Profile)
 

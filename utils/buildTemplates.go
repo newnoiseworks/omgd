@@ -75,11 +75,13 @@ func getData(environment string, buildPath string) *map[interface{}]interface{} 
 	return &fp
 }
 
-func BuildTemplatesFromPath(path string, environment string, buildPath string, templateExtension string) {
+func BuildTemplatesFromPath(path string, environment string, buildPath string, templateExtension string, verbose bool) {
 	fp := getData(environment, buildPath)
 
-	fmt.Println(fmt.Sprintf("build %s config files", path))
-	fmt.Println(fmt.Sprintf("%s/%s", buildPath, path))
+	if verbose {
+		log.Println(fmt.Sprintf("build %s config files", path))
+		log.Println(fmt.Sprintf("%s/%s", buildPath, path))
+	}
 
 	err := filepath.Walk(fmt.Sprintf("%s/%s", buildPath, path), func(tmpl string, info fs.FileInfo, err error) error {
 		if err != nil {
@@ -89,7 +91,7 @@ func BuildTemplatesFromPath(path string, environment string, buildPath string, t
 		name := info.Name()
 
 		if info.IsDir() == false && strings.HasSuffix(name, "."+templateExtension) {
-			processTemplate(tmpl, fp, templateExtension)
+			processTemplate(tmpl, fp, templateExtension, verbose)
 		}
 
 		return nil
@@ -100,15 +102,17 @@ func BuildTemplatesFromPath(path string, environment string, buildPath string, t
 	}
 }
 
-func BuildTemplateFromPath(path string, environment string, buildPath string, templateExtension string) {
+func BuildTemplateFromPath(path string, environment string, buildPath string, templateExtension string, verbose bool) {
 	fp := getData(environment, buildPath)
-	processTemplate(path, fp, templateExtension)
+	processTemplate(path, fp, templateExtension, verbose)
 }
 
-func processTemplate(tmpl string, fp *map[interface{}]interface{}, templateExtension string) {
+func processTemplate(tmpl string, fp *map[interface{}]interface{}, templateExtension string, verbose bool) {
 	final_path := strings.ReplaceAll(tmpl, "."+templateExtension, "")
 
-	fmt.Println(fmt.Sprintf(" >> build %s >> %s", tmpl, final_path))
+	if verbose {
+		log.Println(fmt.Sprintf(" >> build %s >> %s", tmpl, final_path))
+	}
 
 	t, err := template.New(path.Base(tmpl)).Funcs(template.FuncMap{
 		"md5": func(text string) string {

@@ -26,6 +26,8 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		log.Println("building omgd profiles")
+
 		files, err := ioutil.ReadDir("profiles")
 		if err != nil {
 			log.Fatal(err)
@@ -41,6 +43,7 @@ to quickly create a Cobra application.`,
 					fmt.Sprintf("profiles/%s", strings.Replace(file.Name(), ".yml", "", 1)),
 					OutputDir,
 					"omgdtpl",
+					Verbosity,
 				)
 
 				wd, err := os.Getwd()
@@ -59,6 +62,8 @@ to quickly create a Cobra application.`,
 				}
 			}
 		}
+
+		log.Println("success!")
 	},
 }
 

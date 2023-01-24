@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"fmt"
+	"log"
 	"strconv"
 	"testing"
 )
@@ -23,10 +23,10 @@ var cmdOnDir = func(cmdStr string, cmdDesc string, cmdDir string, verbosity bool
 }
 
 func validCompare(expected interface{}, received interface{}) {
-	fmt.Printf("received %s", received)
-	fmt.Println()
-	fmt.Printf("expected %s", expected)
-	fmt.Println()
+	log.Printf("received %s", received)
+	log.Println()
+	log.Printf("expected %s", expected)
+	log.Println()
 }
 
 func TestRunnerCmd(t *testing.T) {

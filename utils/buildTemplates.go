@@ -89,7 +89,7 @@ func BuildTemplatesFromPath(path string, environment string, buildPath string, t
 		name := info.Name()
 
 		if info.IsDir() == false && strings.HasSuffix(name, "."+templateExtension) {
-			processTemplate(tmpl, name, fp, templateExtension)
+			processTemplate(tmpl, fp, templateExtension)
 		}
 
 		return nil
@@ -100,7 +100,12 @@ func BuildTemplatesFromPath(path string, environment string, buildPath string, t
 	}
 }
 
-func processTemplate(tmpl string, name string, fp *map[interface{}]interface{}, templateExtension string) {
+func BuildTemplateFromPath(path string, environment string, buildPath string, templateExtension string) {
+	fp := getData(environment, buildPath)
+	processTemplate(path, fp, templateExtension)
+}
+
+func processTemplate(tmpl string, fp *map[interface{}]interface{}, templateExtension string) {
 	final_path := strings.ReplaceAll(tmpl, "."+templateExtension, "")
 
 	fmt.Println(fmt.Sprintf(" >> build %s >> %s", tmpl, final_path))

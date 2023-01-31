@@ -14,7 +14,7 @@ type CodeGenerationPlan struct {
 func (cp *CodeGenerationPlan) Generate(plan string) {
 	cp.CmdDir(
 		"something with git or static most likely",
-		"if it is something with the static mod, you may need to adjust these tests and see what go has wrt mocks / stubs / and last but not least, spies(!) when it comes to testing",
+		"if it is something with the static mod, you'll probably need to adjust the struct to take in a method similar to the CmdDir approach. Consider organizing those \"stub\" methods when you get a chance",
 		"./server/infra",
 		cp.Verbosity,
 	)

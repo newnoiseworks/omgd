@@ -6,22 +6,6 @@ import (
 	"testing"
 )
 
-type cmdOnDirResponse struct {
-	cmdStr  string
-	cmdDesc string
-	cmdDir  string
-}
-
-var cmdResponses = []cmdOnDirResponse{}
-
-var cmdOnDir = func(cmdStr string, cmdDesc string, cmdDir string, verbosity bool) {
-	cmdResponses = append(cmdResponses, cmdOnDirResponse{
-		cmdStr:  cmdStr,
-		cmdDesc: cmdDesc,
-		cmdDir:  cmdDir,
-	})
-}
-
 func validCompare(expected interface{}, received interface{}) {
 	log.Printf("received %s", received)
 	log.Println()
@@ -30,19 +14,19 @@ func validCompare(expected interface{}, received interface{}) {
 }
 
 func TestRunnerCmd(t *testing.T) {
-	cmdResponses = nil
+	testCmdResponses = nil
 
 	profile := GetProfile("../profiles/test")
 
 	runner := Run{
 		OutputDir:   ".",
-		CmdDir:      cmdOnDir,
+		CmdDir:      testCmdOnDir,
 		Profile:     profile,
 		ProfilePath: "profiles/test",
 		Verbosity:   false,
 	}
 
-	validResponseSet := []cmdOnDirResponse{
+	validResponseSet := []testCmdOnDirResponse{
 		{
 			cmdStr:  "gg build-templates . --profile=../../profiles/test",
 			cmdDesc: "builds infra templates",
@@ -67,15 +51,15 @@ func TestRunnerCmd(t *testing.T) {
 
 	runner.Run()
 
-	if len(validResponseSet) != len(cmdResponses) {
+	if len(validResponseSet) != len(testCmdResponses) {
 		t.Errorf("Run main project doesn't have enough commands")
-		validCompare(strconv.Itoa(len(validResponseSet)), strconv.Itoa(len(cmdResponses)))
+		validCompare(strconv.Itoa(len(validResponseSet)), strconv.Itoa(len(testCmdResponses)))
 	}
 
 	for i := range validResponseSet {
-		if validResponseSet[i] != cmdResponses[i] {
+		if validResponseSet[i] != testCmdResponses[i] {
 			t.Errorf("Run main project failed on step %s", strconv.Itoa(i))
-			validCompare(validResponseSet[i], cmdResponses[i])
+			validCompare(validResponseSet[i], testCmdResponses[i])
 		}
 	}
 }

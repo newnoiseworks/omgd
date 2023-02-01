@@ -52,8 +52,9 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 	}
 
 	// 3. delete static/test/test_dir_post_copying
-	if os.RemoveAll("static/test/test_dir_post_copying") != nil {
-		t.Fatalf("Error on cleanup removing directory static/test/test_dir_to_copy")
+	err = os.RemoveAll("static/test/test_dir_post_copying")
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 

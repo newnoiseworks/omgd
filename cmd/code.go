@@ -13,14 +13,15 @@ import (
 
 // codeCmd represents the code command
 var codeCmd = &cobra.Command{
-	Use:   "code [plan]",
+	Use:   "code [plan] [folder name (optional, defaults to plan name)]",
 	Short: "Generates code samples and necessary files for development.",
 	Long: `Generates code samples and necessary files for development.
 
 See hopeful non existent at the moment documentation sometime in the future. Similiar to rails generate commands if you're familiar.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: needs to take in a plan as a string with possible arguments hopefully in a splat?
+		// TODO: Move the below code into utils/code.go, start setting up as area for edits etc,
+		// also consider where to keep "plans", in .yml files or in code
 		fmt.Println("code called")
 
 		plan := args[0]

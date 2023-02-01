@@ -27,7 +27,6 @@ func TestStaticGetStaticFileCmd(t *testing.T) {
 func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 	// 1. copy static/test/test_dir_to_copy to static/test/test_dir_post_copying
 	err := CopyStaticDirectory("static/test/test_dir_to_copy", "static/test/test_dir_post_copying")
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -47,7 +46,7 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 	received := string(file)
 
 	if expected != received {
-		t.Fatalf("File static/test/test_dir_post_copying/test_one.md doesn't match expected contents")
+		t.Fatal("File static/test/test_dir_post_copying/test_one.md doesn't match expected contents")
 
 		testLogComparison(expected, received)
 	}

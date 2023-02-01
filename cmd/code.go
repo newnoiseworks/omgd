@@ -23,7 +23,17 @@ See hopeful non existent at the moment documentation sometime in the future. Sim
 		// TODO: needs to take in a plan as a string with possible arguments hopefully in a splat?
 		fmt.Println("code called")
 
-		err := utils.CopyStaticDirectory("static/test/test_dir_to_copy", "utils/static/test/test_dir_post_copying")
+		plan := args[0]
+		target := args[0]
+
+		if len(args) > 1 {
+			target = args[1]
+		}
+
+		err := utils.CopyStaticDirectory(
+			fmt.Sprintf("static/%s", plan),
+			target,
+		)
 
 		if err != nil {
 			log.Fatal(err)

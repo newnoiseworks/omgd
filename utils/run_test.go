@@ -5,7 +5,7 @@ import (
 )
 
 func TestRunnerCmd(t *testing.T) {
-	testCmdResponses = nil
+	testCmdOnDirResponses = nil
 
 	profile := GetProfile("../profiles/test")
 
@@ -17,7 +17,7 @@ func TestRunnerCmd(t *testing.T) {
 		Verbosity:   false,
 	}
 
-	testValidResponseSet = []testCmdOnDirResponse{
+	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
 			cmdStr:  "gg build-templates . --profile=../../profiles/test",
 			cmdDesc: "builds infra templates",
@@ -42,5 +42,5 @@ func TestRunnerCmd(t *testing.T) {
 
 	runner.Run()
 
-	testValidCmdSet(t, "Run#Run")
+	testCmdOnDirValidCmdSet(t, "Run#Run")
 }

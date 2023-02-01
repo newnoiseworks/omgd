@@ -25,6 +25,14 @@ func TestStaticGetStaticFileCmd(t *testing.T) {
 
 // 3. Test for copying a directory
 func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
+	t.Cleanup(func() {
+		err := os.RemoveAll("static/test/test_dir_post_copying")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+
 	// 1. copy static/test/test_dir_to_copy to static/test/test_dir_post_copying
 	err := CopyStaticDirectory("static/test/test_dir_to_copy", "static/test/test_dir_post_copying")
 	if err != nil {
@@ -37,7 +45,12 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	file, err = os.ReadFile("static/test/test_dir_post_copying/test_two.md")
+	fileTwo, err := os.ReadFile("static/test/test_dir_post_copying/test_two.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fileThree, err := os.ReadFile("static/test/test_dir_post_copying/folder/test_one.md")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,10 +64,22 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 		testLogComparison(expected, received)
 	}
 
-	// 3. delete static/test/test_dir_post_copying
-	err = os.RemoveAll("static/test/test_dir_post_copying")
-	if err != nil {
-		t.Fatal(err)
+	expected = "test_two\n"
+	received = string(fileTwo)
+
+	if expected != received {
+		t.Fatal("File static/test/test_dir_post_copying/test_two.md doesn't match expected contents")
+
+		testLogComparison(expected, received)
+	}
+
+	expected = "test_one\n"
+	received = string(fileThree)
+
+	if expected != received {
+		t.Fatal("File static/test/test_dir_post_copying/folder/test_one.md doesn't match expected contents")
+
+		testLogComparison(expected, received)
 	}
 }
 

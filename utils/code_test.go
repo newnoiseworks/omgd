@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestCodeGenCmd(t *testing.T) {
+func TestCodeGenCmdNewProject(t *testing.T) {
 	testCmdOnDirResponses = nil
 
 	profile := GetProfile("../profiles/test")
@@ -16,6 +16,13 @@ func TestCodeGenCmd(t *testing.T) {
 		CmdDir:      testCmdOnDir,
 		Verbosity:   false,
 	}
+
+	// TODO: old rust code post making new project dir, run commands
+	// let update_profile = format!("gg update-profile game.name {}", &name);
+	// utils::run_cmd_on_dir(&update_profile, "updates profile w/ game name", &name);
+
+	// utils::run_cmd_on_dir("gg build-templates . --ext=newomgdtpl", "builds templates", &name);
+	// utils::run_cmd_on_dir("rm -rf **/*.newomgdtpl", "cleaning...", &name);
 
 	// TODO: Write the code that makes this work after you finish
 	// static.go code most likely

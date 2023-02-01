@@ -1,17 +1,63 @@
 package utils
 
 import (
+	"log"
+	"os"
 	"testing"
 )
 
-func TestStaticCmd(t *testing.T) {
+func TestStaticGetStaticFileCmd(t *testing.T) {
 	// 1. Test for reading a simple one line file
+	received, err := GetStaticFile("static/test/test.md")
 
-	// 2. Test for reading a directory (test dir w/ one file)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// 3. Test for copying a directory
+	expected := "This is a test test test\n"
 
-	// 4. Test for copying a file w/ a replaced string or two
+	if expected != received {
+		t.Errorf("File read from static lib doesn't match")
 
-	// 5. Test for combining the above into one direction or command?
+		testLogComparison(expected, received)
+	}
 }
+
+// 3. Test for copying a directory
+func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
+	// 1. copy static/test/test_dir_to_copy to static/test/test_dir_post_copying
+	err := CopyStaticDirectory("static/test/test_dir_to_copy", "static/test/test_dir_post_copying")
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// 2. validate files match
+	file, err := os.ReadFile("static/test/test_dir_post_copying/test_one.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	file, err = os.ReadFile("static/test/test_dir_post_copying/test_two.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expected := "test_one\n"
+	received := string(file)
+
+	if expected != received {
+		t.Fatalf("File static/test/test_dir_post_copying/test_one.md doesn't match expected contents")
+
+		testLogComparison(expected, received)
+	}
+
+	// 3. delete static/test/test_dir_post_copying
+	if os.RemoveAll("static/test/test_dir_post_copying") != nil {
+		t.Fatalf("Error on cleanup removing directory static/test/test_dir_to_copy")
+	}
+}
+
+// 4. Test for copying a file w/ a replaced string or two
+
+// 5. Test for combining the above into one direction or command?

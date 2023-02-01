@@ -6,3 +6,6 @@ build-prod:
 
 test:
 	go test ./... -v
+
+todo:
+	egrep TODO **/*.go

@@ -1,6 +1,5 @@
 /*
 Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
@@ -43,6 +42,7 @@ to quickly create a Cobra application.`,
 					fmt.Sprintf("profiles/%s", strings.Replace(file.Name(), ".yml", "", 1)),
 					OutputDir,
 					"omgdtpl",
+					false,
 					Verbosity,
 				)
 

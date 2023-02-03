@@ -1,40 +1,40 @@
 package utils
 
 import (
+	"os"
 	"testing"
 )
 
-func TestCodeGenCmdNewProject(t *testing.T) {
-	testCmdOnDirResponses = nil
+// tests generation of new projects
+func TestCodeGenCmdNewProjectWritesAndCleansUpFiles(t *testing.T) {
+	t.Cleanup(func() {
+		err := os.RemoveAll("static/test/newProject")
 
-	profile := GetProfile("../profiles/test")
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
 
 	codePlan := CodeGenerationPlan{
-		Profile:     profile,
-		ProfilePath: "profiles/test",
-		OutputDir:   ".",
-		CmdDir:      testCmdOnDir,
-		Verbosity:   false,
+		OutputDir: "static/test",
+		Target:    "newProject",
+		Plan:      "new",
 	}
 
-	// TODO: old rust code post making new project dir, run commands
-	// let update_profile = format!("gg update-profile game.name {}", &name);
-	// utils::run_cmd_on_dir(&update_profile, "updates profile w/ game name", &name);
+	codePlan.Generate()
 
-	// utils::run_cmd_on_dir("gg build-templates . --ext=newomgdtpl", "builds templates", &name);
-	// utils::run_cmd_on_dir("rm -rf **/*.newomgdtpl", "cleaning...", &name);
+	localProfile := GetProfile("static/test/newProject/profiles/local")
+	expected := "newProject"
+	received := localProfile.Get("game.name")
 
-	// TODO: Write the code that makes this work after you finish
-	// static.go code most likely
-	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
-		{
-			cmdStr:  "something with git or static most likely",
-			cmdDesc: "if it is something with the static mod, you'll probably need to adjust the struct to take in a method similar to the CmdDir approach. Consider organizing those \"stub\" methods when you get a chance",
-			cmdDir:  "./server/infra",
-		},
+	if expected != received {
+		testLogComparison(expected, received)
+
+		t.Fatalf("Profile didn't update with game name in static folder")
 	}
 
-	codePlan.Generate("plan")
-
-	testCmdOnDirValidCmdSet(t, "CodeGenerationPlan#Generate")
+	_, err := os.Stat("static/test/newProject/game/project.godot.newomgdtpl")
+	if !os.IsNotExist(err) {
+		t.Fatal("Templates didn't cleanup afterwards")
+	}
 }

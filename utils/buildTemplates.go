@@ -75,15 +75,14 @@ func getData(environment string, buildPath string) *map[interface{}]interface{} 
 	return &fp
 }
 
-func BuildTemplatesFromPath(path string, environment string, buildPath string, templateExtension string, verbose bool) {
+func BuildTemplatesFromPath(environment string, buildPath string, templateExtension string, removeTemplateAfterProcessing bool, verbose bool) {
 	fp := getData(environment, buildPath)
 
 	if verbose {
-		log.Println(fmt.Sprintf("build %s config files", path))
-		log.Println(fmt.Sprintf("%s/%s", buildPath, path))
+		log.Println(fmt.Sprintf("building template files in %s", buildPath))
 	}
 
-	err := filepath.Walk(fmt.Sprintf("%s/%s", buildPath, path), func(tmpl string, info fs.FileInfo, err error) error {
+	err := filepath.Walk(buildPath, func(tmpl string, info fs.FileInfo, err error) error {
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -91,7 +90,7 @@ func BuildTemplatesFromPath(path string, environment string, buildPath string, t
 		name := info.Name()
 
 		if info.IsDir() == false && strings.HasSuffix(name, "."+templateExtension) {
-			processTemplate(tmpl, fp, templateExtension, verbose)
+			processTemplate(tmpl, fp, templateExtension, removeTemplateAfterProcessing, verbose)
 		}
 
 		return nil
@@ -102,12 +101,12 @@ func BuildTemplatesFromPath(path string, environment string, buildPath string, t
 	}
 }
 
-func BuildTemplateFromPath(path string, environment string, buildPath string, templateExtension string, verbose bool) {
+func BuildTemplateFromPath(tmplPath string, environment string, buildPath string, templateExtension string, removeTemplateAfterProcessing bool, verbose bool) {
 	fp := getData(environment, buildPath)
-	processTemplate(path, fp, templateExtension, verbose)
+	processTemplate(tmplPath, fp, templateExtension, removeTemplateAfterProcessing, verbose)
 }
 
-func processTemplate(tmpl string, fp *map[interface{}]interface{}, templateExtension string, verbose bool) {
+func processTemplate(tmpl string, fp *map[interface{}]interface{}, templateExtension string, removeTemplateAfterProcessing bool, verbose bool) {
 	final_path := strings.ReplaceAll(tmpl, "."+templateExtension, "")
 
 	if verbose {
@@ -141,5 +140,12 @@ func processTemplate(tmpl string, fp *map[interface{}]interface{}, templateExten
 	err = t.Execute(f, fp)
 	if err != nil {
 		log.Fatal("execute: ", err)
+	}
+
+	if removeTemplateAfterProcessing {
+		err = os.Remove(tmpl)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }

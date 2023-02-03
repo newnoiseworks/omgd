@@ -50,6 +50,8 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVar(&Profile, "profile", "profiles/local", "yml profile representing this build in the build/profiles folder")
 
+	rootCmd.PersistentFlags().StringVar(&OutputDir, "output-dir", ".", "output dir of files that are generated etc")
+
 	rootCmd.PersistentFlags().BoolVar(&Verbosity, "verbose", false, "include for verbose output of commands")
 
 	// Cobra also supports local flags, which will only run
@@ -58,5 +60,4 @@ func init() {
 }
 
 func initConfig() {
-	OutputDir = "."
 }

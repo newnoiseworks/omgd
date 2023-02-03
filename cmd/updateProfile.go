@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,8 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"strings"
-
 	"github.com/newnoiseworks/tpl-fred/utils"
 	"github.com/spf13/cobra"
 )
@@ -34,28 +32,8 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		profile := utils.GetProfile(Profile)
-		profileMap := profile.GetProfileAsMap()
-
-		keys := strings.Split(args[0], ".")
-
-		setValueToKeyWithArray(keys, 0, profileMap, args[1])
-
-		utils.GetProfile(Profile).SaveProfileFromMap(&profileMap)
+		profile.UpdateProfile(args[0], args[1])
 	},
-}
-
-func setValueToKeyWithArray(keys []string, keyIndex int, obj map[interface{}]interface{}, value string) {
-	for k, v := range obj {
-		if key, ok := k.(string); ok {
-			if key == keys[keyIndex] {
-				if keyIndex == len(keys)-1 {
-					obj[k] = value
-				} else {
-					setValueToKeyWithArray(keys, keyIndex+1, v.(map[interface{}]interface{}), value)
-				}
-			}
-		}
-	}
 }
 
 func init() {

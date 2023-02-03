@@ -1,21 +1,48 @@
 package utils
 
-// TODO: Rename file and test file to code_generate_plan.go
+import (
+	"fmt"
+	"log"
+	"os"
+)
 
-// Run doc
 type CodeGenerationPlan struct {
-	Profile     *ProfileConf
-	ProfilePath string
-	OutputDir   string
-	CmdDir      func(string, string, string, bool)
-	Verbosity   bool
+	OutputDir string
+	Target    string
+	Plan      string
+	Verbosity bool
 }
 
-func (cp *CodeGenerationPlan) Generate(plan string) {
-	cp.CmdDir(
-		"something with git or static most likely",
-		"if it is something with the static mod, you'll probably need to adjust the struct to take in a method similar to the CmdDir approach. Consider organizing those \"stub\" methods when you get a chance",
-		"./server/infra",
+func (cp *CodeGenerationPlan) Generate() {
+	outputPath := fmt.Sprintf("%s/%s", cp.OutputDir, cp.Target)
+
+	switch cp.Plan {
+	case "new":
+		cp.generateNew(outputPath)
+	}
+}
+
+func (cp *CodeGenerationPlan) generateNew(outputPath string) {
+	err := CopyStaticDirectory("static/new", outputPath)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	newProfile := GetProfile(fmt.Sprintf("%s/profiles/local", outputPath))
+	newProfile.UpdateProfile("game.name", cp.Target)
+
+	err = os.Mkdir(fmt.Sprintf("%s/resources", outputPath), 0755)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	BuildTemplatesFromPath(
+		fmt.Sprintf("%s/profiles/local", outputPath),
+		outputPath,
+		"newomgdtpl",
+		true,
 		cp.Verbosity,
 	)
 }

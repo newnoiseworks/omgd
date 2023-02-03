@@ -81,6 +81,50 @@ func (profile ProfileConf) SaveProfileFromMap(profileMap *map[interface{}]interf
 	err = ioutil.WriteFile(profile.path, yamlBytes, 0755)
 
 	if err != nil {
-		log.Fatal("Error on file write to saving profile to yaml!")
+		// log.Fatal("Error on file write to saving profile to yaml!")
+		log.Fatal(err)
 	}
+}
+
+func (profile ProfileConf) Get(key string) interface{} {
+	profileMap := profile.GetProfileAsMap()
+	keys := strings.Split(key, ".")
+	return getValueToKeyWithArray(keys, 0, profileMap)
+}
+
+func (profile ProfileConf) UpdateProfile(key string, val string) {
+	profileMap := profile.GetProfileAsMap()
+	keys := strings.Split(key, ".")
+	setValueToKeyWithArray(keys, 0, profileMap, val)
+	profile.SaveProfileFromMap(&profileMap)
+}
+
+func setValueToKeyWithArray(keys []string, keyIndex int, obj map[interface{}]interface{}, value string) {
+	for k, v := range obj {
+		if key, ok := k.(string); ok {
+			if key == keys[keyIndex] {
+				if keyIndex == len(keys)-1 {
+					obj[k] = value
+				} else {
+					setValueToKeyWithArray(keys, keyIndex+1, v.(map[interface{}]interface{}), value)
+				}
+			}
+		}
+	}
+}
+
+func getValueToKeyWithArray(keys []string, keyIndex int, obj map[interface{}]interface{}) interface{} {
+	for k, v := range obj {
+		if key, ok := k.(string); ok {
+			if key == keys[keyIndex] {
+				if keyIndex == len(keys)-1 {
+					return obj[k]
+				} else {
+					return getValueToKeyWithArray(keys, keyIndex+1, v.(map[interface{}]interface{}))
+				}
+			}
+		}
+	}
+
+	return nil
 }

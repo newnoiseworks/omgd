@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,6 +21,7 @@ import (
 )
 
 var templateExtension string
+var removeTemplateAfterProcessing bool
 
 // buildTemplatesCmd represents the buildTemplates command
 var buildTemplatesCmd = &cobra.Command{
@@ -33,11 +34,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-			utils.BuildTemplatesFromPath(".", Profile, OutputDir, templateExtension, Verbosity)
-		} else {
-			utils.BuildTemplatesFromPath(args[0], Profile, OutputDir, templateExtension, Verbosity)
-		}
+		utils.BuildTemplatesFromPath(Profile, OutputDir, templateExtension, removeTemplateAfterProcessing, Verbosity)
 	},
 }
 
@@ -54,4 +51,6 @@ func init() {
 	// is called directly, e.g.:
 	// buildTemplatesCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	buildTemplatesCmd.Flags().StringVar(&templateExtension, "ext", "tmpl", "File extension used for templates. Don't include the period.")
+	buildTemplatesCmd.Flags().BoolVar(&removeTemplateAfterProcessing, "remove", false, "Remove template file after processing")
+
 }

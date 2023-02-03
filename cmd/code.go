@@ -5,7 +5,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/newnoiseworks/tpl-fred/utils"
 	"github.com/spf13/cobra"
@@ -20,10 +19,6 @@ var codeCmd = &cobra.Command{
 See hopeful non existent at the moment documentation sometime in the future. Similiar to rails generate commands if you're familiar.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: Move the below code into utils/code.go, start setting up as area for edits etc,
-		// also consider where to keep "plans", in .yml files or in code
-		fmt.Println("code called")
-
 		plan := args[0]
 		target := args[0]
 
@@ -31,17 +26,16 @@ See hopeful non existent at the moment documentation sometime in the future. Sim
 			target = args[1]
 		}
 
-		err := utils.CopyStaticDirectory(
-			fmt.Sprintf("static/%s", plan),
-			target,
-		)
-
-		if err != nil {
-			log.Fatal(err)
+		cp := utils.CodeGenerationPlan{
+			OutputDir: OutputDir,
+			Target:    target,
+			Plan:      plan,
+			Verbosity: Verbosity,
 		}
 
-		// Utils can have a repo / git repository / codegen and this can be a wrapper
-		// seems to match previous setup more or less
+		cp.Generate()
+
+		fmt.Printf("Code generated in: %s/%s \n", cp.OutputDir, cp.Target)
 	},
 }
 

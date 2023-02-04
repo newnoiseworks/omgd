@@ -35,7 +35,7 @@ See hopeful non existent at the moment documentation sometime in the future. Sim
 
 		cp.Generate()
 
-		fmt.Printf("Code generated in: %s/%s \n", cp.OutputDir, cp.Target)
+		fmt.Printf("Code generated")
 	},
 }
 

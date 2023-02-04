@@ -22,41 +22,58 @@ func GetStaticFile(file string) (string, error) {
 
 func CopyStaticDirectory(pathToCopy string, pathToCopyTo string) error {
 	files, err := staticFiles.ReadDir(pathToCopy)
-
 	if err != nil {
-		log.Fatal(err)
+
+		files, err = os.ReadDir(pathToCopy)
+
+		if err != nil {
+			return err
+		}
 	}
 
 	err = os.Mkdir(pathToCopyTo, FILE_WRITE_PERMS)
-
-	if err != nil {
-		log.Fatal(err)
+	if err != nil && !os.IsExist(err) {
+		return err
 	}
 
 	for i := 0; i < len(files); i++ {
 		file := files[i]
 
 		if file.IsDir() {
-			CopyStaticDirectory(
+			err = CopyStaticDirectory(
 				fmt.Sprintf("%s/%s", pathToCopy, file.Name()),
 				fmt.Sprintf("%s/%s", pathToCopyTo, file.Name()),
 			)
-		} else {
-			fileBytes, err := staticFiles.ReadFile(
-				fmt.Sprintf("%s/%s", pathToCopy, file.Name()),
-			)
-
 			if err != nil {
-				// NOTE: Not catching error on purpose to pass above
-				os.RemoveAll(pathToCopyTo)
 				return err
 			}
+		} else {
+			filePathToRead := fmt.Sprintf("%s/%s", pathToCopy, file.Name())
+			fileBytes, err := staticFiles.ReadFile(filePathToRead)
 
-			os.WriteFile(
-				fmt.Sprintf("%s/%s", pathToCopyTo, file.Name()),
+			if err != nil {
+				fileBytes, err = os.ReadFile(filePathToRead)
+
+				if err != nil {
+					return err
+				}
+			}
+
+			filePath := fmt.Sprintf("%s/%s", pathToCopyTo, file.Name())
+
+			err = os.WriteFile(
+				filePath,
 				fileBytes,
 				FILE_WRITE_PERMS,
 			)
+
+			if err != nil {
+				if os.IsExist(err) {
+					log.Printf("Attempting to overwrite file at %s, skipping\n", filePath)
+				} else {
+					return err
+				}
+			}
 		}
 	}
 

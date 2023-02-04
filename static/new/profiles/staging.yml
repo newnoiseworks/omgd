@@ -1,0 +1,21 @@
+#### Setup OMGD settings to control
+#### Things like build deployment etc
+#
+# omgd:
+#   deploy:
+#     server:
+#       gcloud:
+#         project: project-name
+#         zone: us-east4-c
+#     game:
+#       itchio:
+#         project: project-name
+#         user: itch-user
+
+#### Setup top level info on your game
+#### which may differ between profiles
+#### hereish -- profiles? envs?
+#
+# game:
+#   version: staging
+#   name: ???

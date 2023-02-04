@@ -21,7 +21,7 @@ import (
 var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
 var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
 
-func getData(environment string, buildPath string) *map[interface{}]interface{} {
+func getData(environment string, buildPath string, verbose bool) *map[interface{}]interface{} {
 	fp := make(map[interface{}]interface{})
 	fp["profile"] = GetProfile(environment).GetProfileAsMap()
 
@@ -39,44 +39,53 @@ func getData(environment string, buildPath string) *map[interface{}]interface{} 
 		}
 	}
 
-	err := filepath.Walk(fmt.Sprintf("%s/resources/", resourceDir), func(tmpl string, info fs.FileInfo, err error) error {
-		if err != nil {
-			log.Printf("no resources directory found in %v. in buildpath %v", resourceDir, buildPath)
+	resourceDir = fmt.Sprintf("%s/resources/", resourceDir)
+	_, err := os.Stat(resourceDir)
+
+	if !os.IsNotExist(err) {
+		err = filepath.Walk(resourceDir, func(tmpl string, info fs.FileInfo, err error) error {
+			if err != nil {
+				if verbose {
+					log.Printf("no resources directory found in %v", resourceDir)
+				}
+				return nil
+			}
+
+			name := info.Name()
+
+			if info.IsDir() == false && strings.HasSuffix(name, ".yml") {
+				c := make(map[interface{}]interface{})
+
+				yamlFile, err := ioutil.ReadFile(tmpl)
+				if err != nil {
+					log.Printf("yamlFile Get err: #%v ", err)
+				}
+
+				err = yaml.Unmarshal(yamlFile, &c)
+				if err != nil {
+					log.Fatalf("Unmarshal err: %v", err)
+				}
+
+				for k, v := range c {
+					fp[k] = v
+				}
+			}
+
 			return nil
-		}
+		})
 
-		name := info.Name()
-
-		if info.IsDir() == false && strings.HasSuffix(name, ".yml") {
-			c := make(map[interface{}]interface{})
-
-			yamlFile, err := ioutil.ReadFile(tmpl)
-			if err != nil {
-				log.Printf("yamlFile Get err: #%v ", err)
-			}
-
-			err = yaml.Unmarshal(yamlFile, &c)
-			if err != nil {
-				log.Fatalf("Unmarshal err: %v", err)
-			}
-
-			for k, v := range c {
-				fp[k] = v
+		if err != nil {
+			if verbose {
+				log.Println(err)
 			}
 		}
-
-		return nil
-	})
-
-	if err != nil {
-		log.Fatal(err)
 	}
 
 	return &fp
 }
 
 func BuildTemplatesFromPath(environment string, buildPath string, templateExtension string, removeTemplateAfterProcessing bool, verbose bool) {
-	fp := getData(environment, buildPath)
+	fp := getData(environment, buildPath, verbose)
 
 	if verbose {
 		log.Println(fmt.Sprintf("building template files in %s", buildPath))
@@ -102,7 +111,7 @@ func BuildTemplatesFromPath(environment string, buildPath string, templateExtens
 }
 
 func BuildTemplateFromPath(tmplPath string, environment string, buildPath string, templateExtension string, removeTemplateAfterProcessing bool, verbose bool) {
-	fp := getData(environment, buildPath)
+	fp := getData(environment, buildPath, verbose)
 	processTemplate(tmplPath, fp, templateExtension, removeTemplateAfterProcessing, verbose)
 }
 

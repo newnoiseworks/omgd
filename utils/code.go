@@ -16,6 +16,8 @@ type CodeGenerationPlan struct {
 
 // generates code per plan
 func (cp *CodeGenerationPlan) Generate() {
+	cp.resetOMGDTmpDir()
+
 	switch cp.Plan {
 	case "new":
 		cp.generateNew()
@@ -105,4 +107,19 @@ func (cp *CodeGenerationPlan) cleanupExample2DPlayerMovement() {
 
 	// TODO: use without this, then if something goes wrong, try it
 	// 3. build templates across entire project (for some reason? not sure how to test / prove this / why it happens tbh)
+}
+
+// cleans up and resets omgdtmp dir
+func (cp *CodeGenerationPlan) resetOMGDTmpDir() {
+	tmpDir := fmt.Sprintf("%s/.omgdtmp", cp.OutputDir)
+
+	err := os.RemoveAll(tmpDir)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = os.Mkdir(tmpDir, 0755)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

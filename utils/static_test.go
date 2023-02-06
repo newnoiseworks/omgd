@@ -136,3 +136,59 @@ func TestStaticCopyStaticFileWithChangedPath(t *testing.T) {
 }
 
 // 6. Test for combining the above into one direction or command?
+func TestStaticCopyStaticDirectoryWithEdits(t *testing.T) {
+	t.Cleanup(func() {
+		err := os.RemoveAll("static/test/.omgdtmp")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	err := os.Mkdir("static/test/.omgdtmp", 0755)
+	if err != nil && !os.IsExist(err) {
+		t.Fatal(err)
+	}
+
+	scpp := StaticCodeCopyPlan{
+		filePathAlterations: []StaticCodeFilePathAlteration{{
+			filePathToRead:          "static/test/test_dir_to_copy/test_three.md",
+			filePathToWrite:         "static/test/.omgdtmp/test_dir_post_copying/test_trifecta.md",
+			stringToReadForReplace:  "test_three",
+			stringToWriteForReplace: "nothing",
+		}},
+	}
+
+	scpp.CopyStaticDirectory("static/test/test_dir_to_copy", "static/test/.omgdtmp/test_dir_post_copying")
+
+	testForFileAndRegexpMatch(t, "static/test/.omgdtmp/test_dir_post_copying/test_trifecta.md", `nothing is everything`)
+
+	// 2. validate other files moved over
+	file, err := os.ReadFile("static/test/.omgdtmp/test_dir_post_copying/test_one.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fileThree, err := os.ReadFile("static/test/.omgdtmp/test_dir_post_copying/folder/test_one.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expected := "test_one\n"
+	received := string(file)
+
+	if expected != received {
+		t.Fatal("File static/test/.omgdtmp/test_dir_post_copying/test_one.md doesn't match expected contents")
+
+		testLogComparison(expected, received)
+	}
+
+	expected = "test_one\n"
+	received = string(fileThree)
+
+	if expected != received {
+		t.Fatal("File static/test/.omgdtmp/test_dir_post_copying/folder/test_one.md doesn't match expected contents")
+
+		testLogComparison(expected, received)
+	}
+}

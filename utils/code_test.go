@@ -35,10 +35,7 @@ func TestCodeGenCmdNewProjectWritesAndCleansUpFiles(t *testing.T) {
 		t.Fatalf("Profile didn't update with game name in static folder")
 	}
 
-	_, err := os.Stat("static/test/newProject/game/project.godot.newomgdtpl")
-	if !os.IsNotExist(err) {
-		t.Fatal("Templates didn't cleanup afterwards")
-	}
+	testFileShouldNotExist(t, "static/test/newProject/game/project.godot.newomgdtpl")
 }
 
 // tests generation of godot example 2d player movement project
@@ -82,39 +79,22 @@ func TestCodeGenCmdExample2DPlayerMovement(t *testing.T) {
 	}
 
 	// check to see if buildTemplates created new file
-	file, err := ioutil.ReadFile("static/test/newProject/.omgdtmp/game/Character/CharacterController.gd")
-	if err != nil {
-		t.Fatalf("Cannot find file: %s\n", err)
-	}
-
-	// check to see if templates were properly edited w/ info
-	matches, err := regexp.Match(`MovementEvent`, file)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !matches {
-		t.Fatalf("build-templates didn't adjust static/test/newProject/.omgdtmp/game/CharacterController.gd")
-	}
+	testForFileAndRegexpMatch(
+		t,
+		"static/test/newProject/.omgdtmp/game/Character/CharacterController.gd",
+		`MovementEvent`,
+	)
 
 	codePlan.Cleanup()
 
 	// check to make sure profiles dir in tmp folder cleaned up
-	_, err = os.Stat("static/test/newProject/.omgdtmp/profiles/local.yml")
-	if os.IsNotExist(err) == false {
-		t.Fatal("Profiles folder didn't cleanup afterwards")
-	}
+	testFileShouldNotExist(t, "static/test/newProject/.omgdtmp/profiles/local.yml")
 
 	// check to make sure templates were moved into main folder
-	_, err = os.Stat("static/test/newProject/game/Character/CharacterController.gd")
-	if os.IsNotExist(err) {
-		t.Fatal("Files were not moved into main project folder post cleanup")
-	}
+	testFileShouldExist(t, "static/test/newProject/game/Character/CharacterController.gd")
 
 	// make sure .omgdtmp folder is cleaned up
-	_, err = os.Stat("static/test/newProject/.omgdtmp")
-	if !os.IsNotExist(err) {
-		t.Fatal("Temporary folder was not cleaned up")
-	}
+	testFileShouldNotExist(t, "static/test/newProject/.omgdtmp")
 }
 
 // tests generation of omgd channels
@@ -158,17 +138,98 @@ func TestCodeGenCmdOMGDChannelCreation(t *testing.T) {
 	}
 
 	// checks to make sure templates were created and properly renamed
-	file, err := ioutil.ReadFile("static/test/newProject/.omgdtmp/game/Autoloads/MatchChannelManager.gd")
+	testForFileAndRegexpMatch(
+		t,
+		"static/test/newProject/.omgdtmp/game/Autoloads/MatchChannelManager.gd",
+		`match_channel`,
+	)
+
+	// check for channel event change files
+	testForFileAndRegexpMatch(
+		t,
+		"static/test/newProject/.omgdtmp/game/Autoloads/MatchChannelEvent.gd.tmpl",
+		`match_channel`,
+	)
+
+	testForFileAndRegexpMatch(
+		t,
+		"static/test/newProject/.omgdtmp/game/Autoloads/MatchChannelEvent.gd.tmpl",
+		`MatchChannel`,
+	)
+
+	// check for match_channel_events.yml file
+	testForFileAndRegexpMatch(
+		t,
+		"static/test/newProject/.omgdtmp/resources/match_channel_events.yml",
+		`match_channel_events`,
+	)
+
+	codePlan.Cleanup()
+
+	// check to make sure profiles dir in tmp folder cleaned up
+	testFileShouldNotExist(t, "static/test/newProject/.omgdtmp/profiles/local.yml")
+
+	// check for MatchChannelMUD.tscn file
+	testForFileAndRegexpMatch(
+		t,
+		"static/test/newProject/game/RootScenes/MatchChannelMUD.tscn",
+		`MatchChannel`,
+	)
+
+	// check for MatchChannelMUDController.tscn file
+	testForFileAndRegexpMatch(
+		t,
+		"static/test/newProject/game/RootScenes/MatchChannelMUDController.tscn",
+		`MatchChannel`,
+	)
+
+	// check for match_channel.lua file
+	testForFileAndRegexpMatch(
+		t,
+		"static/test/newProject/server/nakama/data/modules/match_channel.lua",
+		`match_channel_size`,
+	)
+
+	// check for match_channel_manager.lua file
+	testForFileAndRegexpMatch(
+		t,
+		"static/test/newProject/server/nakama/data/modules/match_channel_manager.lua",
+		`max_match_channel_size`,
+	)
+
+	//
+}
+
+// tests file exists and contains a string
+func testForFileAndRegexpMatch(t *testing.T, filePath string, search string) {
+	// checks to make sure templates were created and properly named
+	file, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		t.Fatalf("Cannot find file: %s\n", err)
 	}
 
 	// makes sure templates were adjusted with proper variables
-	matches, err := regexp.Match(`match_channel`, file)
+	matches, err := regexp.Match(search, file)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !matches {
-		t.Fatalf("build-templates didn't adjust static/test/newProject/.omgdtmp/game/Autoloads/MatchChannelManager.gd")
+		t.Fatalf("build-templates didn't adjust %s", filePath)
+	}
+}
+
+// tests for file not existing
+func testFileShouldNotExist(t *testing.T, filePath string) {
+	_, err := os.Stat(filePath)
+	if !os.IsNotExist(err) {
+		t.Fatalf("File exists but should have been cleaned up at %s\n %s", filePath, err)
+	}
+}
+
+// tests for file existence
+func testFileShouldExist(t *testing.T, filePath string) {
+	_, err := os.Stat(filePath)
+	if os.IsNotExist(err) {
+		t.Fatalf("File does not exist but should have been created up at %s\n %s", filePath, err)
 	}
 }

@@ -122,7 +122,7 @@ func processTemplate(tmpl string, fp *map[interface{}]interface{}, templateExten
 		log.Println(fmt.Sprintf(" >> build %s >> %s", tmpl, final_path))
 	}
 
-	t, err := template.New(path.Base(tmpl)).Funcs(template.FuncMap{
+	t := template.New(path.Base(tmpl)).Funcs(template.FuncMap{
 		"md5": func(text string) string {
 			hash := md5.Sum([]byte(text))
 			return hex.EncodeToString(hash[:])
@@ -135,7 +135,13 @@ func processTemplate(tmpl string, fp *map[interface{}]interface{}, templateExten
 		"camel": func(text string) string {
 			return strcase.ToCamel(text)
 		},
-	}).ParseFiles(tmpl)
+	})
+
+	if templateExtension == "omgdtpl" {
+		t.Delims("{*", "*}")
+	}
+
+	t, err := t.ParseFiles(tmpl)
 
 	if err != nil {
 		log.Fatal(err)

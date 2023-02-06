@@ -1,23 +1,23 @@
-{{- if .profile.game }}
+{*- if .profile.game *}
 game:
-  {{- range $key, $value := .profile.game }}
-  {{ $key }}: {{ $value  }}
-  {{- end }}
-{{- end }}
+  {*- range $key, $value := .profile.game *}
+  {* $key *}: {* $value  *}
+  {*- end *}
+{*- end *}
 
 
-{{- if .profile.omgd.deploy.server.gcloud }}
+{*- if .profile.omgd.deploy.server.gcloud *}
 gcloud:
-  project: {{ .profile.omgd.deploy.server.gcloud.project }}
-  zone: {{ .profile.omgd.deploy.server.gcloud.zone }}
-  {{ if .profile.omgd.deploy.server.gcloud.machine_type }}
-  machine_type: {{ .profile.omgd.deploy.server.gcloud.machine_type }}
-  {{ end }}
-{{- end }}
+  project: {* .profile.omgd.deploy.server.gcloud.project *}
+  zone: {* .profile.omgd.deploy.server.gcloud.zone *}
+  {* if .profile.omgd.deploy.server.gcloud.machine_type *}
+  machine_type: {* .profile.omgd.deploy.server.gcloud.machine_type *}
+  {* end *}
+{*- end *}
 
 
-{{- if .profile.omgd.deploy }}
-{{- if .profile.omgd.deploy.server.gcloud }}
+{*- if .profile.omgd.deploy *}
+{*- if .profile.omgd.deploy.server.gcloud *}
 main:
 - dir: server/infra/gcp
   name: infra
@@ -39,14 +39,14 @@ main:
     desc: building templates for game client
   - cmd: BUILD_ENV=staging ./build_clients.sh
     desc: building game clients for distros
-  {{- if .profile.omgd.deploy.game.itchio }}
-  - cmd: butler push ./dist/mac {{ .profile.omgd.deploy.game.itchio.user }}/{{ .profile.omgd.deploy.game.itchio.project }}:mac
+  {*- if .profile.omgd.deploy.game.itchio *}
+  - cmd: butler push ./dist/mac {* .profile.omgd.deploy.game.itchio.user *}/{* .profile.omgd.deploy.game.itchio.project *}:mac
     desc: itch.io butler push on mac build
-  - cmd: butler push ./dist/windows {{ .profile.omgd.deploy.game.itchio.user }}/{{ .profile.omgd.deploy.game.itchio.project }}:windows
+  - cmd: butler push ./dist/windows {* .profile.omgd.deploy.game.itchio.user *}/{* .profile.omgd.deploy.game.itchio.project *}:windows
     desc: itch.io butler push on windows build
-  - cmd: butler push ./dist/x11 {{ .profile.omgd.deploy.game.itchio.user }}/{{ .profile.omgd.deploy.game.itchio.project }}:linux
+  - cmd: butler push ./dist/x11 {* .profile.omgd.deploy.game.itchio.user *}/{* .profile.omgd.deploy.game.itchio.project *}:linux
     desc: itch.io butler push on x11 build
-  {{- end }}
+  {*- end *}
 - dir: server
   name: nakama-server
   steps:
@@ -54,11 +54,11 @@ main:
     desc: building templates for game server
   - cmd: cp -rf ../game/dist/web-staging/* nakama/website
     desc: copy web build into server
-  - cmd: GCP_PROJECT={{ .profile.omgd.deploy.server.gcloud.project }} GCP_ZONE={{ .profile.omgd.deploy.server.gcloud.zone }} ./deploy.sh
+  - cmd: GCP_PROJECT={* .profile.omgd.deploy.server.gcloud.project *} GCP_ZONE={* .profile.omgd.deploy.server.gcloud.zone *} ./deploy.sh
     desc: deploy game server to GCP
     dir: deploy/gcp
-{{- end }}
-{{- else }}
+{*- end *}
+{*- else *}
 main:
   - name: game-client
     dir: game
@@ -67,15 +67,15 @@ main:
       desc: "building game templates"
     - cmd: BUILD_ENV=local ./build_clients.sh
       desc: "building clients into game/dist folder"
-{{- end }}
+{*- end *}
 
 
 nakama:
-{{- if .profile.omgd.deploy }}
+{*- if .profile.omgd.deploy *}
   host: ???
-{{- else }}
+{*- else *}
   host: 127.0.0.1
-{{- end }}
+{*- end *}
   port: 7350
   secure: false
   key: default-key
@@ -86,7 +86,7 @@ tasks:
   steps:
   - cmd: gg build-templates .
   dir: 
-{{- if .profile.omgd.deploy }}
+{*- if .profile.omgd.deploy *}
 - dir: server/infra/gcp
   name: destroy-infra
   steps:
@@ -94,7 +94,7 @@ tasks:
   - cmd: terraform init
   - cmd: ./tf_import.sh
   - cmd: terraform destroy -auto-approve
-{{- else }}
+{*- else *}
 - name: start-server
   steps:
   - cmd: gg build-templates .
@@ -108,4 +108,4 @@ tasks:
   steps:
   - cmd: docker-compose down -v
   dir: server
-{{- end }}
+{*- end *}

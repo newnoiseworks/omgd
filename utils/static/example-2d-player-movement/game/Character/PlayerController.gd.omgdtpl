@@ -26,7 +26,7 @@ func _physics_process(_delta: float):
 	var target = velocity.normalized() * SPEED
 
 	if velocity != Vector2.ZERO:
-		{{camel .profile.omgd.channel_name}}Event.movement({"x": target.x, "y": target.y})
+		{*camel .profile.omgd.channel_name*}Event.movement({"x": target.x, "y": target.y})
 
 
 func restrict_camera_to_tile_map(map: TileMap):

@@ -1,2 +1,2 @@
-{{.profile.omgd.channel_name}}_events:
+{*.profile.omgd.channel_name*}_events:
   # - key: movement

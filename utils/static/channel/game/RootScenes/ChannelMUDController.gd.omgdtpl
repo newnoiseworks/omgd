@@ -1,6 +1,6 @@
 extends "res://RootScenes/RootController.gd"
 
-export var {{.profile.omgd.channel_name}}_name: String
+export var {*.profile.omgd.channel_name*}_name: String
 
 export var character_scene: PackedScene
 
@@ -10,23 +10,23 @@ var user_ids: Array = []
 func _ready():
 	user_ids.append(SessionManager.session.user_id)
 
-	if {{.profile.omgd.channel_name}}_name != null && {{.profile.omgd.channel_name}}_name != '':
-		yield({{camel .profile.omgd.channel_name}}Manager.connect_socket(), "completed")
-		yield(_join_{{.profile.omgd.channel_name}}(), "completed")
-		var _rm = {{camel .profile.omgd.channel_name}}Manager.socket.connect("received_match_presence", self, "_on_match_presence")
+	if {*.profile.omgd.channel_name*}_name != null && {*.profile.omgd.channel_name*}_name != '':
+		yield({*camel .profile.omgd.channel_name*}Manager.connect_socket(), "completed")
+		yield(_join_{*.profile.omgd.channel_name*}(), "completed")
+		var _rm = {*camel .profile.omgd.channel_name*}Manager.socket.connect("received_match_presence", self, "_on_match_presence")
 
 
 
 func _exit_tree():
-	if {{camel .profile.omgd.channel_name}}Manager.game_match != null:
-		{{camel .profile.omgd.channel_name}}Manager.socket.disconnect("received_match_presence", self, "_on_match_presence")
-		{{camel .profile.omgd.channel_name}}Manager.game_match = null
+	if {*camel .profile.omgd.channel_name*}Manager.game_match != null:
+		{*camel .profile.omgd.channel_name*}Manager.socket.disconnect("received_match_presence", self, "_on_match_presence")
+		{*camel .profile.omgd.channel_name*}Manager.game_match = null
 
 
-func _join_{{.profile.omgd.channel_name}}():
-	var {{.profile.omgd.channel_name}} = yield({{camel .profile.omgd.channel_name}}Manager.find_or_create_match({{.profile.omgd.channel_name}}_name, player_entry_node.position), "completed")
+func _join_{*.profile.omgd.channel_name*}():
+	var {*.profile.omgd.channel_name*} = yield({*camel .profile.omgd.channel_name*}Manager.find_or_create_match({*.profile.omgd.channel_name*}_name, player_entry_node.position), "completed")
 
-	for presence in {{.profile.omgd.channel_name}}.presences:
+	for presence in {*.profile.omgd.channel_name*}.presences:
 		_handle_match_join_event(presence)
 
 

@@ -34,7 +34,9 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 	})
 
 	// 1. copy static/test/test_dir_to_copy to static/test/test_dir_post_copying
-	err := CopyStaticDirectory("static/test/test_dir_to_copy", "static/test/test_dir_post_copying")
+	sccPlan := StaticCodeCopyPlan{}
+
+	err := sccPlan.CopyStaticDirectory("static/test/test_dir_to_copy", "static/test/test_dir_post_copying")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -84,5 +86,53 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 }
 
 // 4. Test for copying a file w/ a replaced string or two
+func TestStaticCopyStaticFileWithChangedString(t *testing.T) {
+	t.Cleanup(func() {
+		err := os.RemoveAll("static/test/.omgdtmp")
 
-// 5. Test for combining the above into one direction or command?
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	err := os.Mkdir("static/test/.omgdtmp", 0755)
+	if err != nil && !os.IsExist(err) {
+		t.Fatal(err)
+	}
+
+	scpp := StaticCodeCopyPlan{
+		filePathAlterations: []StaticCodeFilePathAlteration{{
+			filePathToRead:          "static/test/test.md",
+			stringToReadForReplace:  "test",
+			stringToWriteForReplace: "nothing",
+		}},
+	}
+
+	scpp.CopyStaticFile("static/test/test.md", "static/test/.omgdtmp/test.md")
+
+	testForFileAndRegexpMatch(t, "static/test/.omgdtmp/test.md", `This is a nothing nothing nothing`)
+}
+
+// 5. Test for renaming file
+func TestStaticCopyStaticFileWithChangedPath(t *testing.T) {
+	t.Cleanup(func() {
+		err := os.RemoveAll("static/test/.omgdtmp")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	err := os.Mkdir("static/test/.omgdtmp", 0755)
+	if err != nil && !os.IsExist(err) {
+		t.Fatal(err)
+	}
+
+	scpp := StaticCodeCopyPlan{}
+
+	scpp.CopyStaticFile("static/test/test.md", "static/test/.omgdtmp/test22.md")
+
+	testForFileAndRegexpMatch(t, "static/test/.omgdtmp/test22.md", `This is a test test test`)
+}
+
+// 6. Test for combining the above into one direction or command?

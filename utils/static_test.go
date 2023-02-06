@@ -23,7 +23,6 @@ func TestStaticGetStaticFileCmd(t *testing.T) {
 	}
 }
 
-// 3. Test for copying a directory
 func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 	t.Cleanup(func() {
 		err := os.RemoveAll("static/test/test_dir_post_copying")
@@ -85,7 +84,6 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 	}
 }
 
-// 4. Test for copying a file w/ a replaced string or two
 func TestStaticCopyStaticFileWithChangedString(t *testing.T) {
 	t.Cleanup(func() {
 		err := os.RemoveAll("static/test/.omgdtmp")
@@ -113,7 +111,6 @@ func TestStaticCopyStaticFileWithChangedString(t *testing.T) {
 	testForFileAndRegexpMatch(t, "static/test/.omgdtmp/test.md", `This is a nothing nothing nothing`)
 }
 
-// 5. Test for renaming file
 func TestStaticCopyStaticFileWithChangedPath(t *testing.T) {
 	t.Cleanup(func() {
 		err := os.RemoveAll("static/test/.omgdtmp")
@@ -135,7 +132,6 @@ func TestStaticCopyStaticFileWithChangedPath(t *testing.T) {
 	testForFileAndRegexpMatch(t, "static/test/.omgdtmp/test22.md", `This is a test test test`)
 }
 
-// 6. Test for combining the above into one direction or command?
 func TestStaticCopyStaticDirectoryWithEdits(t *testing.T) {
 	t.Cleanup(func() {
 		err := os.RemoveAll("static/test/.omgdtmp")

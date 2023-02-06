@@ -7,11 +7,11 @@ var next_movement_point: Vector2
 
 func _enter_tree():
 	next_movement_point = position
-	var _mc = {{camel .profile.omgd.channel_name}}Event.connect("movement", self, "_handle_move_event")
+	var _mc = {*camel .profile.omgd.channel_name*}Event.connect("movement", self, "_handle_move_event")
 
 
 func _exit_tree():
-	{{camel .profile.omgd.channel_name}}Event.disconnect("movement", self, "_handle_move_event")
+	{*camel .profile.omgd.channel_name*}Event.disconnect("movement", self, "_handle_move_event")
 
 
 func _handle_move_event(msg, presence):

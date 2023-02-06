@@ -16,7 +16,7 @@ func connect_socket():
 
 func find_or_create_match(label: String, starting_position: Vector2):
 	var response = yield(
-		SessionManager.rpc_async("find_or_create_{{.profile.omgd.channel_name}}", "{{.profile.omgd.channel_name}}_type"), "completed"
+		SessionManager.rpc_async("find_or_create_{*.profile.omgd.channel_name*}", "{*.profile.omgd.channel_name*}_type"), "completed"
 	)
 
 	var match_id = response.payload.replace('"', "")
@@ -45,7 +45,7 @@ func _join_match(match_id: String, _label: String, _starting_position: Vector2) 
 
 
 func _on_match_state(state: NakamaRTAPI.MatchData):
-	{{camel .profile.omgd.channel_name}}Event.handle_match_state_update(state)
+	{*camel .profile.omgd.channel_name*}Event.handle_match_state_update(state)
 
 
 func _on_socket_disconnect():

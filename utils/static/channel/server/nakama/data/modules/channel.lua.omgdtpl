@@ -1,5 +1,5 @@
 local nk = require("nakama")
-local DM = require("{{.profile.omgd.channel_name}}_manager")
+local DM = require("{*.profile.omgd.channel_name*}_manager")
 
 local M = {}
 
@@ -13,7 +13,7 @@ function M.match_init(context, setupstate)
 
   local tickrate = 15 -- per sec
 
-  nk.logger_info("{{.profile.omgd.channel_name}} started")
+  nk.logger_info("{*.profile.omgd.channel_name*} started")
 
   return gamestate, tickrate, setupstate.label
 end
@@ -23,7 +23,7 @@ function M.match_join_attempt(context, dispatcher, tick, state, presence, metada
 
   local presence_count = get_presence_count(state)
 
-  if (presence_count >= DM.max_{{.profile.omgd.channel_name}}_size) then
+  if (presence_count >= DM.max_{*.profile.omgd.channel_name*}_size) then
     acceptuser = false
   else
     state.presences[presence.session_id] = presence

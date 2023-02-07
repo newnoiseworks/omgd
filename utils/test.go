@@ -31,6 +31,7 @@ func testForFileAndRegexpMatch(t *testing.T, filePath string, search string) {
 	}
 	if !matches {
 		debug.PrintStack()
+		// t.Fatalf("regexp for %s didn't match in file %s with contents: \n %s \n", search, filePath, file)
 		t.Fatalf("regexp for %s didn't match in file %s", search, filePath)
 	}
 }

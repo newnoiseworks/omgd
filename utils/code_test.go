@@ -177,7 +177,7 @@ func TestCodeGenCmdOMGDChannelCreation(t *testing.T) {
 	// check for MatchChannelMUDController.tscn file
 	testForFileAndRegexpMatch(
 		t,
-		"static/test/newProject/game/RootScenes/MatchChannelMUDController.tscn",
+		"static/test/newProject/game/RootScenes/MatchChannelMUDController.gd",
 		`MatchChannel`,
 	)
 

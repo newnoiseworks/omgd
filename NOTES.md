@@ -34,11 +34,12 @@
 
 - Setting up Agones before approaching other game engines has both risks and rewards
   - The rewards being fun. See if you can setup Agones on a single docker-compose setup -- at least locally. Might be good enough for staging / demo servers, which, would be good enough for quite sometime. That said k8s should be terraform / docker approachable on gcp easy enough.
-    - Making a suitable physics based example may be tough
+    - Making a suitable physics based example may be time consuming
 
 
 - Where does this stand as a production tool? Not yet I'd assume but it's not far off
-  - Very nice to have problem
+  - Very nice to have problem, might want to wait until you have it
+  - Seems like it could make a nice path to a SaaS offering, opencore model etc. Might be dependent on Heroic Labs' feelings / partnership potential, but I digress
 
 
 

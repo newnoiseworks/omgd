@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"crypto/md5"
-	"encoding/hex"
 	"fmt"
 	"io/fs"
 	"io/ioutil"
@@ -14,7 +12,6 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/iancoleman/strcase"
 	"gopkg.in/yaml.v2"
 )
 
@@ -123,18 +120,9 @@ func processTemplate(tmpl string, fp *map[interface{}]interface{}, templateExten
 	}
 
 	t := template.New(path.Base(tmpl)).Funcs(template.FuncMap{
-		"md5": func(text string) string {
-			hash := md5.Sum([]byte(text))
-			return hex.EncodeToString(hash[:])
-		},
-		"upperSnake": func(text string) string {
-			snake := matchFirstCap.ReplaceAllString(text, "${1}_${2}")
-			snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
-			return strings.ToUpper(snake)
-		},
-		"camel": func(text string) string {
-			return strcase.ToCamel(text)
-		},
+		"md5":        StrToMd5,
+		"upperSnake": StrToUpperSnake,
+		"camel":      StrToCamel,
 	})
 
 	if templateExtension == "omgdtpl" {

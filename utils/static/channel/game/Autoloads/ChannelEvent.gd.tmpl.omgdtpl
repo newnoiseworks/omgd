@@ -1,17 +1,17 @@
 extends Node
 
 enum {
-{{- range $i, $event := .channel_events }}
+{{- range $i, $event := .{* .profile.omgd.channel_name *}_events }}
   {{upperSnake .key}} = {{ $i }},
 {{- end }}
 }
 
-{{ range $i, $event := .channel_events }}
+{{ range $i, $event := .{* .profile.omgd.channel_name *}_events }}
 signal {{.key}}(state, presence)
 {{ end }}
 
 var signal_map = {
-{{- range $i, $event := .channel_events }}
+{{- range $i, $event := .{* .profile.omgd.channel_name *}_events }}
 	{{upperSnake .key}}: "{{ .key }}",
 {{- end }}
 }
@@ -22,7 +22,7 @@ func handle_match_state_update(state: NakamaRTAPI.MatchData):
 		return
 
 	match state.op_code:
-		{{- range $i, $event := .channel_events }}
+		{{- range $i, $event := .{* .profile.omgd.channel_name *}_events }}
 		{{upperSnake .key}}:
 			emit_signal("{{.key}}", state.data, state.presence)
 		{{- else }}
@@ -35,14 +35,14 @@ func emit(op_code: int, payload: String):
 	var event: String = signal_map[op_code]
 	emit_signal(event, payload, {"user_id": SessionManager.session.user_id})
 
-	if ChannelManager.game_match != null:
-		ChannelManager.socket.send_match_state_async(
-			ChannelManager.game_match.match_id, op_code, payload
+	if {*camel .profile.omgd.channel_name*}Manager.game_match != null:
+		{*camel .profile.omgd.channel_name*}Manager.socket.send_match_state_async(
+			{*camel .profile.omgd.channel_name*}Manager.game_match.match_id, op_code, payload
 		)
 
 
 
-{{ range $i, $event := .channel_events }}
+{{ range $i, $event := .{* .profile.omgd.channel_name *}_events }}
 func {{.key}}(payload):
 	emit({{upperSnake .key}}, JSON.print(payload))
 

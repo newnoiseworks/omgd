@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
 )
 
 //go:embed static/*
@@ -14,10 +13,8 @@ var staticFiles embed.FS
 const FILE_WRITE_PERMS = 0755
 
 type StaticCodeFilePathAlteration struct {
-	filePathToRead          string
-	filePathToWrite         string
-	stringToReadForReplace  string
-	stringToWriteForReplace string
+	filePathToRead  string
+	filePathToWrite string
 }
 
 type StaticCodeCopyPlan struct {
@@ -68,7 +65,7 @@ func (sccp *StaticCodeCopyPlan) CopyStaticDirectory(pathToCopy string, pathToCop
 				}
 			}
 
-			err = sccp.CopyStaticFile(filePathToRead, filePathToWrite)
+			err = CopyStaticFile(filePathToRead, filePathToWrite)
 
 			if err != nil {
 				return err
@@ -79,7 +76,7 @@ func (sccp *StaticCodeCopyPlan) CopyStaticDirectory(pathToCopy string, pathToCop
 	return nil
 }
 
-func (sccp *StaticCodeCopyPlan) CopyStaticFile(
+func CopyStaticFile(
 	filePathToRead string,
 	filePathToWrite string,
 ) error {
@@ -90,12 +87,6 @@ func (sccp *StaticCodeCopyPlan) CopyStaticFile(
 		if err != nil {
 			return err
 		}
-	}
-
-	adjustmentIdx := sccp.doesFilePathNeedChanging(filePathToRead)
-	if adjustmentIdx > -1 {
-		adjustment := sccp.filePathAlterations[adjustmentIdx]
-		fileBytes = sccp.performFileAdjustments(fileBytes, adjustment)
 	}
 
 	err = writeFile(filePathToWrite, fileBytes)
@@ -119,23 +110,6 @@ func writeFile(filePathToWrite string, fileBytes []byte) error {
 	}
 
 	return nil
-}
-
-func (sccp *StaticCodeCopyPlan) performFileAdjustments(
-	fileBytes []byte,
-	alteration StaticCodeFilePathAlteration,
-) []byte {
-	newFileString := ""
-
-	if alteration.stringToReadForReplace != "" && alteration.stringToWriteForReplace != "" {
-		newFileString = strings.ReplaceAll(
-			string(fileBytes),
-			alteration.stringToReadForReplace,
-			alteration.stringToWriteForReplace,
-		)
-	}
-
-	return []byte(newFileString)
 }
 
 func (sccp *StaticCodeCopyPlan) doesFilePathNeedChanging(filePath string) int {

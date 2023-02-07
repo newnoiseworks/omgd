@@ -12,11 +12,16 @@ import (
 
 // codeCmd represents the code command
 var codeCmd = &cobra.Command{
-	Use:   "code [plan] [folder name (optional, defaults to plan name)]",
+	Use:   "code [plan] [plan args]*",
 	Short: "Generates code samples and necessary files for development.",
-	Long: `Generates code samples and necessary files for development.
+	Long: `Generates code samples and necessary files for development. Similiar to rails generate commands if you're familiar.
 
-See hopeful non existent at the moment documentation sometime in the future. Similiar to rails generate commands if you're familiar.
+Current plans available:
+new [project_name (will name folder)] - Starts a new OMGD project using Godot as the game engine
+channel [channel_name (must be snake and lowercase!)] - Creates a new OMGD multiplayer channel to communicate with
+
+Example code plans:
+example-2d-player-movement [channel_name] - Demonstrates 2d player movement. requires a channel to have been created with omgd code channel [channel_name]
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		plan := args[0]
@@ -35,7 +40,7 @@ See hopeful non existent at the moment documentation sometime in the future. Sim
 
 		cp.Generate()
 
-		fmt.Printf("Code generated")
+		fmt.Printf("Code generated\n")
 	},
 }
 

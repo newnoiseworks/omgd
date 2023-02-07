@@ -84,33 +84,6 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 	}
 }
 
-// func TestStaticCopyStaticFileWithChangedString(t *testing.T) {
-// 	t.Cleanup(func() {
-// 		err := os.RemoveAll("static/test/.omgdtmp")
-
-// 		if err != nil {
-// 			t.Fatal(err)
-// 		}
-// 	})
-
-// 	err := os.Mkdir("static/test/.omgdtmp", 0755)
-// 	if err != nil && !os.IsExist(err) {
-// 		t.Fatal(err)
-// 	}
-
-// 	scpp := StaticCodeCopyPlan{
-// 		filePathAlterations: []StaticCodeFilePathAlteration{{
-// 			filePathToRead:          "static/test/test.md",
-// 			stringToReadForReplace:  "test",
-// 			stringToWriteForReplace: "nothing",
-// 		}},
-// 	}
-
-// 	scpp.CopyStaticFile("static/test/test.md", "static/test/.omgdtmp/test.md")
-
-// 	testForFileAndRegexpMatch(t, "static/test/.omgdtmp/test.md", `This is a nothing nothing nothing`)
-// }
-
 func TestStaticCopyStaticFileWithChangedPath(t *testing.T) {
 	t.Cleanup(func() {
 		err := os.RemoveAll("static/test/.omgdtmp")

@@ -194,6 +194,4 @@ func TestCodeGenCmdOMGDChannelCreation(t *testing.T) {
 		"static/test/newProject/server/nakama/data/modules/match_channel_manager.lua",
 		`max_match_channel_size`,
 	)
-
-	//
 }

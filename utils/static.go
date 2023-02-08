@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 )
 
 //go:embed static/*
@@ -32,7 +33,6 @@ func GetStaticFile(file string) (string, error) {
 func (sccp *StaticCodeCopyPlan) CopyStaticDirectory(pathToCopy string, pathToCopyTo string) error {
 	files, err := staticFiles.ReadDir(pathToCopy)
 	if err != nil {
-
 		files, err = os.ReadDir(pathToCopy)
 
 		if err != nil {
@@ -50,6 +50,12 @@ func (sccp *StaticCodeCopyPlan) CopyStaticDirectory(pathToCopy string, pathToCop
 		filePathToRead := fmt.Sprintf("%s/%s", pathToCopy, file.Name())
 		filePathToWrite := fmt.Sprintf("%s/%s", pathToCopyTo, file.Name())
 
+		// looks like golang's fs.embed thing doesn't add hidden files in subdirectories
+		// which is trifling if you ask me but whatever. the below is to get around that
+		// by replacing the . with OMGD_DOT_FILE, which will be rewritten to a . into
+		// userland by the below.
+		filePathToWrite = strings.ReplaceAll(filePathToWrite, "/OMGD_DOT_FILE", "/.")
+
 		if file.IsDir() {
 			err = sccp.CopyStaticDirectory(filePathToRead, filePathToWrite)
 			if err != nil {
@@ -66,7 +72,6 @@ func (sccp *StaticCodeCopyPlan) CopyStaticDirectory(pathToCopy string, pathToCop
 			}
 
 			err = CopyStaticFile(filePathToRead, filePathToWrite)
-
 			if err != nil {
 				return err
 			}

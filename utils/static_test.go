@@ -121,8 +121,6 @@ func TestStaticCopyStaticDirectoryWithEdits(t *testing.T) {
 		filePathAlterations: []StaticCodeFilePathAlteration{{
 			filePathToRead:  "static/test/test_dir_to_copy/test_three.md",
 			filePathToWrite: "static/test/.omgdtmp/test_dir_post_copying/test_trifecta.md",
-			// stringToReadForReplace:  "test_three",
-			// stringToWriteForReplace: "nothing",
 		}},
 	}
 
@@ -158,4 +156,25 @@ func TestStaticCopyStaticDirectoryWithEdits(t *testing.T) {
 
 		testLogComparison(expected, received)
 	}
+}
+
+func TestStaticCopyStaticDirectoryCreatesHiddenFiles(t *testing.T) {
+	t.Cleanup(func() {
+		err := os.RemoveAll("static/test/.omgdtmp")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	err := os.Mkdir("static/test/.omgdtmp", 0755)
+	if err != nil && !os.IsExist(err) {
+		t.Fatal(err)
+	}
+
+	scpp := StaticCodeCopyPlan{}
+
+	scpp.CopyStaticDirectory("static/test/test_dir_to_copy", "static/test/.omgdtmp/test_dir_post_copying")
+
+	testForFileAndRegexpMatch(t, "static/test/.omgdtmp/test_dir_post_copying/.hiddenfile", `test hidden file`)
 }

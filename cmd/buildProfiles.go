@@ -32,29 +32,28 @@ to quickly create a Cobra application.`,
 			log.Fatal(err)
 		}
 
+		err = os.Mkdir(".gg", 0755)
+		if err != nil && !os.IsExist(err) {
+			log.Fatal(err)
+		}
+
 		for _, file := range files {
 			splits := strings.Split(file.Name(), ".")
 			ext := splits[len(splits)-1]
 
 			if ext == "yml" && splits[0] != "example" {
 				utils.BuildTemplateFromPath(
-					".gg/profile.yml.omgdtpl",
+					"profiles/profile.yml.omgdptpl",
 					fmt.Sprintf("profiles/%s", strings.Replace(file.Name(), ".yml", "", 1)),
-					OutputDir,
-					"omgdtpl",
+					"profiles",
+					"omgdptpl",
 					false,
 					Verbosity,
 				)
 
-				wd, err := os.Getwd()
-
-				if err != nil {
-					log.Fatal(err)
-				}
-
 				err = os.Rename(
-					fmt.Sprintf("/%s/.gg/profile.yml", wd),
-					fmt.Sprintf("/%s/.gg/%s", wd, file.Name()),
+					"profiles/profile.yml",
+					fmt.Sprintf(".gg/%s", file.Name()),
 				)
 
 				if err != nil {

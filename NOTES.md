@@ -1,10 +1,5 @@
 # The in, the now, the hip, the with it
 
-- YAML files should represent potential "userland" as much as possible
-  - e.g. making profile.yml.tmpl visible / in the new repo is to allow the user to adjust build / deploy processes
-  - run commands w/n go as much as possible to keep things testable etc
-
-
 - Consider moving "code" into it's own top level folder, should be able to use utils fine via the namespace
   - allows for individual test files per code plan, probably a pattern for individual files overall
 
@@ -46,6 +41,11 @@
 
 
 ## OLD
+
+- YAML files should represent potential "userland" as much as possible
+  - e.g. making profile.yml.tmpl visible / in the new repo is to allow the user to adjust build / deploy processes
+  - run commands w/n go as much as possible to keep things testable etc
+
 
 - Using internal go code vs. issuing CLI commands back into the program
   - Using internal go code as much as possible

@@ -4,7 +4,7 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -13,10 +13,9 @@ import (
 var buildClientsCmd = &cobra.Command{
 	Use:   "build-clients",
 	Short: "Builds local game clients into the game/dist folder based on your local profile.",
-	// Long:  ``,
+	Long:  `Builds local game clients into the game/dist folder based on your local profile.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("buildClients called")
-		Profile = ".gg/local"
+		Profile = strings.ReplaceAll(Profile, "profiles/", ".gg/")
 		runCmd.Run(cmd, []string{})
 	},
 }

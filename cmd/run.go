@@ -26,8 +26,6 @@ Run task:
 $ gg run task [name-of-task] [number-of-step (optional)]
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Println("run called")
-
 		profile := utils.GetProfile(Profile)
 
 		runner := utils.Run{

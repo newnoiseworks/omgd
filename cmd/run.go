@@ -17,13 +17,13 @@ var runCmd = &cobra.Command{
 Usage: 
 
 Run entire project:
-$ gg run
+$ omgd run
 
 Run part of project:
-$ gg run [name-of-project-step] [number-of-step (optional)]
+$ omgd run [name-of-project-step] [number-of-step (optional)]
 
 Run task:
-$ gg run task [name-of-task] [number-of-step (optional)]
+$ omgd run task [name-of-task] [number-of-step (optional)]
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		profile := utils.GetProfile(Profile)

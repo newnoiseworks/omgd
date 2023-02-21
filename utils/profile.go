@@ -92,14 +92,20 @@ func (profile ProfileConf) Get(key string) interface{} {
 	return getValueToKeyWithArray(keys, 0, profileMap)
 }
 
-func (profile ProfileConf) UpdateProfile(key string, val string) {
+func (profile ProfileConf) GetArray(key string) []interface{} {
+	profileMap := profile.GetProfileAsMap()
+	keys := strings.Split(key, ".")
+	return getValueToKeyWithArray(keys, 0, profileMap).([]interface{})
+}
+
+func (profile ProfileConf) UpdateProfile(key string, val interface{}) {
 	profileMap := profile.GetProfileAsMap()
 	keys := strings.Split(key, ".")
 	setValueToKeyWithArray(keys, 0, profileMap, val)
 	profile.SaveProfileFromMap(&profileMap)
 }
 
-func setValueToKeyWithArray(keys []string, keyIndex int, obj map[interface{}]interface{}, value string) {
+func setValueToKeyWithArray(keys []string, keyIndex int, obj map[interface{}]interface{}, value interface{}) {
 	for k, v := range obj {
 		if key, ok := k.(string); ok {
 			if key == keys[keyIndex] {

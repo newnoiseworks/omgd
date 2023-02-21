@@ -1,6 +1,6 @@
 extends "res://RootScenes/RootController.gd"
 
-export var {*.profile.omgd.channel_name*}_name: String
+export var channel_name: String = "{*.profile.omgd.channel_name*}"
 
 export var character_scene: PackedScene
 
@@ -10,7 +10,7 @@ var user_ids: Array = []
 func _ready():
 	user_ids.append(SessionManager.session.user_id)
 
-	if {*.profile.omgd.channel_name*}_name != null && {*.profile.omgd.channel_name*}_name != '':
+	if channel_name != null && channel_name != '':
 		yield({*camel .profile.omgd.channel_name*}Manager.connect_socket(), "completed")
 		yield(_join_{*.profile.omgd.channel_name*}(), "completed")
 		var _rm = {*camel .profile.omgd.channel_name*}Manager.socket.connect("received_match_presence", self, "_on_match_presence")
@@ -24,7 +24,7 @@ func _exit_tree():
 
 
 func _join_{*.profile.omgd.channel_name*}():
-	var {*.profile.omgd.channel_name*} = yield({*camel .profile.omgd.channel_name*}Manager.find_or_create_match({*.profile.omgd.channel_name*}_name, player_entry_node.position), "completed")
+	var {*.profile.omgd.channel_name*} = yield({*camel .profile.omgd.channel_name*}Manager.find_or_create_match(channel_name, player_entry_node.position), "completed")
 
 	for presence in {*.profile.omgd.channel_name*}.presences:
 		_handle_match_join_event(presence)

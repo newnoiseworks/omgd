@@ -24,9 +24,9 @@ func _exit_tree():
 
 
 func _join_{*.profile.omgd.channel_name*}():
-	var {*.profile.omgd.channel_name*} = yield({*camel .profile.omgd.channel_name*}Manager.find_or_create_match(channel_name, player_entry_node.position), "completed")
+	var {*.profile.omgd.channel_name*}_channel_object = yield({*camel .profile.omgd.channel_name*}Manager.find_or_create_match(channel_name, player_entry_node.position), "completed")
 
-	for presence in {*.profile.omgd.channel_name*}.presences:
+	for presence in {*.profile.omgd.channel_name*}_channel_object.presences:
 		_handle_match_join_event(presence)
 
 

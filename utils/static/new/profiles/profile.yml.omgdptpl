@@ -22,7 +22,7 @@ main:
 - dir: server/infra/gcp
   name: infra
   steps:
-  - cmd: gg build-templates .
+  - cmd: omgd build-templates
     desc: building templates for infra
   - cmd: terraform init
     desc: setting up terraform
@@ -30,12 +30,12 @@ main:
     desc: importing existing resources via terraform
   - cmd: terraform apply -auto-approve
     desc: updating infrastructure if needed
-  - cmd: gg update-profile nakama.host $(terraform output -raw server_ip)
+  - cmd: omgd update-profile nakama.host $(terraform output -raw server_ip)
     desc: setting IP of host to current profile
 - dir: game
   name: game-client
   steps:
-  - cmd: gg build-templates .
+  - cmd: omgd build-templates
     desc: building templates for game client
   - cmd: BUILD_ENV=staging ./build_clients.sh
     desc: building game clients for distros
@@ -50,7 +50,7 @@ main:
 - dir: server
   name: nakama-server
   steps:
-  - cmd: gg build-templates .
+  - cmd: omgd build-templates
     desc: building templates for game server
   - cmd: cp -rf ../game/dist/web-staging/* nakama/website
     desc: copy web build into server
@@ -63,7 +63,7 @@ main:
   - name: game-client
     dir: game
     steps: 
-    - cmd: gg build-templates .
+    - cmd: omgd build-templates
       desc: "building game templates"
     - cmd: BUILD_ENV=local ./build_clients.sh
       desc: "building clients into game/dist folder"
@@ -84,20 +84,20 @@ nakama:
 tasks:
 - name: update-templates
   steps:
-  - cmd: gg build-templates .
+  - cmd: omgd build-templates
   dir: 
 {{- if .profile.omgd.deploy }}
 - dir: server/infra/gcp
   name: destroy-infra
   steps:
-  - cmd: gg build-templates .
+  - cmd: omgd build-templates
   - cmd: terraform init
   - cmd: ./tf_import.sh
   - cmd: terraform destroy -auto-approve
 {{- else }}
 - name: start-server
   steps:
-  - cmd: gg build-templates .
+  - cmd: omgd build-templates
   - cmd: docker-compose up -d
   dir: server
 - name: stop-server

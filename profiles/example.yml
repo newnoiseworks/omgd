@@ -2,19 +2,19 @@ main:
   - name: infra
     dir: server/infra
     steps: 
-      - cmd: gg build-templates .
+      - cmd: omgd build-templates
         desc: building templates for infra
       - cmd: ./infra_deploy_if_needed.sh
         dir: gcp # infers ./server/infra/gcp based on top level dir
         desc: deploying infra if needed
   - name: setup-ip
     steps:
-      - cmd: gg update-profile server.host $(./server/infra/get_ip.sh)
+      - cmd: omgd update-profile server.host $(./server/infra/get_ip.sh)
         desc: updates IP address on current profile
   - name: game-client
     dir: game
     steps: 
-      - cmd: gg build-templates .
+      - cmd: omgd build-templates
         desc: building game templates
       - cmd: ./build_clients.sh
         desc: building game clients
@@ -23,7 +23,7 @@ main:
   - name: nakama-server
     dir: server
     steps: 
-      - cmd: gg build-templates .
+      - cmd: omgd build-templates
         desc: building server templates
       - cmd: ./build_server.sh
         desc: building server

@@ -15,7 +15,7 @@ var buildClientsCmd = &cobra.Command{
 	Short: "Builds local game clients into the game/dist folder based on your local profile.",
 	Long:  `Builds local game clients into the game/dist folder based on your local profile.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		Profile = strings.ReplaceAll(Profile, "profiles/", ".gg/")
+		Profile = strings.ReplaceAll(Profile, "profiles/", ".omgd/")
 		runCmd.Run(cmd, []string{})
 	},
 }

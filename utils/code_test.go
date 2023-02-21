@@ -251,10 +251,10 @@ func TestCodeGenCmdOMGDChannelCreationWithEventArgs(t *testing.T) {
 	codePlan.Cleanup()
 
 	// TODO: move buildProfiles code to utils
-	CmdOnDir("omgdd build-profiles", "", "static/test/newProject", false)
+	CmdOnDir("omgdev build-profiles", "", "static/test/newProject", false)
 
 	BuildTemplatesFromPath(
-		"static/test/newProject/.gg/local",
+		"static/test/newProject/.omgd/local",
 		"static/test/newProject",
 		"tmpl",
 		false,

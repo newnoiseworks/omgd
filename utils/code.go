@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 )
 
 type CodeGenerationPlan struct {
 	OutputDir   string
 	Target      string
 	Plan        string
+	Args        string
 	Verbosity   bool
 	SkipCleanup bool
 }
@@ -97,7 +99,6 @@ func (cp *CodeGenerationPlan) generateChannel() {
 	// TODO: There should probably be a check to make sure the
 	// user passes in a snake_case_channel_name meaning no caps
 	// and no spaces just underscores, shouldn't be too hard
-
 	snakeChannel := cp.Target
 	camelChannel := StrToCamel(cp.Target)
 
@@ -141,6 +142,10 @@ func (cp *CodeGenerationPlan) generateChannel() {
 
 	newProfile := GetProfile(fmt.Sprintf("%s/profiles/local", tmpDir))
 	newProfile.UpdateProfile("omgd.channel_name", cp.Target)
+
+	if cp.Args != "" {
+		newProfile.UpdateProfile("omgd.channel_events", strings.Split(cp.Args, " "))
+	}
 
 	BuildTemplatesFromPath(
 		fmt.Sprintf("%s/profiles/local", tmpDir),

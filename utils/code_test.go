@@ -197,3 +197,74 @@ func TestCodeGenCmdOMGDChannelCreation(t *testing.T) {
 		`max_match_channel_size`,
 	)
 }
+
+// tests generation of omgd channels with event args
+func TestCodeGenCmdOMGDChannelCreationWithEventArgs(t *testing.T) {
+	t.Cleanup(func() {
+		err := os.RemoveAll("static/test/newProject")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	// generates a new project to work in
+	newProjectCodePlan := CodeGenerationPlan{
+		OutputDir: "static/test",
+		Target:    "newProject",
+		Plan:      "new",
+	}
+
+	newProjectCodePlan.Generate()
+
+	// generates channel code within new project
+	codePlan := CodeGenerationPlan{
+		OutputDir:   "static/test/newProject",
+		Plan:        "channel",
+		Target:      "match_channel",
+		Args:        "movement trade",
+		SkipCleanup: true,
+	}
+
+	codePlan.Generate()
+
+	// checks to make sure local.yml in tmp folder gets updated w/ events
+	localProfile := GetProfile("static/test/newProject/.omgdtmp/profiles/local")
+	expectedArr := [2]string{"movement", "trade"}
+	receivedArr := localProfile.GetArray("omgd.channel_events")
+
+	for i := 0; i < 2; i++ {
+		if expectedArr[i] != receivedArr[i].(string) {
+			testLogComparison(expectedArr, receivedArr)
+
+			t.Fatalf("Profile didn't update with channel events in tmp folder")
+		}
+	}
+
+	// check for match_channel_events.yml file
+	testForFileAndRegexpMatch(
+		t,
+		"static/test/newProject/.omgdtmp/resources/match_channel_events.yml",
+		`- movement\n- trade`,
+	)
+
+	codePlan.Cleanup()
+
+	// TODO: move buildProfiles code to utils
+	CmdOnDir("omgdd build-profiles", "", "static/test/newProject", false)
+
+	BuildTemplatesFromPath(
+		"static/test/newProject/.gg/local",
+		"static/test/newProject",
+		"tmpl",
+		false,
+		false,
+	)
+
+	// check for MatchChannelEvent.gd file
+	testForFileAndRegexpMatch(
+		t,
+		"static/test/newProject/game/Autoloads/MatchChannelEvent.gd",
+		`MOVEMENT = 0,\n  TRADE = 1`,
+	)
+}

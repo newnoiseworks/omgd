@@ -2,17 +2,17 @@ extends Node
 
 enum {
 {{- range $i, $event := .{* .profile.omgd.channel_name *}_events }}
-  {{upperSnake .key}} = {{ $i }},
+  {{upperSnake $event}} = {{ $i }},
 {{- end }}
 }
 
 {{ range $i, $event := .{* .profile.omgd.channel_name *}_events }}
-signal {{.key}}(state, presence)
+signal {{$event}}(state, presence)
 {{ end }}
 
 var signal_map = {
 {{- range $i, $event := .{* .profile.omgd.channel_name *}_events }}
-	{{upperSnake .key}}: "{{ .key }}",
+	{{upperSnake $event}}: "{{ $event }}",
 {{- end }}
 }
 
@@ -23,8 +23,8 @@ func handle_match_state_update(state: NakamaRTAPI.MatchData):
 
 	match state.op_code:
 		{{- range $i, $event := .{* .profile.omgd.channel_name *}_events }}
-		{{upperSnake .key}}:
-			emit_signal("{{.key}}", state.data, state.presence)
+		{{upperSnake $event}}:
+			emit_signal("{{$event}}", state.data, state.presence)
 		{{- else }}
 		_:
 			pass
@@ -43,8 +43,8 @@ func emit(op_code: int, payload: String):
 
 
 {{ range $i, $event := .{* .profile.omgd.channel_name *}_events }}
-func {{.key}}(payload):
-	emit({{upperSnake .key}}, JSON.print(payload))
+func {{$event}}(payload):
+	emit({{upperSnake $event}}, JSON.print(payload))
 
 
 {{- end }}

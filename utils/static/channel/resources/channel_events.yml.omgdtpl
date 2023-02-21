@@ -1,2 +1,4 @@
 {*.profile.omgd.channel_name*}_events:
-  # - key: movement
+{*- range $i, $value := .profile.omgd.channel_events *}
+- {* $value *}
+{*- end *}

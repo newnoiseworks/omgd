@@ -59,6 +59,11 @@ func (cp *CodeGenerationPlan) generateNew() {
 		!cp.SkipCleanup,
 		cp.Verbosity,
 	)
+
+	err = os.Mkdir(fmt.Sprintf("%s/resources", outputPath), 0755)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // generates example 2d player movement code

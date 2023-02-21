@@ -1,8 +1,8 @@
 extends "res://RootScenes/RootController.gd"
 
-export var channel_name: String = "{*.profile.omgd.channel_name*}"
-
 export var character_scene: PackedScene
+
+var channel_name = "{*.profile.omgd.channel_name*}"
 
 var user_ids: Array = []
 

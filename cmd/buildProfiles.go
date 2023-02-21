@@ -32,7 +32,7 @@ to quickly create a Cobra application.`,
 			log.Fatal(err)
 		}
 
-		err = os.Mkdir(".gg", 0755)
+		err = os.Mkdir(".omgd", 0755)
 		if err != nil && !os.IsExist(err) {
 			log.Fatal(err)
 		}
@@ -53,7 +53,7 @@ to quickly create a Cobra application.`,
 
 				err = os.Rename(
 					"profiles/profile.yml",
-					fmt.Sprintf(".gg/%s", file.Name()),
+					fmt.Sprintf(".omgd/%s", file.Name()),
 				)
 
 				if err != nil {

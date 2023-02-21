@@ -17,7 +17,7 @@ type Run struct {
 func (r *Run) runCmdOnDir(cmd string, cmdDesc string, cmdDir string) {
 	baseCmd := strings.Split(cmd, " ")[0]
 
-	if strings.HasSuffix(baseCmd, "gg") {
+	if strings.HasSuffix(baseCmd, "omgd") {
 		dir := r.OutputDir
 
 		dir = fmt.Sprintf("%s/%s", dir, cmdDir)
@@ -45,7 +45,7 @@ func (r *Run) runCmdOnDir(cmd string, cmdDesc string, cmdDir string) {
 
 	r.CmdDir(cmd, cmdDesc, cmdDir, r.Verbosity)
 
-	if strings.HasSuffix(baseCmd, "gg") && strings.Contains(cmd, "update-profile") {
+	if strings.HasSuffix(baseCmd, "omgd") && strings.Contains(cmd, "update-profile") {
 		r.Profile = GetProfile(r.Profile.env)
 	}
 }

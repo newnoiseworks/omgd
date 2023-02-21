@@ -38,7 +38,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !useLocalProfilesDir {
-			Profile = strings.ReplaceAll(Profile, "profiles/", ".gg/")
+			Profile = strings.ReplaceAll(Profile, "profiles/", ".omgd/")
 		}
 
 		utils.BuildTemplatesFromPath(Profile, OutputDir, templateExtension, removeTemplateAfterProcessing, Verbosity)
@@ -59,6 +59,6 @@ func init() {
 	// buildTemplatesCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	buildTemplatesCmd.Flags().StringVar(&templateExtension, "ext", "tmpl", "File extension used for templates. Don't include the period.")
 	buildTemplatesCmd.Flags().BoolVar(&removeTemplateAfterProcessing, "remove", false, "Remove template file after processing")
-	buildTemplatesCmd.Flags().BoolVar(&useLocalProfilesDir, "profiles", false, "uses local .profiles/ dir instead of build .gg/ dir in main project lib")
+	buildTemplatesCmd.Flags().BoolVar(&useLocalProfilesDir, "profiles", false, "uses local .profiles/ dir instead of build .omgd/ dir in main project lib")
 
 }

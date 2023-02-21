@@ -19,7 +19,7 @@ func TestRunnerCmd(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  "gg build-templates . --profile=../../profiles/test",
+			cmdStr:  "omgd build-templates --profile=../../profiles/test",
 			cmdDesc: "builds infra templates",
 			cmdDir:  "./server/infra",
 		},
@@ -29,7 +29,7 @@ func TestRunnerCmd(t *testing.T) {
 			cmdDir:  "./server/infra/gcp",
 		},
 		{
-			cmdStr:  "gg build-templates . --profile=../profiles/test",
+			cmdStr:  "omgd build-templates --profile=../profiles/test",
 			cmdDesc: "",
 			cmdDir:  "./game",
 		},

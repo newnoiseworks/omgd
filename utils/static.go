@@ -20,6 +20,7 @@ type StaticCodeFilePathAlteration struct {
 
 type StaticCodeCopyPlan struct {
 	filePathAlterations []StaticCodeFilePathAlteration
+	skipPaths           []string
 }
 
 func GetStaticFile(file string) (string, error) {
@@ -49,6 +50,10 @@ func (sccp *StaticCodeCopyPlan) CopyStaticDirectory(pathToCopy string, pathToCop
 		file := files[i]
 		filePathToRead := fmt.Sprintf("%s/%s", pathToCopy, file.Name())
 		filePathToWrite := fmt.Sprintf("%s/%s", pathToCopyTo, file.Name())
+
+		if sccp.shouldSkipFilePath(filePathToRead) {
+			continue
+		}
 
 		// looks like golang's fs.embed thing doesn't add hidden files in subdirectories
 		// which is trifling if you ask me but whatever. the below is to get around that
@@ -125,4 +130,14 @@ func (sccp *StaticCodeCopyPlan) doesFilePathNeedChanging(filePath string) int {
 	}
 
 	return -1
+}
+
+func (sccp *StaticCodeCopyPlan) shouldSkipFilePath(filePath string) bool {
+	for i := 0; i < len(sccp.skipPaths); i++ {
+		if filePath == sccp.skipPaths[i] {
+			return true
+		}
+	}
+
+	return false
 }

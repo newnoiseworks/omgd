@@ -116,7 +116,7 @@ func processTemplate(tmpl string, fp *map[interface{}]interface{}, templateExten
 	final_path := strings.ReplaceAll(tmpl, "."+templateExtension, "")
 
 	if verbose {
-		log.Println(fmt.Sprintf(" >> build %s >> %s", tmpl, final_path))
+		log.Println(fmt.Sprintf(" >> processing template file %s >> %s", tmpl, final_path))
 	}
 
 	t := template.New(path.Base(tmpl)).Funcs(template.FuncMap{

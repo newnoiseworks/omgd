@@ -4,6 +4,6 @@ func DeployInfra(profile string, cmdOnDir func(string, string, string, bool), ve
 
 }
 
-func DestroyInfra() {
+func DestroyInfra(profile string, cmdOnDir func(string, string, string, bool), verbosity bool) {
 
 }

@@ -76,7 +76,7 @@ func TestDestroyInfra(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  "omgd run --profile=.omgd/staging",
+			cmdStr:  "omgd run task destroy-infra --profile=.omgd/staging",
 			cmdDesc: "",
 			cmdDir:  fmt.Sprintf("%s/.omgdtmp/", testDir),
 		},

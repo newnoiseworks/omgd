@@ -205,3 +205,25 @@ func TestStaticCopyStaticDirectorySkipsFiles(t *testing.T) {
 	testFileShouldNotExist(t, "static/test/.omgdtmp/test_dir_post_copying/test_three.md")
 	testFileShouldNotExist(t, "static/test/.omgdtmp/test_dir_post_copying/folder")
 }
+
+func TestStaticCopyStaticDirectoryInSameDirectory(t *testing.T) {
+	t.Cleanup(func() {
+		err := os.RemoveAll("static/test/test_dir_to_copy/.omgdtmp")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	scpp := StaticCodeCopyPlan{
+		skipPaths: []string{
+			"static/test/test_dir_to_copy/.omgdtmp",
+		},
+	}
+
+	scpp.CopyStaticDirectory("static/test/test_dir_to_copy", "static/test/test_dir_to_copy/.omgdtmp")
+
+	testFileShouldExist(t, "static/test/test_dir_to_copy/.omgdtmp")
+	testFileShouldExist(t, "static/test/test_dir_to_copy/.omgdtmp/test_three.md")
+	testFileShouldExist(t, "static/test/test_dir_to_copy/.omgdtmp/folder")
+}

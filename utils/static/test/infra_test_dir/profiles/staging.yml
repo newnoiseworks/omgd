@@ -1,0 +1,7 @@
+omgd:
+  deploy:
+    server:
+      gcloud:
+        project: test
+        region: whatever
+

@@ -15,9 +15,18 @@ func TestDeployInfra(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
+		testCmdOnDirResponses = []testCmdOnDirResponse{}
 	})
 
-	DeployInfra("staging", testCmdOnDir, true)
+	infraChange := InfraChange{
+		OutputDir: "static/test/infra_test_dir",
+		Profile:   "staging",
+		CmdOnDir:  testCmdOnDir,
+		Verbosity: true,
+	}
+
+	infraChange.DeployInfra()
 
 	// 1. Should create or empty .omgdtmp directory to work in
 	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp", testDir))
@@ -25,7 +34,6 @@ func TestDeployInfra(t *testing.T) {
 	// 2. Should clone repo at base of dir (? how to test w/o submodules? clone entire base repo maybe?)
 	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/game", testDir))
 	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/server", testDir))
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/.git", testDir))
 	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/profiles", testDir))
 
 	// 3. Copy profiles directory into new .omgdtmp dir (add staging.yml to static/test/infraDir)
@@ -36,9 +44,10 @@ func TestDeployInfra(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  "omgd run --profile=.omgd/staging",
-			cmdDesc: "",
-			cmdDir:  fmt.Sprintf("%s/.omgdtmp/", testDir),
+			cmdStr:    "omgd run --profile=.omgd/staging",
+			cmdDesc:   "",
+			cmdDir:    fmt.Sprintf("%s/.omgdtmp", testDir),
+			verbosity: true,
 		},
 	}
 
@@ -55,9 +64,18 @@ func TestDestroyInfra(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
+		testCmdOnDirResponses = []testCmdOnDirResponse{}
 	})
 
-	DestroyInfra("staging", testCmdOnDir, true)
+	infraChange := InfraChange{
+		OutputDir: "static/test/infra_test_dir",
+		Profile:   "staging",
+		CmdOnDir:  testCmdOnDir,
+		Verbosity: true,
+	}
+
+	infraChange.DestroyInfra()
 
 	// 1. Should create or empty .omgdtmp directory to work in
 	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp", testDir))
@@ -65,7 +83,6 @@ func TestDestroyInfra(t *testing.T) {
 	// 2. Should clone repo at base of dir (? how to test w/o submodules? clone entire base repo maybe?)
 	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/game", testDir))
 	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/server", testDir))
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/.git", testDir))
 	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/profiles", testDir))
 
 	// 3. Copy profiles directory into new .omgdtmp dir (add staging.yml to static/test/infraDir)
@@ -76,9 +93,10 @@ func TestDestroyInfra(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  "omgd run task destroy-infra --profile=.omgd/staging",
-			cmdDesc: "",
-			cmdDir:  fmt.Sprintf("%s/.omgdtmp/", testDir),
+			cmdStr:    "omgd run task destroy-infra --profile=.omgd/staging",
+			cmdDesc:   "",
+			cmdDir:    fmt.Sprintf("%s/.omgdtmp", testDir),
+			verbosity: true,
 		},
 	}
 

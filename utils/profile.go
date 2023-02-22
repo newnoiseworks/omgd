@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"strings"
 
 	"gopkg.in/yaml.v2"
@@ -133,4 +134,41 @@ func getValueToKeyWithArray(keys []string, keyIndex int, obj map[interface{}]int
 	}
 
 	return nil
+}
+
+func BuildProfiles(dir string, verbose bool) {
+	files, err := ioutil.ReadDir(fmt.Sprintf("%s/profiles", dir))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = os.Mkdir(fmt.Sprintf("%s/.omgd", dir), 0755)
+	if err != nil && !os.IsExist(err) {
+		log.Fatal(err)
+	}
+
+	for _, file := range files {
+		splits := strings.Split(file.Name(), ".")
+		ext := splits[len(splits)-1]
+
+		if ext == "yml" && splits[0] != "example" {
+			BuildTemplateFromPath(
+				fmt.Sprintf("%s/profiles/profile.yml.omgdptpl", dir),
+				fmt.Sprintf("%s/profiles/%s", dir, strings.Replace(file.Name(), ".yml", "", 1)),
+				fmt.Sprintf("%s/profiles", dir),
+				"omgdptpl",
+				false,
+				verbose,
+			)
+
+			err = os.Rename(
+				fmt.Sprintf("%s/profiles/profile.yml", dir),
+				fmt.Sprintf("%s/.omgd/%s", dir, file.Name()),
+			)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
 }

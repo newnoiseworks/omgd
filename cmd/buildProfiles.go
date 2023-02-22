@@ -4,11 +4,7 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
-	"io/ioutil"
 	"log"
-	"os"
-	"strings"
 
 	"github.com/newnoiseworks/tpl-fred/utils"
 	"github.com/spf13/cobra"
@@ -27,40 +23,7 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Println("building omgd profiles")
 
-		files, err := ioutil.ReadDir("profiles")
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		err = os.Mkdir(".omgd", 0755)
-		if err != nil && !os.IsExist(err) {
-			log.Fatal(err)
-		}
-
-		for _, file := range files {
-			splits := strings.Split(file.Name(), ".")
-			ext := splits[len(splits)-1]
-
-			if ext == "yml" && splits[0] != "example" {
-				utils.BuildTemplateFromPath(
-					"profiles/profile.yml.omgdptpl",
-					fmt.Sprintf("profiles/%s", strings.Replace(file.Name(), ".yml", "", 1)),
-					"profiles",
-					"omgdptpl",
-					false,
-					Verbosity,
-				)
-
-				err = os.Rename(
-					"profiles/profile.yml",
-					fmt.Sprintf(".omgd/%s", file.Name()),
-				)
-
-				if err != nil {
-					log.Fatal(err)
-				}
-			}
-		}
+		utils.BuildProfiles(OutputDir, Verbosity)
 
 		log.Println("success!")
 	},

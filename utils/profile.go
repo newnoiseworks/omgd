@@ -52,14 +52,14 @@ func (pc ProfileConf) GetProfileAsMap() map[interface{}]interface{} {
 }
 
 func GetProfile(env string) *ProfileConf {
-	c := ProfileConf{}
+	c := ProfileConf{
+		env:  env,
+		path: fmt.Sprintf("%s.yml", env),
+	}
 
-	c.env = env
-	c.path = fmt.Sprintf("%s.yml", env)
-
-	yamlFile, err := ioutil.ReadFile(c.path)
+	yamlFile, err := os.ReadFile(c.path)
 	if err != nil {
-		log.Printf("yamlFile Get err: #%v ", err)
+		log.Fatalf("yamlFile Get err: #%v ", err)
 	}
 	err = yaml.Unmarshal(yamlFile, &c)
 	if err != nil {
@@ -161,13 +161,37 @@ func BuildProfiles(dir string, verbose bool) {
 				verbose,
 			)
 
-			err = os.Rename(
-				fmt.Sprintf("%s/profiles/profile.yml", dir),
-				fmt.Sprintf("%s/.omgd/%s", dir, file.Name()),
-			)
+			oldPath := fmt.Sprintf("%s/profiles/profile.yml", dir)
+			newPath := fmt.Sprintf("%s/.omgd/%s", dir, file.Name())
+
+			if verbose {
+				log.Printf("moving file from %s >> %s", oldPath, newPath)
+			}
+
+			origFile, err := os.ReadFile(oldPath)
 
 			if err != nil {
 				log.Fatal(err)
+			}
+
+			err = os.WriteFile(newPath, origFile, 0755)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			err = os.Remove(oldPath)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			_, err = os.Stat(newPath)
+
+			if err != nil {
+				log.Fatal(err)
+			} else if verbose {
+				log.Println("file successfully moved")
 			}
 		}
 	}

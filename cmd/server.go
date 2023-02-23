@@ -20,7 +20,7 @@ $ omgd server stop -- stops local docker server containers
 $ omgd server reset-data -- resets the data volumes
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		Profile = strings.ReplaceAll(Profile, "profiles/", ".omgd/")
+		ProfilePath = strings.ReplaceAll(ProfilePath, "profiles/", ".omgd/")
 
 		switch args[0] {
 		case "start":

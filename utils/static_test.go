@@ -178,3 +178,52 @@ func TestStaticCopyStaticDirectoryCreatesHiddenFiles(t *testing.T) {
 
 	testForFileAndRegexpMatch(t, "static/test/.omgdtmp/test_dir_post_copying/.hiddenfile", `test hidden file`)
 }
+
+func TestStaticCopyStaticDirectorySkipsFiles(t *testing.T) {
+	t.Cleanup(func() {
+		err := os.RemoveAll("static/test/.omgdtmp")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	err := os.Mkdir("static/test/.omgdtmp", 0755)
+	if err != nil && !os.IsExist(err) {
+		t.Fatal(err)
+	}
+
+	scpp := StaticCodeCopyPlan{
+		skipPaths: []string{
+			"static/test/test_dir_to_copy/test_three.md",
+			"static/test/test_dir_to_copy/folder",
+		},
+	}
+
+	scpp.CopyStaticDirectory("static/test/test_dir_to_copy", "static/test/.omgdtmp/test_dir_post_copying")
+
+	testFileShouldNotExist(t, "static/test/.omgdtmp/test_dir_post_copying/test_three.md")
+	testFileShouldNotExist(t, "static/test/.omgdtmp/test_dir_post_copying/folder")
+}
+
+func TestStaticCopyStaticDirectoryInSameDirectory(t *testing.T) {
+	t.Cleanup(func() {
+		err := os.RemoveAll("static/test/test_dir_to_copy/.omgdtmp")
+
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	scpp := StaticCodeCopyPlan{
+		skipPaths: []string{
+			"static/test/test_dir_to_copy/.omgdtmp",
+		},
+	}
+
+	scpp.CopyStaticDirectory("static/test/test_dir_to_copy", "static/test/test_dir_to_copy/.omgdtmp")
+
+	testFileShouldExist(t, "static/test/test_dir_to_copy/.omgdtmp")
+	testFileShouldExist(t, "static/test/test_dir_to_copy/.omgdtmp/test_three.md")
+	testFileShouldExist(t, "static/test/test_dir_to_copy/.omgdtmp/folder")
+}

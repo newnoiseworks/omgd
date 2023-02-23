@@ -26,10 +26,10 @@ Run task:
 $ omgd run task [name-of-task] [number-of-step (optional)]
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		profile := utils.GetProfile(Profile)
+		profile := utils.GetProfile(ProfilePath)
 
 		runner := utils.Run{
-			ProfilePath: Profile,
+			ProfilePath: ProfilePath,
 			Profile:     profile,
 			OutputDir:   OutputDir,
 			CmdDir:      utils.CmdOnDir,

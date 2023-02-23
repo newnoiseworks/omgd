@@ -7,10 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cfgFile string
-
-// Profile this is the yml profile you're using
-var Profile string
+// ProfilePath this is the yml profile you're using
+var ProfilePath string
 
 // OutputDir this is where all builds and build artifacts will be written to
 var OutputDir string
@@ -48,7 +46,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&Profile, "profile", "profiles/local", "yml profile representing this build in the build/profiles folder")
+	rootCmd.PersistentFlags().StringVar(&ProfilePath, "profile", "profiles/local", "yml profile representing this build in the build/profiles folder")
 
 	rootCmd.PersistentFlags().StringVar(&OutputDir, "output-dir", ".", "output dir of files that are generated etc")
 

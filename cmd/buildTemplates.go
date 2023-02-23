@@ -38,10 +38,10 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !useLocalProfilesDir {
-			Profile = strings.ReplaceAll(Profile, "profiles/", ".omgd/")
+			ProfilePath = strings.ReplaceAll(ProfilePath, "profiles/", ".omgd/")
 		}
 
-		utils.BuildTemplatesFromPath(Profile, OutputDir, templateExtension, removeTemplateAfterProcessing, Verbosity)
+		utils.BuildTemplatesFromPath(ProfilePath, OutputDir, templateExtension, removeTemplateAfterProcessing, Verbosity)
 	},
 }
 

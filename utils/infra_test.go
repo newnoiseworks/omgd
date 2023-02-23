@@ -20,10 +20,10 @@ func TestDeployInfra(t *testing.T) {
 	})
 
 	infraChange := InfraChange{
-		OutputDir: "static/test/infra_test_dir",
-		Profile:   "staging",
-		CmdOnDir:  testCmdOnDir,
-		Verbosity: false,
+		OutputDir:   "static/test/infra_test_dir",
+		ProfilePath: "profiles/staging",
+		CmdOnDir:    testCmdOnDir,
+		Verbosity:   false,
 	}
 
 	infraChange.DeployInfra()
@@ -69,10 +69,10 @@ func TestDestroyInfra(t *testing.T) {
 	})
 
 	infraChange := InfraChange{
-		OutputDir: "static/test/infra_test_dir",
-		Profile:   "staging",
-		CmdOnDir:  testCmdOnDir,
-		Verbosity: false,
+		OutputDir:   "static/test/infra_test_dir",
+		ProfilePath: "profiles/staging",
+		CmdOnDir:    testCmdOnDir,
+		Verbosity:   false,
 	}
 
 	infraChange.DestroyInfra()

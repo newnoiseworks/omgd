@@ -7,10 +7,10 @@ import (
 )
 
 type InfraChange struct {
-	OutputDir string
-	Profile   string
-	CmdOnDir  func(string, string, string, bool)
-	Verbosity bool
+	OutputDir   string
+	ProfilePath string
+	CmdOnDir    func(string, string, string, bool)
+	Verbosity   bool
 }
 
 func (infraChange *InfraChange) DeployInfra() {

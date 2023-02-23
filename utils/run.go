@@ -18,9 +18,7 @@ func (r *Run) runCmdOnDir(cmd string, cmdDesc string, cmdDir string) {
 	baseCmd := strings.Split(cmd, " ")[0]
 
 	if strings.HasSuffix(baseCmd, "omgd") {
-		dir := r.OutputDir
-
-		dir = fmt.Sprintf("%s/%s", dir, cmdDir)
+		dir := strings.Replace(cmdDir, r.OutputDir, "", 1)
 
 		if strings.HasPrefix(dir, "/") {
 			dir = dir[1:]
@@ -36,7 +34,7 @@ func (r *Run) runCmdOnDir(cmd string, cmdDesc string, cmdDir string) {
 
 		pathPrepend := ""
 
-		for i := 0; i < len(strings.Split(dir, "/"))-1; i++ {
+		for i := 0; i < len(strings.Split(dir, "/")); i++ {
 			pathPrepend += "../"
 		}
 

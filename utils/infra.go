@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 )
 
 type InfraChange struct {
@@ -11,6 +12,7 @@ type InfraChange struct {
 	ProfilePath string
 	CmdOnDir    func(string, string, string, bool)
 	Verbosity   bool
+	tmpDir      string
 }
 
 func (infraChange *InfraChange) DeployInfra() {
@@ -18,7 +20,7 @@ func (infraChange *InfraChange) DeployInfra() {
 
 	// NOTE: Would like to discourage this in favor of using utils.Run but testing is easier this way
 	infraChange.CmdOnDir(
-		"omgd run --profile=.omgd/staging",
+		fmt.Sprintf("omgd run --profile=%s", infraChange.ProfilePath),
 		"",
 		fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir),
 		infraChange.Verbosity,
@@ -30,7 +32,7 @@ func (infraChange *InfraChange) DestroyInfra() {
 
 	// NOTE: Would like to discourage this in favor of using utils.Run but testing is easier this way
 	infraChange.CmdOnDir(
-		"omgd run task destroy-infra --profile=.omgd/staging",
+		fmt.Sprintf("omgd run task destroy-infra --profile=%s", infraChange.ProfilePath),
 		"",
 		fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir),
 		infraChange.Verbosity,
@@ -38,19 +40,25 @@ func (infraChange *InfraChange) DestroyInfra() {
 }
 
 func (infraChange *InfraChange) setup() {
-	// 1. Should create or empty .omgdtmp directory to work in
-	tmpDir := fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir)
+	infraChange.ProfilePath = strings.ReplaceAll(infraChange.ProfilePath, "profiles/", ".omgd/")
 
-	_, err := os.Stat(tmpDir)
+	// 1. Should create or empty .omgdtmp directory to work in
+	infraChange.tmpDir = fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir)
+
+	if infraChange.OutputDir == "." {
+		infraChange.tmpDir = ".omgdtmp"
+	}
+
+	_, err := os.Stat(infraChange.tmpDir)
 	if !os.IsNotExist(err) {
-		err = os.RemoveAll(tmpDir)
+		err = os.RemoveAll(infraChange.tmpDir)
 
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 
-	err = os.Mkdir(tmpDir, 0755)
+	err = os.Mkdir(infraChange.tmpDir, 0755)
 
 	if err != nil {
 		log.Fatal(err)
@@ -59,12 +67,23 @@ func (infraChange *InfraChange) setup() {
 	// 2. Should clone repo at base of dir (? how to test w/o submodules? clone entire base repo maybe?)
 	sccp := StaticCodeCopyPlan{
 		skipPaths: []string{
-			tmpDir,
+			infraChange.tmpDir,
+			".git",
 		},
 	}
 
-	sccp.CopyStaticDirectory(infraChange.OutputDir, tmpDir)
+	cwd, err := os.Getwd()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if infraChange.OutputDir == "." {
+		sccp.CopyStaticDirectory(cwd, infraChange.tmpDir)
+	} else {
+		sccp.CopyStaticDirectory(infraChange.OutputDir, infraChange.tmpDir)
+	}
 
 	// 3. Build profiles directory in new .omgdtmp dir
-	BuildProfiles(tmpDir, infraChange.Verbosity)
+	BuildProfiles(infraChange.tmpDir, infraChange.Verbosity)
 }

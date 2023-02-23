@@ -23,7 +23,7 @@ func TestDeployInfra(t *testing.T) {
 		OutputDir: "static/test/infra_test_dir",
 		Profile:   "staging",
 		CmdOnDir:  testCmdOnDir,
-		Verbosity: true,
+		Verbosity: false,
 	}
 
 	infraChange.DeployInfra()
@@ -47,7 +47,7 @@ func TestDeployInfra(t *testing.T) {
 			cmdStr:    "omgd run --profile=.omgd/staging",
 			cmdDesc:   "",
 			cmdDir:    fmt.Sprintf("%s/.omgdtmp", testDir),
-			verbosity: true,
+			verbosity: false,
 		},
 	}
 
@@ -72,7 +72,7 @@ func TestDestroyInfra(t *testing.T) {
 		OutputDir: "static/test/infra_test_dir",
 		Profile:   "staging",
 		CmdOnDir:  testCmdOnDir,
-		Verbosity: true,
+		Verbosity: false,
 	}
 
 	infraChange.DestroyInfra()
@@ -96,7 +96,7 @@ func TestDestroyInfra(t *testing.T) {
 			cmdStr:    "omgd run task destroy-infra --profile=.omgd/staging",
 			cmdDesc:   "",
 			cmdDir:    fmt.Sprintf("%s/.omgdtmp", testDir),
-			verbosity: true,
+			verbosity: false,
 		},
 	}
 

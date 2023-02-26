@@ -6,17 +6,15 @@ game:
 {{- end }}
 
 
-{{- if .profile.omgd.deploy.server.gcloud }}
+{{ if .profile.omgd.deploy.server.gcloud }}
 gcloud:
-  project: {{ .profile.omgd.deploy.server.gcloud.project }}
-  zone: {{ .profile.omgd.deploy.server.gcloud.zone }}
-  {{ if .profile.omgd.deploy.server.gcloud.machine_type }}
-  machine_type: {{ .profile.omgd.deploy.server.gcloud.machine_type }}
-  {{ end }}
+  {{- range $key, $value := .profile.omgd.deploy.server.gcloud }}
+  {{ $key }}: {{ $value  }}
+  {{- end }}
 {{- end }}
 
 
-{{- if .profile.omgd.deploy }}
+{{ if .profile.omgd.deploy }}
 {{- if .profile.omgd.deploy.server.gcloud }}
 main:
 - dir: server/infra/gcp

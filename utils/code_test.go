@@ -169,17 +169,17 @@ func TestCodeGenCmdOMGDChannelCreation(t *testing.T) {
 	// check to make sure profiles dir in tmp folder cleaned up
 	testFileShouldNotExist(t, "static/test/newProject/.omgdtmp/profiles/local.yml")
 
-	// check for MatchChannelMUD.tscn file
+	// check for MatchChannelMUX.tscn file
 	testForFileAndRegexpMatch(
 		t,
-		"static/test/newProject/game/RootScenes/MatchChannelMUD.tscn",
+		"static/test/newProject/game/RootScenes/MatchChannelMUX.tscn",
 		`MatchChannel`,
 	)
 
-	// check for MatchChannelMUDController.tscn file
+	// check for MatchChannelMUXController.tscn file
 	testForFileAndRegexpMatch(
 		t,
-		"static/test/newProject/game/RootScenes/MatchChannelMUDController.gd",
+		"static/test/newProject/game/RootScenes/MatchChannelMUXController.gd",
 		`MatchChannel`,
 	)
 

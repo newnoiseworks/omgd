@@ -117,12 +117,12 @@ func (cp *CodeGenerationPlan) generateChannel() {
 				filePathToWrite: fmt.Sprintf("%s/resources/%s_events.yml.omgdtpl", tmpDir, snakeChannel),
 			},
 			{
-				filePathToRead:  fmt.Sprintf("%s/game/RootScenes/ChannelMUD.tscn.omgdtpl", staticDir),
-				filePathToWrite: fmt.Sprintf("%s/game/RootScenes/%sMUD.tscn.omgdtpl", tmpDir, camelChannel),
+				filePathToRead:  fmt.Sprintf("%s/game/RootScenes/ChannelMUX.tscn.omgdtpl", staticDir),
+				filePathToWrite: fmt.Sprintf("%s/game/RootScenes/%sMUX.tscn.omgdtpl", tmpDir, camelChannel),
 			},
 			{
-				filePathToRead:  fmt.Sprintf("%s/game/RootScenes/ChannelMUDController.gd.omgdtpl", staticDir),
-				filePathToWrite: fmt.Sprintf("%s/game/RootScenes/%sMUDController.gd.omgdtpl", tmpDir, camelChannel),
+				filePathToRead:  fmt.Sprintf("%s/game/RootScenes/ChannelMUXController.gd.omgdtpl", staticDir),
+				filePathToWrite: fmt.Sprintf("%s/game/RootScenes/%sMUXController.gd.omgdtpl", tmpDir, camelChannel),
 			},
 			{
 				filePathToRead:  fmt.Sprintf("%s/server/nakama/data/modules/channel.lua.omgdtpl", staticDir),

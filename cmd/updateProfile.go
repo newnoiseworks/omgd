@@ -16,7 +16,7 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/newnoiseworks/tpl-fred/utils"
+	"github.com/newnoiseworks/omgd/utils"
 	"github.com/spf13/cobra"
 )
 

@@ -1,4 +1,4 @@
-module github.com/newnoiseworks/tpl-fred
+module github.com/newnoiseworks/omgd
 
 go 1.19
 

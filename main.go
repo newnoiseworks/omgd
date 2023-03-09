@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/newnoiseworks/tpl-fred/cmd"
+	"github.com/newnoiseworks/omgd/cmd"
 )
 
 func main() {

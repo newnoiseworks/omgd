@@ -4,8 +4,10 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"strings"
 
+	"github.com/newnoiseworks/omgd/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -15,9 +17,11 @@ var serverCmd = &cobra.Command{
 	Short: "Manages OMGD Docker containers",
 	Long: `Manages OMGD Docker containers
 
-$ omgd server start -- starts local docker server containers
-$ omgd server stop -- stops local docker server containers
-$ omgd server reset-data -- resets the data volumes
+$ omgd server start          | starts local docker server containers
+$ omgd server stop           | stops local docker server containers
+$ omgd server reset-data     | stops containers and resets the data volumes
+$ omgd server logs           | prints logs from docker containers
+$ omgd server logs --verbose | tails / follows logs continuously
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ProfilePath = strings.ReplaceAll(ProfilePath, "profiles/", ".omgd/")
@@ -35,6 +39,26 @@ $ omgd server reset-data -- resets the data volumes
 			runCmd.Run(cmd, []string{
 				"task", "reset-server-data",
 			})
+		case "logs":
+			cmd := "docker-compose logs"
+
+			if Verbosity {
+				cmd = "docker-compose logs --follow"
+			}
+
+			utils.CmdOnDir(
+				cmd,
+				fmt.Sprintf("printing server logs via $ %s", cmd),
+				"server",
+				true,
+			)
+		case "status":
+			utils.CmdOnDir(
+				"docker-compose ps",
+				fmt.Sprintf("printing server status via $ docker-compose ps"),
+				"server",
+				true,
+			)
 		}
 	},
 }

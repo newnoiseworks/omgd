@@ -56,15 +56,6 @@ main:
     desc: deploy game server to GCP
     dir: deploy/gcp
 {{- end }}
-{{- else }}
-main:
-  - name: game-client
-    dir: game
-    steps: 
-    - cmd: omgd build-templates
-      desc: "building game templates"
-    - cmd: BUILD_ENV=local ./build_clients.sh
-      desc: "building clients into game/dist folder"
 {{- end }}
 
 
@@ -92,18 +83,4 @@ tasks:
   - cmd: terraform init
   - cmd: ./tf_import.sh
   - cmd: terraform destroy -auto-approve
-{{- else }}
-- name: start-server
-  steps:
-  - cmd: omgd build-templates
-  - cmd: docker-compose up -d
-  dir: server
-- name: stop-server
-  steps:
-  - cmd: docker-compose down
-  dir: server
-- name: reset-server-data
-  steps:
-  - cmd: docker-compose down -v
-  dir: server
 {{- end }}

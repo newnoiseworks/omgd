@@ -4,8 +4,9 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"strings"
+	"fmt"
 
+	"github.com/newnoiseworks/omgd/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -15,8 +16,15 @@ var buildClientsCmd = &cobra.Command{
 	Short: "Builds local game clients into the game/dist folder based on your local profile.",
 	Long:  `Builds local game clients into the game/dist folder based on your local profile.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		ProfilePath = strings.ReplaceAll(ProfilePath, "profiles/", ".omgd/")
-		runCmd.Run(cmd, []string{})
+		utils.CmdOnDirWithEnv(
+			"./build_clients.sh",
+			fmt.Sprintf("Building local game clients into game/dist folder"),
+			"game",
+			[]string{
+				"BUILD_ENV=local",
+			},
+			Verbosity,
+		)
 	},
 }
 

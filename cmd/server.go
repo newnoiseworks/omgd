@@ -22,23 +22,33 @@ $ omgd server stop           | stops local docker server containers
 $ omgd server reset-data     | stops containers and resets the data volumes
 $ omgd server logs           | prints logs from docker containers
 $ omgd server logs --verbose | tails / follows logs continuously
+$ omgd server status         | prints status of running docker containers
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ProfilePath = strings.ReplaceAll(ProfilePath, "profiles/", ".omgd/")
 
 		switch args[0] {
 		case "start":
-			runCmd.Run(cmd, []string{
-				"task", "start-server",
-			})
+			utils.CmdOnDir(
+				"docker-compose up -d",
+				fmt.Sprintf("spinning up docker containers"),
+				"server",
+				true,
+			)
 		case "stop":
-			runCmd.Run(cmd, []string{
-				"task", "stop-server",
-			})
+			utils.CmdOnDir(
+				"docker-compose down",
+				fmt.Sprintf("stopping docker containers"),
+				"server",
+				true,
+			)
 		case "reset-data":
-			runCmd.Run(cmd, []string{
-				"task", "reset-server-data",
-			})
+			utils.CmdOnDir(
+				"docker-compose down -v",
+				fmt.Sprintf("removing data volumes and stopping docker containers"),
+				"server",
+				true,
+			)
 		case "logs":
 			cmd := "docker-compose logs"
 

@@ -35,7 +35,7 @@ main:
   steps:
   - cmd: omgd build-templates
     desc: building templates for game client
-  - cmd: BUILD_ENV=staging ./build_clients.sh
+  - cmd: BUILD_ENV=staging omgd build-clients
     desc: building game clients for distros
   {{- if .profile.omgd.deploy.game.itchio }}
   - cmd: butler push ./dist/mac {{ .profile.omgd.deploy.game.itchio.user }}/{{ .profile.omgd.deploy.game.itchio.project }}:mac
@@ -63,7 +63,7 @@ main:
     steps: 
     - cmd: omgd build-templates
       desc: "building game templates"
-    - cmd: BUILD_ENV=local ./build_clients.sh
+    - cmd: BUILD_ENV=local omgd build-clients
       desc: "building clients into game/dist folder"
 {{- end }}
 

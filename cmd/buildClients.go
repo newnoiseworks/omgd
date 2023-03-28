@@ -13,15 +13,18 @@ import (
 // buildClientsCmd represents the buildClients command
 var buildClientsCmd = &cobra.Command{
 	Use:   "build-clients",
-	Short: "Builds local game clients into the game/dist folder based on your local profile.",
-	Long:  `Builds local game clients into the game/dist folder based on your local profile.`,
+	Short: "Builds game clients into the game/dist folder.",
+	// Long:  `Builds local game clients into the game/dist folder based on your local profile.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		profile := utils.GetProfile(ProfilePath)
+
 		utils.CmdOnDirWithEnv(
-			"./build_clients.sh",
+			// TODO: break below into optional builds per OS based on... profile probably?
+			"docker compose up build-web build-windows build-mac build-x11",
 			fmt.Sprintf("Building local game clients into game/dist folder"),
 			"game",
 			[]string{
-				"BUILD_ENV=local",
+				fmt.Sprintf("BUILD_ENV=%s", profile.Name),
 			},
 			Verbosity,
 		)

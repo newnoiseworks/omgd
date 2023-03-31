@@ -22,28 +22,28 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 	infraChange.CmdOnDir(
 		fmt.Sprintf("omgd run task set-ip-to-profile --profile=%s", infraChange.ProfilePath),
 		"",
-		fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir),
+		infraChange.OutputDir,
 		infraChange.Verbosity,
 	)
 
 	infraChange.CmdOnDir(
 		fmt.Sprintf("omgd build-templates --profile=%s", infraChange.ProfilePath),
 		"",
-		fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir),
+		infraChange.OutputDir,
 		infraChange.Verbosity,
 	)
 
 	infraChange.CmdOnDir(
 		fmt.Sprintf("omgd build-clients --profile=%s", infraChange.ProfilePath),
 		"",
-		fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir),
+		infraChange.OutputDir,
 		infraChange.Verbosity,
 	)
 
 	infraChange.CmdOnDir(
 		fmt.Sprintf("omgd run nakama-server --profile=%s", infraChange.ProfilePath),
 		"",
-		fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir),
+		infraChange.OutputDir,
 		infraChange.Verbosity,
 	)
 }

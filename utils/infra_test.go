@@ -70,10 +70,11 @@ func TestDeployClientAndServer(t *testing.T) {
 	})
 
 	infraChange := InfraChange{
-		OutputDir:   "static/test/infra_test_dir",
-		ProfilePath: "profiles/staging",
-		CmdOnDir:    testCmdOnDir,
-		Verbosity:   false,
+		OutputDir:    "static/test/infra_test_dir",
+		ProfilePath:  "profiles/staging",
+		CmdOnDir:     testCmdOnDir,
+		Verbosity:    false,
+		CopyToTmpDir: true,
 	}
 
 	infraChange.DeployClientAndServer()
@@ -162,7 +163,7 @@ func TestDeployInfraWithoutCopying(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:    "omgd run --profile=.omgd/staging",
+			cmdStr:    "omgd run task deploy-infra --profile=.omgd/staging",
 			cmdDesc:   "",
 			cmdDir:    testDir,
 			verbosity: false,

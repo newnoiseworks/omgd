@@ -16,7 +16,7 @@ main:
     steps: 
       - cmd: omgd build-templates
         desc: building game templates
-      - cmd: ./build_clients.sh
+      - cmd: omgd build-clients
         desc: building game clients
       - cmd: ./deploy_clients.sh
         desc: deploying game clients

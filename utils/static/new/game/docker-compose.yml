@@ -1,54 +1,34 @@
 version: "2"
 services:
-  godot-builder:
-    build:
-      context: .build/GodotDockerfile
-      dockerfile: Dockerfile
-    image: newnoiseworks/godot-builder
-
   build-root:
     build: .
     volumes:
-      - ./dist:/root/game/dist
+      - ./:/root/game/
     working_dir: /root/game/
     environment:
       - BUILD_ENV=${BUILD_ENV}
 
   dev:
-    depends_on:
-      - godot-builder
     extends:
       service: build-root
     command: bash
 
   build-mac:
-    depends_on:
-      - godot-builder
     extends:
       service: build-root
-    command: /bin/bash .build/mac.sh
-    image: newnoiseworks/game-build-mac-${BUILD_ENV}
+    command: sh -c "mkdir -v -p dist/mac-${BUILD_ENV} && godot -v --export 'Mac OSX' dist/mac-${BUILD_ENV}/game-${BUILD_ENV}.zip"
 
   build-windows:
-    depends_on:
-      - godot-builder
     extends:
       service: build-root
-    command: /bin/bash .build/windows.sh
-    image: newnoiseworks/game-build-windows-${BUILD_ENV}
+    command: sh -c "mkdir -v -p dist/windows-${BUILD_ENV} && godot -v --export 'Windows Desktop' dist/windows-${BUILD_ENV}/game-${BUILD_ENV}.exe"
 
   build-web:
-    depends_on:
-      - godot-builder
     extends:
       service: build-root
-    command: /bin/bash .build/web.sh
-    image: newnoiseworks/game-build-web-${BUILD_ENV}
+    command: sh -c "mkdir -v -p dist/web-${BUILD_ENV} && godot -v --export 'HTML5' dist/web-${BUILD_ENV}/index.html"
 
   build-x11:
-    depends_on:
-      - godot-builder
     extends:
       service: build-root
-    command: /bin/bash .build/x11.sh
-    image: newnoiseworks/game-build-x11-${BUILD_ENV}
+    command: sh -c "mkdir -v -p dist/x11-${BUILD_ENV} && godot -v --export 'Linux/X11' dist/x11-${BUILD_ENV}/game-${BUILD_ENV}.x86_64"

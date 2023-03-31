@@ -13,13 +13,12 @@ import (
 // infraCmd represents the infra command
 var infraCmd = &cobra.Command{
 	Use:   "infra",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Deploys and destroys cloud infrastructure",
+	Long: `Deploys and destroys cloud infrastructure
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+$ omgd infra deploy | Deploys cloud infrastructure via terraform
+$ omgd infra game-deploy | Builds and deploys clients and server to infra
+$ omgd infra destroy | Destroys cloud infrastructure via terraform`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("infra called")
 
@@ -33,6 +32,8 @@ to quickly create a Cobra application.`,
 		switch args[0] {
 		case "deploy":
 			infraChange.DeployInfra()
+		case "game-deploy":
+			infraChange.DeployClientAndServer()
 		case "destroy":
 			infraChange.DestroyInfra()
 		}

@@ -17,25 +17,12 @@ gcloud:
 {{ if .profile.omgd.deploy }}
 {{- if .profile.omgd.deploy.server.gcloud }}
 main:
-- dir: server/infra/gcp
-  name: infra
-  steps:
-  - cmd: omgd build-templates
-    desc: building templates for infra
-  - cmd: terraform init
-    desc: setting up terraform
-  - cmd: ./tf_import.sh
-    desc: importing existing resources via terraform
-  - cmd: terraform apply -auto-approve
-    desc: updating infrastructure if needed
-  - cmd: omgd update-profile nakama.host $(terraform output -raw server_ip)
-    desc: setting IP of host to current profile
-- dir: game
-  name: game-client
+- name: game-client
   steps:
   - cmd: omgd build-templates
     desc: building templates for game client
-  - cmd: BUILD_ENV=staging ./build_clients.sh
+    dir: game
+  - cmd: omgd build-clients
     desc: building game clients for distros
   {{- if .profile.omgd.deploy.game.itchio }}
   - cmd: butler push ./dist/mac {{ .profile.omgd.deploy.game.itchio.user }}/{{ .profile.omgd.deploy.game.itchio.project }}:mac
@@ -76,6 +63,30 @@ tasks:
   - cmd: omgd build-templates
   dir: 
 {{- if .profile.omgd.deploy }}
+- dir: server/infra/gcp
+  name: deploy-infra
+  steps:
+  - cmd: omgd build-templates
+    desc: building templates for infra
+  - cmd: terraform init
+    desc: setting up terraform
+  - cmd: ./tf_import.sh
+    desc: importing existing resources via terraform
+  - cmd: terraform apply -auto-approve
+    desc: updating infrastructure if needed
+  - cmd: omgd update-profile nakama.host $(terraform output -raw server_ip)
+    desc: setting IP of host to current profile
+- dir: server/infra/gcp
+  name: set-ip-to-profile
+  steps:
+  - cmd: omgd build-templates
+    desc: building templates for infra
+  - cmd: terraform init
+    desc: setting up terraform
+  - cmd: ./tf_import.sh
+    desc: importing existing resources via terraform
+  - cmd: omgd update-profile nakama.host $(terraform output -raw server_ip)
+    desc: setting IP of host to current profile
 - dir: server/infra/gcp
   name: destroy-infra
   steps:

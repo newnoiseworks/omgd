@@ -10,6 +10,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var StayInDir bool
+
 // infraCmd represents the infra command
 var infraCmd = &cobra.Command{
 	Use:   "infra",
@@ -23,10 +25,11 @@ $ omgd infra destroy | Destroys cloud infrastructure via terraform`,
 		fmt.Println("infra called")
 
 		infraChange := utils.InfraChange{
-			OutputDir:   OutputDir,
-			ProfilePath: ProfilePath,
-			CmdOnDir:    utils.CmdOnDir,
-			Verbosity:   Verbosity,
+			OutputDir:    OutputDir,
+			ProfilePath:  ProfilePath,
+			CmdOnDir:     utils.CmdOnDir,
+			Verbosity:    Verbosity,
+			CopyToTmpDir: !StayInDir,
 		}
 
 		switch args[0] {
@@ -52,4 +55,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// infraCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	infraCmd.Flags().BoolVar(&StayInDir, "stay-in-dir", false, "Doesn't perform a copy of the project and makes all infra deploy operations within the directory")
 }

@@ -15,12 +15,44 @@ type InfraChange struct {
 	tmpDir      string
 }
 
+func (infraChange *InfraChange) DeployClientAndServer() {
+	infraChange.setup()
+
+	infraChange.CmdOnDir(
+		fmt.Sprintf("omgd run task set-ip-to-profile --profile=%s", infraChange.ProfilePath),
+		"",
+		fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir),
+		infraChange.Verbosity,
+	)
+
+	infraChange.CmdOnDir(
+		fmt.Sprintf("omgd build-templates --profile=%s", infraChange.ProfilePath),
+		"",
+		fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir),
+		infraChange.Verbosity,
+	)
+
+	infraChange.CmdOnDir(
+		fmt.Sprintf("omgd build-clients --profile=%s", infraChange.ProfilePath),
+		"",
+		fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir),
+		infraChange.Verbosity,
+	)
+
+	infraChange.CmdOnDir(
+		fmt.Sprintf("omgd run nakama-server --profile=%s", infraChange.ProfilePath),
+		"",
+		fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir),
+		infraChange.Verbosity,
+	)
+}
+
 func (infraChange *InfraChange) DeployInfra() {
 	infraChange.setup()
 
 	// NOTE: Would like to discourage this in favor of using utils.Run but testing is easier this way
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd run --profile=%s", infraChange.ProfilePath),
+		fmt.Sprintf("omgd run task deploy-infra --profile=%s", infraChange.ProfilePath),
 		"",
 		fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir),
 		infraChange.Verbosity,

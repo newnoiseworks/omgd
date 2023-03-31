@@ -5,10 +5,14 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/newnoiseworks/omgd/utils"
 	"github.com/spf13/cobra"
 )
+
+// BuildTargets sets the targets to be built
+var BuildTargets string
 
 // buildClientsCmd represents the buildClients command
 var buildClientsCmd = &cobra.Command{
@@ -18,14 +22,16 @@ var buildClientsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		profile := utils.GetProfile(ProfilePath)
 
-		utils.CmdOnDirWithEnv(
+		buildFor := strings.ReplaceAll(BuildTargets, ",", " ")
+
+		utils.CmdOnDir(
 			// TODO: break below into optional builds per OS based on... profile probably?
-			"docker compose up build-web build-windows build-mac build-x11",
-			fmt.Sprintf("Building local game clients into game/dist folder"),
+			fmt.Sprintf("BUILD_ENV=%s docker compose up %s", profile.Name, buildFor),
+			fmt.Sprintf("Building %s game clients into game/dist folder", profile.Name),
 			"game",
-			[]string{
-				fmt.Sprintf("BUILD_ENV=%s", profile.Name),
-			},
+			// []string{
+			// 	fmt.Sprintf("BUILD_ENV=%s", profile.Name),
+			// },
 			Verbosity,
 		)
 	},
@@ -39,6 +45,12 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// buildClientsCmd.PersistentFlags().String("foo", "", "A help for foo")
+	buildClientsCmd.PersistentFlags().StringVar(
+		&BuildTargets,
+		"targets",
+		"build-web,build-windows,build-mac,build-x11",
+		"specify build targets comma separated no spaces",
+	)
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:

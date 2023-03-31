@@ -1,7 +1,4 @@
 build:
-	go build -o ${GOPATH}/bin/omgdev
-
-build-prod:
 	go build -o ${GOPATH}/bin/omgd
 
 test:

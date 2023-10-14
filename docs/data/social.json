@@ -1,0 +1,14 @@
+{
+  "links": [
+    {
+      "name": "twitter",
+      "url": "https://twitter.com/OmgdDev",
+      "image": "images/social/twitter.svg"
+    },
+    {
+      "name": "github",
+      "url": "https://github.com/newnoiseworks/omgd",
+      "image": "images/social/github.svg"
+    }
+  ]
+}

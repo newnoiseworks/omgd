@@ -1,4 +1,5 @@
 .tmp
 
 tpl-fred.*
-dist/
+dist/*
+!dist/OMGD_DOT_FILEgitkeep

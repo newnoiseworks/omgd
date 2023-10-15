@@ -5,7 +5,8 @@ debug.log
 .import/
 export.cfg
 
-dist
+dist/*
+!dist/.gitkeep
 
 .cookie
 .DS_Store

@@ -36,6 +36,8 @@ func TestCodeGenCmdNewProjectWritesAndCleansUpFiles(t *testing.T) {
 	testFileShouldNotExist(t, "static/test/newProject/game/project.godot.newomgdtpl")
 
 	testFileShouldExist(t, "static/test/newProject/resources")
+
+	testFileShouldExist(t, "static/test/newProject/game/dist/.gitkeep")
 }
 
 // tests generation of godot example 2d player movement project

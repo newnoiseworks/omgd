@@ -48,7 +48,7 @@ func (cp *CodeGenerationPlan) generateNew() {
 	}
 
 	newProfile := GetProfile(fmt.Sprintf("%s/profiles/local", outputPath))
-	newProfile.UpdateProfile("game.name", cp.Target)
+	newProfile.UpdateProfile("omgd.name", cp.Target)
 
 	if err != nil {
 		log.Fatal(err)

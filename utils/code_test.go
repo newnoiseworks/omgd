@@ -25,7 +25,7 @@ func TestCodeGenCmdNewProjectWritesAndCleansUpFiles(t *testing.T) {
 
 	localProfile := GetProfile("static/test/newProject/profiles/local")
 	expected := "newProject"
-	received := localProfile.Get("game.name")
+	received := localProfile.Get("omgd.name")
 
 	if expected != received {
 		testLogComparison(expected, received)
@@ -34,6 +34,8 @@ func TestCodeGenCmdNewProjectWritesAndCleansUpFiles(t *testing.T) {
 	}
 
 	testFileShouldNotExist(t, "static/test/newProject/game/project.godot.newomgdtpl")
+
+	testFileShouldExist(t, "static/test/newProject/game/project.godot")
 
 	testFileShouldExist(t, "static/test/newProject/resources")
 

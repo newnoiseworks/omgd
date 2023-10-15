@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/logrusorgru/aurora"
 )
@@ -42,7 +43,9 @@ func CmdOnDirWithEnv(cmdStr string, cmdDesc string, cmdDir string, env []string,
 }
 
 func getCmd(cmdStr string, cmdDesc string, cmdDir string, verbosity bool) *exec.Cmd {
-	cmd := exec.Command("bash", "-c", cmdStr)
+	str := strings.Split(cmdStr, " ")
+
+	cmd := exec.Command(str[0], str[1:]...)
 
 	if cmdDir == "" {
 		cmd.Dir = "."

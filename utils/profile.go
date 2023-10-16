@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"reflect"
 	"runtime/debug"
 	"strings"
 
@@ -25,16 +26,48 @@ type CommandConfig struct {
 }
 
 type ProfileConf struct {
-	Name  string
-	Main  []CommandConfig `yaml:"main"`
-	Tasks []CommandConfig `yaml:"tasks"`
-	path  string
+	Name    string
+	Main    []CommandConfig `yaml:"main"`
+	Tasks   []CommandConfig `yaml:"tasks"`
+	path    string
+	rootDir string
+}
+
+func (pc ProfileConf) getTopLevelOMGDProfileAsMap() map[interface{}]interface{} {
+	c := make(map[interface{}]interface{})
+
+	omgdProfilePath := strings.Replace(pc.path, pc.Name, "omgd", 1)
+
+	if pc.rootDir != "" {
+		omgdProfilePath = filepath.Join(pc.rootDir, omgdProfilePath)
+	}
+
+	yamlFile, err := ioutil.ReadFile(omgdProfilePath)
+
+	if err != nil {
+		return c
+	}
+	err = yaml.Unmarshal(yamlFile, &c)
+
+	if err != nil {
+		log.Fatalf("Unmarshal err: %v", err)
+	}
+
+	return c
 }
 
 func (pc ProfileConf) GetProfileAsMap() map[interface{}]interface{} {
 	c := make(map[interface{}]interface{})
 
-	yamlFile, err := ioutil.ReadFile(pc.path)
+	path := pc.path
+
+	if pc.rootDir != "" {
+		path = filepath.Join(pc.rootDir, path)
+	}
+
+	omgdFile := pc.getTopLevelOMGDProfileAsMap()
+
+	yamlFile, err := ioutil.ReadFile(path)
 
 	if err != nil {
 		log.Printf("yamlFile Get err: #%v ", err)
@@ -45,7 +78,9 @@ func (pc ProfileConf) GetProfileAsMap() map[interface{}]interface{} {
 		log.Fatalf("Unmarshal err: %v", err)
 	}
 
-	return c
+	mergerecursive(&c, &omgdFile, 4)
+
+	return omgdFile
 }
 
 func GetProfile(path string) *ProfileConf {
@@ -81,6 +116,7 @@ func GetProfileFromDir(path string, dir string) *ProfileConf {
 	}
 
 	profile := GetProfile(path)
+	profile.rootDir = dir
 
 	err = os.Chdir(root)
 	if err != nil {
@@ -215,4 +251,76 @@ func BuildProfiles(dir string, verbose bool) {
 			}
 		}
 	}
+}
+
+// c/o https://github.com/wiebew/golang_merge_yml/blob/main/merge_yaml.go
+func isMap(typeName string) bool {
+	switch typeName {
+	case "map[interface {}]interface {}":
+		return true
+	default:
+		return false
+	}
+}
+
+// c/o https://github.com/wiebew/golang_merge_yml/blob/main/merge_yaml.go
+func mergerecursive(master *map[interface{}]interface{}, merge *map[interface{}]interface{}, level int) {
+
+	for k, v := range *master {
+		_, exists := (*merge)[k]
+		if exists {
+			// key exist in the target yaml
+			// if it is a map we need to (recursively) descend into it to check every value in the map
+			// this prevents losing values if the master only has one underlying value and the default multiple
+			if isMap(reflect.TypeOf(v).String()) {
+				masternode := v.(map[interface{}]interface{}) // type assertion (typecast)
+				// check if both types are a map types
+				if isMap(reflect.TypeOf((*merge)[k]).String()) {
+					mergenode := (*merge)[k].(map[interface{}]interface{}) // type assertion
+					mergerecursive(&masternode, &mergenode, level+1)
+				} else {
+					log.Fatal("Key [", k, "] is map/list of values in one yaml and a singular value in the other yaml, can't merge them")
+				}
+			} else {
+				// key is not a map, so we just need to copy the value if they are both non-map types
+				if !isMap(reflect.TypeOf((*merge)[k]).String()) {
+					(*merge)[k] = v
+				} else {
+					log.Fatal("Key [", k, "] is map/list of values in one yaml and a singular value in the other yaml, can't merge them")
+				}
+			}
+		} else {
+			// key does not exists in the target, just add the whole node/value
+			(*merge)[k] = v
+		}
+	}
+}
+
+// c/o https://github.com/wiebew/golang_merge_yml/blob/main/merge_yaml.go
+func merge(masterpath *string, defaultspath *string, merge *map[interface{}]interface{}) {
+	// will merge values of both yaml files into merge map
+	// values in master will overrule values in defaults
+
+	var master map[interface{}]interface{}
+	var defaults map[interface{}]interface{}
+
+	bs, err := ioutil.ReadFile(*masterpath)
+	if err != nil {
+		panic(err)
+	}
+
+	if err := yaml.Unmarshal(bs, &master); err != nil {
+		panic(err)
+	}
+
+	bs, err = ioutil.ReadFile(*defaultspath)
+
+	if err != nil {
+		panic(err)
+	}
+	if err := yaml.Unmarshal(bs, &defaults); err != nil {
+		panic(err)
+	}
+	*merge = defaults
+	mergerecursive(&master, merge, 0)
 }

@@ -1,8 +1,4 @@
-# omgd settings
-omgd:
-  name: ???
-
-# use "game" for custom attributes 
-game:
-  version: 0.1.23
-
+# use for local dev overrides
+#
+# game
+#   version: 0.0.1dev

@@ -33,6 +33,16 @@ func TestCodeGenCmdNewProjectWritesAndCleansUpFiles(t *testing.T) {
 		t.Fatalf("Profile didn't update with game name in static folder")
 	}
 
+	omgdProfile := GetProfile("static/test/newProject/profiles/omgd.yml")
+	expected = "newProject"
+	received = omgdProfile.Get("omgd.name")
+
+	if expected != received {
+		testLogComparison(expected, received)
+
+		t.Fatalf("Top level OMGD Profile didn't update with game name in static folder")
+	}
+
 	testFileShouldNotExist(t, "static/test/newProject/game/project.godot.newomgdtpl")
 
 	testFileShouldExist(t, "static/test/newProject/game/project.godot")

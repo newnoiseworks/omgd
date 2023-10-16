@@ -263,8 +263,10 @@ func TestCodeGenCmdOMGDChannelCreationWithEventArgs(t *testing.T) {
 		`omgd`,
 	)
 
+	profile := GetProfile("static/test/newProject/.omgd/local")
+
 	BuildTemplatesFromPath(
-		"static/test/newProject/.omgd/local",
+		profile,
 		"static/test/newProject",
 		"tmpl",
 		false,

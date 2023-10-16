@@ -152,9 +152,11 @@ func BuildProfiles(dir string, verbose bool) {
 		ext := splits[len(splits)-1]
 
 		if ext == "yml" && splits[0] != "example" {
+			profile := GetProfile(fmt.Sprintf("%s/profiles/%s", dir, strings.Replace(file.Name(), ".yml", "", 1)))
+
 			BuildTemplateFromPath(
 				fmt.Sprintf("%s/profiles/profile.yml.omgdptpl", dir),
-				fmt.Sprintf("%s/profiles/%s", dir, strings.Replace(file.Name(), ".yml", "", 1)),
+				profile,
 				fmt.Sprintf("%s/profiles", dir),
 				"omgdptpl",
 				false,

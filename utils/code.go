@@ -55,7 +55,7 @@ func (cp *CodeGenerationPlan) generateNew() {
 	}
 
 	BuildTemplatesFromPath(
-		fmt.Sprintf("%s/profiles/local", outputPath),
+		newProfile,
 		outputPath,
 		"omgdtpl",
 		!cp.SkipCleanup,
@@ -83,7 +83,7 @@ func (cp *CodeGenerationPlan) generateExample2DPlayerMovement() {
 	newProfile.UpdateProfile("omgd.channel_name", cp.Target)
 
 	BuildTemplatesFromPath(
-		fmt.Sprintf("%s/profiles/local", tmpDir),
+		newProfile,
 		tmpDir,
 		"omgdtpl",
 		true,
@@ -148,7 +148,7 @@ func (cp *CodeGenerationPlan) generateChannel() {
 	}
 
 	BuildTemplatesFromPath(
-		fmt.Sprintf("%s/profiles/local", tmpDir),
+		newProfile,
 		tmpDir,
 		"omgdtpl",
 		true,

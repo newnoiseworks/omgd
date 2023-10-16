@@ -24,14 +24,14 @@ var buildClientsCmd = &cobra.Command{
 
 		buildFor := strings.ReplaceAll(BuildTargets, ",", " ")
 
-		utils.CmdOnDir(
+		utils.CmdOnDirWithEnv(
 			// TODO: break below into optional builds per OS based on... profile probably?
-			fmt.Sprintf("BUILD_ENV=%s docker compose up %s", profile.Name, buildFor),
+			fmt.Sprintf("docker compose up %s", buildFor),
 			fmt.Sprintf("Building %s game clients into game/dist folder", profile.Name),
 			"game",
-			// []string{
-			// 	fmt.Sprintf("BUILD_ENV=%s", profile.Name),
-			// },
+			[]string{
+				fmt.Sprintf("BUILD_ENV=%s", profile.Name),
+			},
 			Verbosity,
 		)
 	},

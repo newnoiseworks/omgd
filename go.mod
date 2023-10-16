@@ -1,6 +1,6 @@
 module github.com/newnoiseworks/omgd
 
-go 1.19
+go 1.21
 
 require (
 	github.com/iancoleman/strcase v0.1.3

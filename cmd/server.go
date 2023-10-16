@@ -5,7 +5,6 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/newnoiseworks/omgd/utils"
 	"github.com/spf13/cobra"
@@ -25,8 +24,6 @@ $ omgd server logs --verbose | tails / follows logs continuously
 $ omgd server status         | prints status of running docker containers
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		ProfilePath = strings.ReplaceAll(ProfilePath, "profiles/", ".omgd/")
-
 		switch args[0] {
 		case "start":
 			utils.CmdOnDir(

@@ -47,7 +47,7 @@ func (cp *CodeGenerationPlan) generateNew() {
 		log.Fatal(err)
 	}
 
-	newProfile := GetProfile(fmt.Sprintf("%s/profiles/local.yml", outputPath))
+	newProfile := GetProfile(fmt.Sprintf("%s/profiles/omgd.yml", outputPath))
 	newProfile.UpdateProfile("omgd.name", cp.Target)
 
 	if err != nil {

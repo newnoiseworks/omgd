@@ -25,11 +25,7 @@ type CommandConfig struct {
 }
 
 type ProfileConf struct {
-	Name string
-	Git  struct {
-		GameBranch string `yaml:"branch"`
-		Repo       string `yaml:"repo"`
-	}
+	Name  string
 	Main  []CommandConfig `yaml:"main"`
 	Tasks []CommandConfig `yaml:"tasks"`
 	path  string
@@ -68,7 +64,7 @@ func GetProfile(path string) *ProfileConf {
 	}
 
 	splits := strings.Split(path, "/")
-	c.Name = splits[len(splits)-1]
+	c.Name = strings.Replace(splits[len(splits)-1], ".yml", "", 1)
 
 	return &c
 }

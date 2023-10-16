@@ -19,9 +19,11 @@ func TestDeployInfra(t *testing.T) {
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
 	})
 
+	profile := GetProfileFromDir("profiles/staging.yml", testDir)
+
 	infraChange := InfraChange{
 		OutputDir:    "static/test/infra_test_dir",
-		ProfilePath:  "profiles/staging",
+		Profile:      profile,
 		CmdOnDir:     testCmdOnDir,
 		Verbosity:    false,
 		CopyToTmpDir: true,
@@ -45,7 +47,7 @@ func TestDeployInfra(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:    "omgd run task deploy-infra --profile=.omgd/staging",
+			cmdStr:    "omgd run task deploy-infra --profile=.omgd/staging.yml",
 			cmdDesc:   "",
 			cmdDir:    fmt.Sprintf("%s/.omgdtmp", testDir),
 			verbosity: false,
@@ -69,9 +71,11 @@ func TestDeployClientAndServer(t *testing.T) {
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
 	})
 
+	profile := GetProfileFromDir("profiles/staging.yml", testDir)
+
 	infraChange := InfraChange{
 		OutputDir:    "static/test/infra_test_dir",
-		ProfilePath:  "profiles/staging",
+		Profile:      profile,
 		CmdOnDir:     testCmdOnDir,
 		Verbosity:    false,
 		CopyToTmpDir: true,
@@ -95,25 +99,25 @@ func TestDeployClientAndServer(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:    "omgd run task set-ip-to-profile --profile=.omgd/staging",
+			cmdStr:    "omgd run task set-ip-to-profile --profile=.omgd/staging.yml",
 			cmdDesc:   "",
 			cmdDir:    fmt.Sprintf("%s/.omgdtmp", testDir),
 			verbosity: false,
 		},
 		{
-			cmdStr:    "omgd build-templates --profile=.omgd/staging",
+			cmdStr:    "omgd build-templates --profile=.omgd/staging.yml",
 			cmdDesc:   "",
 			cmdDir:    fmt.Sprintf("%s/.omgdtmp", testDir),
 			verbosity: false,
 		},
 		{
-			cmdStr:    "omgd build-clients --profile=.omgd/staging",
+			cmdStr:    "omgd build-clients --profile=.omgd/staging.yml",
 			cmdDesc:   "",
 			cmdDir:    fmt.Sprintf("%s/.omgdtmp", testDir),
 			verbosity: false,
 		},
 		{
-			cmdStr:    "omgd run nakama-server --profile=.omgd/staging",
+			cmdStr:    "omgd run nakama-server --profile=.omgd/staging.yml",
 			cmdDesc:   "",
 			cmdDir:    fmt.Sprintf("%s/.omgdtmp", testDir),
 			verbosity: false,
@@ -137,9 +141,11 @@ func TestDeployInfraWithoutCopying(t *testing.T) {
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
 	})
 
+	profile := GetProfileFromDir("profiles/staging.yml", testDir)
+
 	infraChange := InfraChange{
 		OutputDir:    "static/test/infra_test_dir",
-		ProfilePath:  "profiles/staging",
+		Profile:      profile,
 		CmdOnDir:     testCmdOnDir,
 		Verbosity:    false,
 		CopyToTmpDir: false,
@@ -163,7 +169,7 @@ func TestDeployInfraWithoutCopying(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:    "omgd run task deploy-infra --profile=.omgd/staging",
+			cmdStr:    "omgd run task deploy-infra --profile=.omgd/staging.yml",
 			cmdDesc:   "",
 			cmdDir:    testDir,
 			verbosity: false,
@@ -183,13 +189,13 @@ func TestDestroyInfra(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-
-		testCmdOnDirResponses = []testCmdOnDirResponse{}
 	})
+
+	profile := GetProfileFromDir("profiles/staging.yml", testDir)
 
 	infraChange := InfraChange{
 		OutputDir:    "static/test/infra_test_dir",
-		ProfilePath:  "profiles/staging",
+		Profile:      profile,
 		CmdOnDir:     testCmdOnDir,
 		Verbosity:    false,
 		CopyToTmpDir: true,
@@ -213,7 +219,7 @@ func TestDestroyInfra(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:    "omgd run task destroy-infra --profile=.omgd/staging",
+			cmdStr:    "omgd run task destroy-infra --profile=.omgd/staging.yml",
 			cmdDesc:   "",
 			cmdDir:    fmt.Sprintf("%s/.omgdtmp", testDir),
 			verbosity: false,

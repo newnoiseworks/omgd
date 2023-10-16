@@ -44,7 +44,7 @@ func (r *Run) runCmdOnDir(cmd string, cmdDesc string, cmdDir string) {
 	r.CmdDir(cmd, cmdDesc, cmdDir, r.Verbosity)
 
 	if strings.HasSuffix(baseCmd, "omgd") && strings.Contains(cmd, "update-profile") {
-		r.Profile = GetProfile(r.Profile.env)
+		r.Profile = GetProfile(r.Profile.arg)
 	}
 }
 

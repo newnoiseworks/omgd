@@ -7,7 +7,7 @@ import (
 func TestRunnerCmd(t *testing.T) {
 	testCmdOnDirResponses = nil
 
-	profile := GetProfile("../profiles/test")
+	profile := GetProfile("../profiles/test.yml")
 
 	runner := Run{
 		OutputDir:   ".",

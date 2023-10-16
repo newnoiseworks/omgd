@@ -9,39 +9,39 @@ import (
 
 type InfraChange struct {
 	OutputDir    string
-	ProfilePath  string
+	Profile      *ProfileConf
 	CmdOnDir     func(string, string, string, bool)
 	Verbosity    bool
-	tmpDir       string
 	CopyToTmpDir bool
+	tmpDir       string
 }
 
 func (infraChange *InfraChange) DeployClientAndServer() {
 	infraChange.setup()
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd run task set-ip-to-profile --profile=%s", infraChange.ProfilePath),
+		fmt.Sprintf("omgd run task set-ip-to-profile --profile=%s", infraChange.Profile.path),
 		"",
 		infraChange.OutputDir,
 		infraChange.Verbosity,
 	)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd build-templates --profile=%s", infraChange.ProfilePath),
+		fmt.Sprintf("omgd build-templates --profile=%s", infraChange.Profile.path),
 		"",
 		infraChange.OutputDir,
 		infraChange.Verbosity,
 	)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd build-clients --profile=%s", infraChange.ProfilePath),
+		fmt.Sprintf("omgd build-clients --profile=%s", infraChange.Profile.path),
 		"",
 		infraChange.OutputDir,
 		infraChange.Verbosity,
 	)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd run nakama-server --profile=%s", infraChange.ProfilePath),
+		fmt.Sprintf("omgd run nakama-server --profile=%s", infraChange.Profile.path),
 		"",
 		infraChange.OutputDir,
 		infraChange.Verbosity,
@@ -53,7 +53,7 @@ func (infraChange *InfraChange) DeployInfra() {
 
 	// NOTE: Would like to discourage this in favor of using utils.Run but testing is easier this way
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd run task deploy-infra --profile=%s", infraChange.ProfilePath),
+		fmt.Sprintf("omgd run task deploy-infra --profile=%s", infraChange.Profile.path),
 		"",
 		infraChange.OutputDir,
 		infraChange.Verbosity,
@@ -65,7 +65,7 @@ func (infraChange *InfraChange) DestroyInfra() {
 
 	// NOTE: Would like to discourage this in favor of using utils.Run but testing is easier this way
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd run task destroy-infra --profile=%s", infraChange.ProfilePath),
+		fmt.Sprintf("omgd run task destroy-infra --profile=%s", infraChange.Profile.path),
 		"",
 		infraChange.OutputDir,
 		infraChange.Verbosity,
@@ -73,7 +73,7 @@ func (infraChange *InfraChange) DestroyInfra() {
 }
 
 func (infraChange *InfraChange) setup() {
-	infraChange.ProfilePath = strings.ReplaceAll(infraChange.ProfilePath, "profiles/", ".omgd/")
+	infraChange.Profile.path = strings.ReplaceAll(infraChange.Profile.path, "profiles/", ".omgd/")
 
 	// 1. Should create or empty .omgdtmp directory to work in
 	if infraChange.CopyToTmpDir {

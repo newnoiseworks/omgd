@@ -24,9 +24,11 @@ $ omgd infra destroy | Destroys cloud infrastructure via terraform`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("infra called")
 
+		profile := utils.GetProfile(ProfilePath)
+
 		infraChange := utils.InfraChange{
 			OutputDir:    OutputDir,
-			ProfilePath:  ProfilePath,
+			Profile:      profile,
 			CmdOnDir:     utils.CmdOnDir,
 			Verbosity:    Verbosity,
 			CopyToTmpDir: CopyToTmpDir,

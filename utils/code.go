@@ -47,7 +47,7 @@ func (cp *CodeGenerationPlan) generateNew() {
 		log.Fatal(err)
 	}
 
-	newProfile := GetProfile(fmt.Sprintf("%s/profiles/local", outputPath))
+	newProfile := GetProfile(fmt.Sprintf("%s/profiles/local.yml", outputPath))
 	newProfile.UpdateProfile("omgd.name", cp.Target)
 
 	if err != nil {
@@ -55,7 +55,7 @@ func (cp *CodeGenerationPlan) generateNew() {
 	}
 
 	BuildTemplatesFromPath(
-		fmt.Sprintf("%s/profiles/local", outputPath),
+		newProfile,
 		outputPath,
 		"omgdtpl",
 		!cp.SkipCleanup,
@@ -79,11 +79,11 @@ func (cp *CodeGenerationPlan) generateExample2DPlayerMovement() {
 		log.Fatal(err)
 	}
 
-	newProfile := GetProfile(fmt.Sprintf("%s/profiles/local", tmpDir))
+	newProfile := GetProfile(fmt.Sprintf("%s/profiles/local.yml", tmpDir))
 	newProfile.UpdateProfile("omgd.channel_name", cp.Target)
 
 	BuildTemplatesFromPath(
-		fmt.Sprintf("%s/profiles/local", tmpDir),
+		newProfile,
 		tmpDir,
 		"omgdtpl",
 		true,
@@ -140,7 +140,7 @@ func (cp *CodeGenerationPlan) generateChannel() {
 		log.Fatal(err)
 	}
 
-	newProfile := GetProfile(fmt.Sprintf("%s/profiles/local", tmpDir))
+	newProfile := GetProfile(fmt.Sprintf("%s/profiles/local.yml", tmpDir))
 	newProfile.UpdateProfile("omgd.channel_name", cp.Target)
 
 	if cp.Args != "" {
@@ -148,7 +148,7 @@ func (cp *CodeGenerationPlan) generateChannel() {
 	}
 
 	BuildTemplatesFromPath(
-		fmt.Sprintf("%s/profiles/local", tmpDir),
+		newProfile,
 		tmpDir,
 		"omgdtpl",
 		true,

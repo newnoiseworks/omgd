@@ -10,9 +10,9 @@
       - it's also somewhat questionable. might be patient here for a bit. look into pre existing stubs / spies libs
 
 
-- A GH Issue exists but much confusion between paths and profiles and the idea of an environment -- need to consider approaches
+~~- A GH Issue exists but much confusion between paths and profiles and the idea of an environment -- need to consider approaches
   - Currently trying to mimic old OMGD rust code in Go, makes sense save for the expansion of these concepts which will expand any refactoring
-  - Figuring it out now minimizes changes but may take awhile as I haven't really gotten my head back around this library, had a different concept in mind originally given separation b/t this and OMGD as a rust lib, which, was exploratory, but anyway, it's a cave I need to get out of (amongst others)
+  - Figuring it out now minimizes changes but may take awhile as I haven't really gotten my head back around this library, had a different concept in mind originally given separation b/t this and OMGD as a rust lib, which, was exploratory, but anyway, it's a cave I need to get out of (amongst others)~~
 
 
 

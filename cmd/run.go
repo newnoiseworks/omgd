@@ -29,11 +29,10 @@ $ omgd run task [name-of-task] [number-of-step (optional)]
 		profile := utils.GetProfile(ProfilePath)
 
 		runner := utils.Run{
-			ProfilePath: ProfilePath,
-			Profile:     profile,
-			OutputDir:   OutputDir,
-			CmdDir:      utils.CmdOnDir,
-			Verbosity:   Verbosity,
+			Profile:   profile,
+			OutputDir: OutputDir,
+			CmdDir:    utils.CmdOnDir,
+			Verbosity: Verbosity,
 		}
 
 		switch len(args) {

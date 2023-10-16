@@ -18,14 +18,14 @@ import (
 var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
 var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
 
-func getData(environment string, buildPath string, verbose bool) *map[interface{}]interface{} {
+func getData(profile *ProfileConf, buildPath string, verbose bool) *map[interface{}]interface{} {
 	fp := make(map[interface{}]interface{})
-	fp["profile"] = GetProfile(environment).GetProfileAsMap()
+	fp["profile"] = profile.GetProfileAsMap()
 
 	resourceDir := buildPath
 
-	if strings.HasPrefix(environment, "..") {
-		paths := strings.Split(environment, "./")
+	if strings.HasPrefix(profile.path, "..") {
+		paths := strings.Split(profile.path, "./")
 
 		resourceDir = ""
 
@@ -81,8 +81,8 @@ func getData(environment string, buildPath string, verbose bool) *map[interface{
 	return &fp
 }
 
-func BuildTemplatesFromPath(environment string, buildPath string, templateExtension string, removeTemplateAfterProcessing bool, verbose bool) {
-	fp := getData(environment, buildPath, verbose)
+func BuildTemplatesFromPath(profile *ProfileConf, buildPath string, templateExtension string, removeTemplateAfterProcessing bool, verbose bool) {
+	fp := getData(profile, buildPath, verbose)
 
 	if verbose {
 		log.Println(fmt.Sprintf("building template files in %s", buildPath))
@@ -107,8 +107,8 @@ func BuildTemplatesFromPath(environment string, buildPath string, templateExtens
 	}
 }
 
-func BuildTemplateFromPath(tmplPath string, environment string, buildPath string, templateExtension string, removeTemplateAfterProcessing bool, verbose bool) {
-	fp := getData(environment, buildPath, verbose)
+func BuildTemplateFromPath(tmplPath string, profile *ProfileConf, buildPath string, templateExtension string, removeTemplateAfterProcessing bool, verbose bool) {
+	fp := getData(profile, buildPath, verbose)
 	processTemplate(tmplPath, fp, templateExtension, removeTemplateAfterProcessing, verbose)
 }
 

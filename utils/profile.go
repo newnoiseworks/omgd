@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
+	"runtime/debug"
 	"strings"
 
 	"gopkg.in/yaml.v2"
@@ -31,7 +33,6 @@ type ProfileConf struct {
 	Main  []CommandConfig `yaml:"main"`
 	Tasks []CommandConfig `yaml:"tasks"`
 	path  string
-	env   string
 }
 
 func (pc ProfileConf) GetProfileAsMap() map[interface{}]interface{} {
@@ -51,14 +52,14 @@ func (pc ProfileConf) GetProfileAsMap() map[interface{}]interface{} {
 	return c
 }
 
-func GetProfile(env string) *ProfileConf {
+func GetProfile(path string) *ProfileConf {
 	c := ProfileConf{
-		env:  env,
-		path: fmt.Sprintf("%s.yml", env),
+		path: path,
 	}
 
 	yamlFile, err := os.ReadFile(c.path)
 	if err != nil {
+		debug.PrintStack()
 		log.Fatalf("yamlFile Get err: #%v ", err)
 	}
 	err = yaml.Unmarshal(yamlFile, &c)
@@ -66,10 +67,31 @@ func GetProfile(env string) *ProfileConf {
 		log.Fatalf("Unmarshal err: %v", err)
 	}
 
-	splits := strings.Split(env, "/")
+	splits := strings.Split(path, "/")
 	c.Name = splits[len(splits)-1]
 
 	return &c
+}
+
+func GetProfileFromDir(path string, dir string) *ProfileConf {
+	root, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = os.Chdir(filepath.Join(root, dir))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	profile := GetProfile(path)
+
+	err = os.Chdir(root)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return profile
 }
 
 func (profile ProfileConf) SaveProfileFromMap(profileMap *map[interface{}]interface{}) {
@@ -152,9 +174,11 @@ func BuildProfiles(dir string, verbose bool) {
 		ext := splits[len(splits)-1]
 
 		if ext == "yml" && splits[0] != "example" {
+			profile := GetProfile(fmt.Sprintf("%s/profiles/%s", dir, file.Name()))
+
 			BuildTemplateFromPath(
 				fmt.Sprintf("%s/profiles/profile.yml.omgdptpl", dir),
-				fmt.Sprintf("%s/profiles/%s", dir, strings.Replace(file.Name(), ".yml", "", 1)),
+				profile,
 				fmt.Sprintf("%s/profiles", dir),
 				"omgdptpl",
 				false,

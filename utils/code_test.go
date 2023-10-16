@@ -23,7 +23,7 @@ func TestCodeGenCmdNewProjectWritesAndCleansUpFiles(t *testing.T) {
 
 	codePlan.Generate()
 
-	localProfile := GetProfile("static/test/newProject/profiles/local")
+	localProfile := GetProfile("static/test/newProject/profiles/local.yml")
 	expected := "newProject"
 	received := localProfile.Get("omgd.name")
 
@@ -71,7 +71,7 @@ func TestCodeGenCmdExample2DPlayerMovement(t *testing.T) {
 
 	codePlan.Generate()
 
-	localProfile := GetProfile("static/test/newProject/.omgdtmp/profiles/local")
+	localProfile := GetProfile("static/test/newProject/.omgdtmp/profiles/local.yml")
 	expected := "movement"
 	received := localProfile.Get("omgd.channel_name")
 
@@ -131,7 +131,7 @@ func TestCodeGenCmdOMGDChannelCreation(t *testing.T) {
 	codePlan.Generate()
 
 	// checks to make sure local.yml in tmp folder gets updated
-	localProfile := GetProfile("static/test/newProject/.omgdtmp/profiles/local")
+	localProfile := GetProfile("static/test/newProject/.omgdtmp/profiles/local.yml")
 	expected := "match_channel"
 	received := localProfile.Get("omgd.channel_name")
 
@@ -233,7 +233,7 @@ func TestCodeGenCmdOMGDChannelCreationWithEventArgs(t *testing.T) {
 	codePlan.Generate()
 
 	// checks to make sure local.yml in tmp folder gets updated w/ events
-	localProfile := GetProfile("static/test/newProject/.omgdtmp/profiles/local")
+	localProfile := GetProfile("static/test/newProject/.omgdtmp/profiles/local.yml")
 	expectedArr := [2]string{"movement", "trade"}
 	receivedArr := localProfile.GetArray("omgd.channel_events")
 
@@ -263,8 +263,10 @@ func TestCodeGenCmdOMGDChannelCreationWithEventArgs(t *testing.T) {
 		`omgd`,
 	)
 
+	profile := GetProfile("static/test/newProject/.omgd/local.yml")
+
 	BuildTemplatesFromPath(
-		"static/test/newProject/.omgd/local",
+		profile,
 		"static/test/newProject",
 		"tmpl",
 		false,

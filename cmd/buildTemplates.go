@@ -41,7 +41,9 @@ to quickly create a Cobra application.`,
 			ProfilePath = strings.ReplaceAll(ProfilePath, "profiles/", ".omgd/")
 		}
 
-		utils.BuildTemplatesFromPath(ProfilePath, OutputDir, templateExtension, removeTemplateAfterProcessing, Verbosity)
+		profile := utils.GetProfile(ProfilePath)
+
+		utils.BuildTemplatesFromPath(profile, OutputDir, templateExtension, removeTemplateAfterProcessing, Verbosity)
 	},
 }
 

@@ -7,19 +7,18 @@ import (
 func TestRunnerCmd(t *testing.T) {
 	testCmdOnDirResponses = nil
 
-	profile := GetProfile("../profiles/test.yml")
+	profile := GetProfileFromDir("profiles/test.yml", "..")
 
 	runner := Run{
-		OutputDir:   ".",
-		CmdDir:      testCmdOnDir,
-		Profile:     profile,
-		ProfilePath: "profiles/test",
-		Verbosity:   false,
+		OutputDir: ".",
+		CmdDir:    testCmdOnDir,
+		Profile:   profile,
+		Verbosity: false,
 	}
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  "omgd build-templates --profile=../../profiles/test",
+			cmdStr:  "omgd build-templates --profile=../../profiles/test.yml",
 			cmdDesc: "builds infra templates",
 			cmdDir:  "./server/infra",
 		},
@@ -29,7 +28,7 @@ func TestRunnerCmd(t *testing.T) {
 			cmdDir:  "./server/infra/gcp",
 		},
 		{
-			cmdStr:  "omgd build-templates --profile=../profiles/test",
+			cmdStr:  "omgd build-templates --profile=../profiles/test.yml",
 			cmdDesc: "",
 			cmdDir:  "./game",
 		},

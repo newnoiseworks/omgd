@@ -70,8 +70,6 @@ tasks:
     desc: building templates for infra
   - cmd: terraform init
     desc: setting up terraform
-  - cmd: ./tf_import.sh
-    desc: importing existing resources via terraform
   - cmd: terraform apply -auto-approve
     desc: updating infrastructure if needed
   - cmd: omgd update-profile nakama.host $(terraform output -raw server_ip)
@@ -83,7 +81,6 @@ tasks:
     desc: building templates for infra
   - cmd: terraform init
     desc: setting up terraform
-  - cmd: ./tf_import.sh
     desc: importing existing resources via terraform
   - cmd: omgd update-profile nakama.host $(terraform output -raw server_ip)
     desc: setting IP of host to current profile
@@ -92,6 +89,5 @@ tasks:
   steps:
   - cmd: omgd build-templates
   - cmd: terraform init
-  - cmd: ./tf_import.sh
   - cmd: terraform destroy -auto-approve
 {{- end }}

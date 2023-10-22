@@ -19,29 +19,31 @@ type InfraChange struct {
 func (infraChange *InfraChange) DeployClientAndServer() {
 	infraChange.setup()
 
+	tmpProfilePath := strings.ReplaceAll(infraChange.Profile.path, "profiles/", ".omgd/")
+
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd run task set-ip-to-profile --profile=%s", infraChange.Profile.path),
+		fmt.Sprintf("omgd run task set-ip-to-profile --profile=%s", tmpProfilePath),
 		"",
 		infraChange.OutputDir,
 		infraChange.Verbosity,
 	)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd build-templates --profile=%s", infraChange.Profile.path),
+		fmt.Sprintf("omgd build-templates --profile=%s", tmpProfilePath),
 		"",
 		infraChange.OutputDir,
 		infraChange.Verbosity,
 	)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd build-clients --profile=%s", infraChange.Profile.path),
+		fmt.Sprintf("omgd build-clients --profile=%s", tmpProfilePath),
 		"",
 		infraChange.OutputDir,
 		infraChange.Verbosity,
 	)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd run nakama-server --profile=%s", infraChange.Profile.path),
+		fmt.Sprintf("omgd run nakama-server --profile=%s", tmpProfilePath),
 		"",
 		infraChange.OutputDir,
 		infraChange.Verbosity,
@@ -62,10 +64,11 @@ func (infraChange *InfraChange) DeployInfra() {
 
 func (infraChange *InfraChange) DestroyInfra() {
 	infraChange.setup()
+	tmpProfilePath := strings.ReplaceAll(infraChange.Profile.path, "profiles/", ".omgd/")
 
 	// NOTE: Would like to discourage this in favor of using utils.Run but testing is easier this way
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd run task destroy-infra --profile=%s", infraChange.Profile.path),
+		fmt.Sprintf("omgd run task destroy-infra --profile=%s", tmpProfilePath),
 		"",
 		infraChange.OutputDir,
 		infraChange.Verbosity,
@@ -73,11 +76,10 @@ func (infraChange *InfraChange) DestroyInfra() {
 }
 
 func (infraChange *InfraChange) setup() {
-	infraChange.Profile.path = strings.ReplaceAll(infraChange.Profile.path, "profiles/", ".omgd/")
+	// infraChange.Profile.path = strings.ReplaceAll(infraChange.Profile.path, "profiles/", ".omgd/")
 
 	// 1. Should create or empty .omgdtmp directory to work in
 	if infraChange.CopyToTmpDir {
-		infraChange.tmpDir = infraChange.OutputDir
 		infraChange.tmpDir = fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir)
 
 		if infraChange.OutputDir == "." {

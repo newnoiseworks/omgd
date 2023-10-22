@@ -9,7 +9,7 @@ import (
 type Run struct {
 	Profile   *ProfileConf
 	OutputDir string
-	CmdDir    func(string, string, string, bool)
+	CmdDir    func(string, string, string, bool) string
 	Verbosity bool
 }
 

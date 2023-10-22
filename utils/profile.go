@@ -56,9 +56,31 @@ func (pc ProfileConf) getTopLevelOMGDProfileAsMap() map[interface{}]interface{} 
 	return c
 }
 
-func (pc ProfileConf) GetProfileAsMap() map[interface{}]interface{} {
+func (pc ProfileConf) getRootProfileAsMap() map[interface{}]interface{} {
 	c := make(map[interface{}]interface{})
 
+	profilePath := pc.path
+
+	if pc.rootDir != "" {
+		profilePath = filepath.Join(pc.rootDir, profilePath)
+	}
+
+	yamlFile, err := ioutil.ReadFile(profilePath)
+
+	if err != nil {
+		log.Fatalf("could not read file: %v", err)
+	}
+
+	err = yaml.Unmarshal(yamlFile, &c)
+
+	if err != nil {
+		log.Fatalf("Unmarshal err: %v", err)
+	}
+
+	return c
+}
+
+func (pc ProfileConf) GetProfileAsMap() map[interface{}]interface{} {
 	path := pc.path
 
 	if pc.rootDir != "" {
@@ -67,16 +89,7 @@ func (pc ProfileConf) GetProfileAsMap() map[interface{}]interface{} {
 
 	omgdFile := pc.getTopLevelOMGDProfileAsMap()
 
-	yamlFile, err := ioutil.ReadFile(path)
-
-	if err != nil {
-		log.Printf("yamlFile Get err: #%v ", err)
-	}
-	err = yaml.Unmarshal(yamlFile, &c)
-
-	if err != nil {
-		log.Fatalf("Unmarshal err: %v", err)
-	}
+	c := pc.getRootProfileAsMap()
 
 	mergerecursive(&c, &omgdFile, 4)
 
@@ -154,7 +167,7 @@ func (profile ProfileConf) GetArray(key string) []interface{} {
 }
 
 func (profile ProfileConf) UpdateProfile(key string, val interface{}) {
-	profileMap := profile.GetProfileAsMap()
+	profileMap := profile.getRootProfileAsMap()
 	keys := strings.Split(key, ".")
 	setValueToKeyWithArray(keys, 0, profileMap, val)
 	profile.SaveProfileFromMap(&profileMap)

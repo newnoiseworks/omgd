@@ -96,8 +96,6 @@ func (infraChange *InfraChange) DestroyInfra() {
 }
 
 func (infraChange *InfraChange) setup() {
-	// infraChange.Profile.path = strings.ReplaceAll(infraChange.Profile.path, "profiles/", ".omgd/")
-
 	// 1. Should create or empty .omgdtmp directory to work in
 	if infraChange.CopyToTmpDir {
 		infraChange.tmpDir = fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir)
@@ -144,6 +142,6 @@ func (infraChange *InfraChange) setup() {
 		infraChange.OutputDir = infraChange.tmpDir
 	}
 
-	// 3. Build profiles directory
+	// 2. Build profiles directory
 	BuildProfiles(infraChange.OutputDir, infraChange.Verbosity)
 }

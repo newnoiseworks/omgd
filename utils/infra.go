@@ -53,13 +53,33 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 func (infraChange *InfraChange) DeployInfra() {
 	infraChange.setup()
 
-	// NOTE: Would like to discourage this in favor of using utils.Run but testing is easier this way
+	tmpProfile := GetProfile(strings.ReplaceAll(infraChange.Profile.path, "profiles/", ".omgd/"))
+
+	BuildTemplatesFromPath(tmpProfile, infraChange.OutputDir, "tmpl", false, infraChange.Verbosity)
+
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd run task deploy-infra --profile=%s", infraChange.Profile.path),
-		"",
-		infraChange.OutputDir,
+		"terraform init",
+		"setting up terraform locally",
+		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 		infraChange.Verbosity,
 	)
+
+	infraChange.CmdOnDir(
+		"terraform apply -auto-approve",
+		"updating cloud infra if needed",
+		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
+		infraChange.Verbosity,
+	)
+
+	ipAddress := infraChange.CmdOnDir(
+		"terraform output -raw server_ip",
+		"getting ip of newly created server...",
+		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
+		infraChange.Verbosity,
+	)
+
+	tmpProfile.UpdateProfile("nakama.host", ipAddress)
+	infraChange.Profile.UpdateProfile("omgd.deploy.server.gcloud.host", ipAddress)
 }
 
 func (infraChange *InfraChange) DestroyInfra() {

@@ -27,14 +27,15 @@ func TestDeployInfra(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		profile := GetProfileFromDir("profiles/staging.yml", testDir)
+		testCmdOnDirResponses = []testCmdOnDirResponse{}
+
+		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
 		profile.UpdateProfile("omgd.deploy.server.gcloud.host", "???")
-
-		testCmdOnDirResponses = []testCmdOnDirResponse{}
 	})
 
-	profile := GetProfileFromDir("profiles/staging.yml", testDir)
+	// profile := GetProfileFromDir("profiles/staging.yml", testDir)
+	profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
 	infraChange := InfraChange{
 		OutputDir:    "static/test/infra_test_dir",
@@ -63,6 +64,8 @@ func TestDeployInfra(t *testing.T) {
 	// 5. BuildTemplates runs
 	testFileShouldExist(t, fmt.Sprintf("%s/server/infra/gcp/terraform.tfvars", testDir))
 
+	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/server/infra/gcp/terraform.tfvars", testDir), "gcp_project = \"test\"")
+
 	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/", testDir)
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
@@ -85,11 +88,12 @@ func TestDeployInfra(t *testing.T) {
 			verbosity: false,
 		},
 	}
+
 	// 5. Run main task in new .omgdtmp dir profiles/profile.yml file
 	testCmdOnDirValidCmdSet(t, "DeployInfra")
 
-	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/profiles/staging.yml", testDir), "127.6.6.6")
 	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/.omgd/staging.yml", testDir), "127.6.6.6")
+	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/profiles/staging.yml", testDir), "127.6.6.6")
 }
 
 func TestDestroyInfra(t *testing.T) {
@@ -101,6 +105,8 @@ func TestDestroyInfra(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+
+		testCmdOnDirResponses = []testCmdOnDirResponse{}
 	})
 
 	profile := GetProfileFromDir("profiles/staging.yml", testDir)

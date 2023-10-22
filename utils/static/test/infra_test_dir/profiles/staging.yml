@@ -1,8 +1,8 @@
 omgd:
-  override: overriden
   deploy:
     server:
       gcloud:
+        host: ???
         project: test
         region: whatever
-
+  override: overriden

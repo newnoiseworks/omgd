@@ -10,7 +10,7 @@ import (
 type InfraChange struct {
 	OutputDir    string
 	Profile      *ProfileConf
-	CmdOnDir     func(string, string, string, bool)
+	CmdOnDir     func(string, string, string, bool) string
 	Verbosity    bool
 	CopyToTmpDir bool
 	tmpDir       string

@@ -15,13 +15,19 @@ type testCmdOnDirResponse struct {
 var testCmdOnDirResponses = []testCmdOnDirResponse{}
 var testCmdOnDirValidResponseSet = []testCmdOnDirResponse{}
 
-var testCmdOnDir = func(cmdStr string, cmdDesc string, cmdDir string, verbosity bool) {
+var testCmdOnDir = func(cmdStr string, cmdDesc string, cmdDir string, verbosity bool) string {
 	testCmdOnDirResponses = append(testCmdOnDirResponses, testCmdOnDirResponse{
 		cmdStr:    cmdStr,
 		cmdDesc:   cmdDesc,
 		cmdDir:    cmdDir,
 		verbosity: verbosity,
 	})
+
+	if cmdStr == "terraform output -raw server_ip" {
+		return "127.6.6.6"
+	}
+
+	return ""
 }
 
 func testCmdOnDirValidCmdSet(t *testing.T, method string) {

@@ -93,6 +93,8 @@ func (pc ProfileConf) GetProfileAsMap() map[interface{}]interface{} {
 
 	mergerecursive(&c, &omgdFile, 4)
 
+	omgdFile["Name"] = pc.Name
+
 	return omgdFile
 }
 

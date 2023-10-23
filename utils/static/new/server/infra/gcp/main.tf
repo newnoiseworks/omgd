@@ -24,6 +24,10 @@ provider "google" {
   zone    = var.gcp_zone
 }
 
+terraform {
+  backend "local" {}
+}
+
 resource "google_compute_network" "vpc_network" {
   name                    = "nakama-instance-network"
   auto_create_subnetworks = "true"

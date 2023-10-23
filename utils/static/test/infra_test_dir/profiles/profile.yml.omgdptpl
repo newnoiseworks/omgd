@@ -86,9 +86,10 @@ tasks:
 - dir: server/infra/gcp
   name: destroy-infra
   steps:
-  - cmd: omgd build-templates
-  - cmd: terraform init
+  - cmd: terraform init -reconfigure -force-copy --backend-config path=.omgd/{{ .profile.Name }}/terraform.tfstate
+    desc: setting up terraform on profile {{ .profile.Name }}
   - cmd: terraform destroy -auto-approve
+    desc: destroying infrastructure
 {{- else }}
 - name: start-server
   steps:

@@ -141,11 +141,24 @@ func TestDestroyInfra(t *testing.T) {
 
 	testFileShouldExist(t, fmt.Sprintf("%s/.omgd/staging.yml", testDir))
 
+	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/", testDir)
+
+	// - cmd: terraform init -reconfigure -force-copy --backend-config path=.omgd/{{ .profile.Name }}/terraform.tfstate
+	//   desc: setting up terraform on profile {{ .profile.Name }}
+	// - cmd: terraform destroy -auto-approve
+	//   desc: destroying infrastructure
+
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:    "omgd run task destroy-infra --profile=.omgd/staging.yml",
-			cmdDesc:   "running destroy infra on profile .omgd/staging.yml",
-			cmdDir:    testDir,
+			cmdStr:    fmt.Sprintf("terraform init -reconfigure -force-copy --backend-config path=.omgd/%s/terraform.tfstate", profile.Name),
+			cmdDesc:   fmt.Sprintf("setting up terraform on profile %s", profile.Name),
+			cmdDir:    cmdDirStrTf,
+			verbosity: false,
+		},
+		{
+			cmdStr:    "terraform destroy -auto-approve",
+			cmdDesc:   "destroying infrastructure",
+			cmdDir:    cmdDirStrTf,
 			verbosity: false,
 		},
 	}

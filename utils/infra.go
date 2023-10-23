@@ -91,11 +91,17 @@ func (infraChange *InfraChange) DestroyInfra() {
 
 	BuildTemplatesFromPath(tmpProfile, infraChange.OutputDir, "tmpl", false, infraChange.Verbosity)
 
-	// NOTE: Would like to discourage this in favor of using utils.Run but testing is easier this way
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd run task destroy-infra --profile=%s", tmpProfilePath),
-		fmt.Sprintf("running destroy infra on profile %s", tmpProfilePath),
-		infraChange.OutputDir,
+		fmt.Sprintf("terraform init -reconfigure -force-copy --backend-config path=.omgd/%s/terraform.tfstate", infraChange.Profile.Name),
+		fmt.Sprintf("setting up terraform on profile %s", infraChange.Profile.Name),
+		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
+		infraChange.Verbosity,
+	)
+
+	infraChange.CmdOnDir(
+		"terraform destroy -auto-approve",
+		"destroying infrastructure",
+		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 		infraChange.Verbosity,
 	)
 }

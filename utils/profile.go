@@ -146,10 +146,16 @@ func (profile ProfileConf) SaveProfileFromMap(profileMap *map[interface{}]interf
 		log.Fatal("Error marshalling from data to saving profile to yaml!")
 	}
 
-	err = ioutil.WriteFile(profile.path, yamlBytes, 0755)
+	profilePath := profile.path
+
+	if profile.rootDir != "" {
+		profilePath = filepath.Join(profile.rootDir, profilePath)
+	}
+
+	err = ioutil.WriteFile(profilePath, yamlBytes, 0755)
 
 	if err != nil {
-		// log.Fatal("Error on file write to saving profile to yaml!")
+		log.Println("Error on file write to saving profile to yaml!")
 		log.Fatal(err)
 	}
 }

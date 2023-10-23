@@ -56,39 +56,3 @@ nakama:
   secure: false
   key: default-key
 
-
-tasks:
-- name: update-templates
-  steps:
-  - cmd: omgd build-templates
-  dir: 
-{{- if .profile.omgd.deploy }}
-- dir: server/infra/gcp
-  name: deploy-infra
-  steps:
-  - cmd: omgd build-templates
-    desc: building templates for infra
-  - cmd: terraform init
-    desc: setting up terraform
-  - cmd: terraform apply -auto-approve
-    desc: updating infrastructure if needed
-  - cmd: omgd update-profile nakama.host $(terraform output -raw server_ip)
-    desc: setting IP of host to current profile
-- dir: server/infra/gcp
-  name: set-ip-to-profile
-  steps:
-  - cmd: omgd build-templates
-    desc: building templates for infra
-  - cmd: terraform init
-    desc: setting up terraform
-    desc: importing existing resources via terraform
-  - cmd: omgd update-profile nakama.host $(terraform output -raw server_ip)
-    desc: setting IP of host to current profile
-- dir: server/infra/gcp
-  name: destroy-infra
-  steps:
-  - cmd: terraform init -reconfigure -force-copy --backend-config path=.omgd/{{ .profile.Name }}/terraform.tfstate
-    desc: setting up terraform on profile {{ .profile.Name }}
-  - cmd: terraform destroy -auto-approve
-    desc: destroying infrastructure
-{{- end }}

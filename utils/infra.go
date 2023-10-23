@@ -58,7 +58,7 @@ func (infraChange *InfraChange) DeployInfra() {
 	BuildTemplatesFromPath(tmpProfile, infraChange.OutputDir, "tmpl", false, infraChange.Verbosity)
 
 	infraChange.CmdOnDir(
-		"terraform init",
+		fmt.Sprintf("terraform init -reconfigure -force-copy --backend-config path=.omgd/%s/terraform.tfstate", infraChange.Profile.Name),
 		"setting up terraform locally",
 		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 		infraChange.Verbosity,
@@ -84,64 +84,77 @@ func (infraChange *InfraChange) DeployInfra() {
 
 func (infraChange *InfraChange) DestroyInfra() {
 	infraChange.setup()
+
 	tmpProfilePath := strings.ReplaceAll(infraChange.Profile.path, "profiles/", ".omgd/")
 
-	// NOTE: Would like to discourage this in favor of using utils.Run but testing is easier this way
+	tmpProfile := GetProfile(fmt.Sprintf("%s/%s", infraChange.OutputDir, tmpProfilePath))
+
+	BuildTemplatesFromPath(tmpProfile, infraChange.OutputDir, "tmpl", false, infraChange.Verbosity)
+
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd run task destroy-infra --profile=%s", tmpProfilePath),
-		"",
-		infraChange.OutputDir,
+		fmt.Sprintf("terraform init -reconfigure -force-copy --backend-config path=.omgd/%s/terraform.tfstate", infraChange.Profile.Name),
+		fmt.Sprintf("setting up terraform on profile %s", infraChange.Profile.Name),
+		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
+		infraChange.Verbosity,
+	)
+
+	infraChange.CmdOnDir(
+		"terraform destroy -auto-approve",
+		"destroying infrastructure",
+		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 		infraChange.Verbosity,
 	)
 }
 
 func (infraChange *InfraChange) setup() {
-	// 1. Should create or empty .omgdtmp directory to work in
 	if infraChange.CopyToTmpDir {
-		infraChange.tmpDir = fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir)
-
-		if infraChange.OutputDir == "." {
-			infraChange.tmpDir = ".omgdtmp"
-		}
-
-		_, err := os.Stat(infraChange.tmpDir)
-		if !os.IsNotExist(err) {
-			err = os.RemoveAll(infraChange.tmpDir)
-
-			if err != nil {
-				log.Fatal(err)
-			}
-		}
-
-		err = os.Mkdir(infraChange.tmpDir, 0755)
-
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// 2. Should clone repo at base of dir (? how to test w/o submodules? clone entire base repo maybe?)
-		sccp := StaticCodeCopyPlan{
-			skipPaths: []string{
-				infraChange.tmpDir,
-				".git",
-			},
-		}
-
-		cwd, err := os.Getwd()
-
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if infraChange.OutputDir == "." {
-			sccp.CopyStaticDirectory(cwd, infraChange.tmpDir)
-		} else {
-			sccp.CopyStaticDirectory(infraChange.OutputDir, infraChange.tmpDir)
-		}
-
-		infraChange.OutputDir = infraChange.tmpDir
+		infraChange.copyServerDirToTmpDir()
 	}
 
-	// 2. Build profiles directory
 	BuildProfiles(infraChange.OutputDir, infraChange.Verbosity)
+}
+
+func (infraChange *InfraChange) copyServerDirToTmpDir() {
+	infraChange.tmpDir = fmt.Sprintf("%s/.omgdtmp", infraChange.OutputDir)
+
+	if infraChange.OutputDir == "." {
+		infraChange.tmpDir = ".omgdtmp"
+	}
+
+	_, err := os.Stat(infraChange.tmpDir)
+	if !os.IsNotExist(err) {
+		err = os.RemoveAll(infraChange.tmpDir)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	err = os.Mkdir(infraChange.tmpDir, 0755)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 2. Should clone repo at base of dir (? how to test w/o submodules? clone entire base repo maybe?)
+	sccp := StaticCodeCopyPlan{
+		skipPaths: []string{
+			infraChange.tmpDir,
+			".git",
+		},
+	}
+
+	cwd, err := os.Getwd()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if infraChange.OutputDir == "." {
+		sccp.CopyStaticDirectory(cwd, infraChange.tmpDir)
+	} else {
+		sccp.CopyStaticDirectory(infraChange.OutputDir, infraChange.tmpDir)
+	}
+
+	infraChange.OutputDir = infraChange.tmpDir
 }

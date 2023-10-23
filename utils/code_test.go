@@ -270,7 +270,7 @@ func TestCodeGenCmdOMGDChannelCreationWithEventArgs(t *testing.T) {
 	testForFileAndRegexpMatch(
 		t,
 		"static/test/newProject/.omgd/local.yml",
-		`omgd`,
+		`game`,
 	)
 
 	profile := GetProfile("static/test/newProject/.omgd/local.yml")

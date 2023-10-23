@@ -70,7 +70,7 @@ func TestDeployInfra(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:    "terraform init",
+			cmdStr:    fmt.Sprintf("terraform init -reconfigure -force-copy --backend-config path=.omgd/%s/terraform.tfstate", profile.Name),
 			cmdDesc:   "setting up terraform locally",
 			cmdDir:    cmdDirStrTf,
 			verbosity: false,
@@ -100,7 +100,18 @@ func TestDestroyInfra(t *testing.T) {
 	testDir := "static/test/infra_test_dir"
 
 	t.Cleanup(func() {
-		err := os.RemoveAll(fmt.Sprintf("%s/.omgdtmp", testDir))
+		err := os.RemoveAll(fmt.Sprintf("%s/.omgd", testDir))
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		err = os.RemoveAll(
+			fmt.Sprintf(
+				"%s/server/infra/gcp/terraform.tfvars",
+				testDir,
+			),
+		)
 
 		if err != nil {
 			t.Fatal(err)
@@ -109,37 +120,45 @@ func TestDestroyInfra(t *testing.T) {
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
 	})
 
+	// profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
 	profile := GetProfileFromDir("profiles/staging.yml", testDir)
 
 	infraChange := InfraChange{
-		OutputDir:    "static/test/infra_test_dir",
+		OutputDir:    testDir,
 		Profile:      profile,
 		CmdOnDir:     testCmdOnDir,
 		Verbosity:    false,
-		CopyToTmpDir: true,
+		CopyToTmpDir: false,
 	}
 
 	infraChange.DestroyInfra()
 
-	// 1. Should create or empty .omgdtmp directory to work in
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp", testDir))
+	testFileShouldExist(t, fmt.Sprintf("%s/game", testDir))
+	testFileShouldExist(t, fmt.Sprintf("%s/server", testDir))
+	testFileShouldExist(t, fmt.Sprintf("%s/profiles", testDir))
 
-	// 2. Should clone repo at base of dir (? how to test w/o submodules? clone entire base repo maybe?)
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/game", testDir))
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/server", testDir))
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/profiles", testDir))
+	testFileShouldExist(t, fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
-	// 3. Copy profiles directory into new .omgdtmp dir (add staging.yml to static/test/infraDir)
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/profiles/staging.yml", testDir))
+	testFileShouldExist(t, fmt.Sprintf("%s/.omgd/staging.yml", testDir))
 
-	// 4. Build profiles directory in new .omgdtmp dir
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/.omgd/staging.yml", testDir))
+	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/", testDir)
+
+	// - cmd: terraform init -reconfigure -force-copy --backend-config path=.omgd/{{ .profile.Name }}/terraform.tfstate
+	//   desc: setting up terraform on profile {{ .profile.Name }}
+	// - cmd: terraform destroy -auto-approve
+	//   desc: destroying infrastructure
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:    "omgd run task destroy-infra --profile=.omgd/staging.yml",
-			cmdDesc:   "",
-			cmdDir:    fmt.Sprintf("%s/.omgdtmp", testDir),
+			cmdStr:    fmt.Sprintf("terraform init -reconfigure -force-copy --backend-config path=.omgd/%s/terraform.tfstate", profile.Name),
+			cmdDesc:   fmt.Sprintf("setting up terraform on profile %s", profile.Name),
+			cmdDir:    cmdDirStrTf,
+			verbosity: false,
+		},
+		{
+			cmdStr:    "terraform destroy -auto-approve",
+			cmdDesc:   "destroying infrastructure",
+			cmdDir:    cmdDirStrTf,
 			verbosity: false,
 		},
 	}

@@ -264,16 +264,7 @@ func TestCodeGenCmdOMGDChannelCreationWithEventArgs(t *testing.T) {
 
 	codePlan.Cleanup()
 
-	BuildProfiles("static/test/newProject", false)
-
-	// check for built local.yml file
-	testForFileAndRegexpMatch(
-		t,
-		"static/test/newProject/.omgd/local.yml",
-		`game`,
-	)
-
-	profile := GetProfile("static/test/newProject/.omgd/local.yml")
+	profile := GetProfile("static/test/newProject/profiles/local.yml")
 
 	BuildTemplatesFromPath(
 		profile,

@@ -10,23 +10,6 @@ func TestDeployInfra(t *testing.T) {
 	testDir := "static/test/infra_test_dir"
 
 	t.Cleanup(func() {
-		err := os.RemoveAll(fmt.Sprintf("%s/.omgd", testDir))
-
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		err = os.RemoveAll(
-			fmt.Sprintf(
-				"%s/server/infra/gcp/terraform.tfvars",
-				testDir,
-			),
-		)
-
-		if err != nil {
-			t.Fatal(err)
-		}
-
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
 
 		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
@@ -38,11 +21,10 @@ func TestDeployInfra(t *testing.T) {
 	profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
 	infraChange := InfraChange{
-		OutputDir:    "static/test/infra_test_dir",
-		Profile:      profile,
-		CmdOnDir:     testCmdOnDir,
-		Verbosity:    false,
-		CopyToTmpDir: false,
+		OutputDir: "static/test/infra_test_dir",
+		Profile:   profile,
+		CmdOnDir:  testCmdOnDir,
+		Verbosity: false,
 	}
 
 	infraChange.DeployInfra()
@@ -57,9 +39,6 @@ func TestDeployInfra(t *testing.T) {
 
 	// 3. Copy profiles directory into new .omgdtmp dir (add staging.yml to static/test/infraDir)
 	testFileShouldExist(t, fmt.Sprintf("%s/profiles/staging.yml", testDir))
-
-	// 4. Build profiles directory in new .omgdtmp dir
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgd/staging.yml", testDir))
 
 	// 5. BuildTemplates runs
 	testFileShouldExist(t, fmt.Sprintf("%s/server/infra/gcp/terraform.tfvars", testDir))
@@ -92,7 +71,6 @@ func TestDeployInfra(t *testing.T) {
 	// 5. Run main task in new .omgdtmp dir profiles/profile.yml file
 	testCmdOnDirValidCmdSet(t, "DeployInfra")
 
-	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/.omgd/staging.yml", testDir), "127.6.6.6")
 	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/profiles/staging.yml", testDir), "127.6.6.6")
 }
 
@@ -124,11 +102,10 @@ func TestDestroyInfra(t *testing.T) {
 	profile := GetProfileFromDir("profiles/staging.yml", testDir)
 
 	infraChange := InfraChange{
-		OutputDir:    testDir,
-		Profile:      profile,
-		CmdOnDir:     testCmdOnDir,
-		Verbosity:    false,
-		CopyToTmpDir: false,
+		OutputDir: testDir,
+		Profile:   profile,
+		CmdOnDir:  testCmdOnDir,
+		Verbosity: false,
 	}
 
 	infraChange.DestroyInfra()
@@ -138,8 +115,6 @@ func TestDestroyInfra(t *testing.T) {
 	testFileShouldExist(t, fmt.Sprintf("%s/profiles", testDir))
 
 	testFileShouldExist(t, fmt.Sprintf("%s/profiles/staging.yml", testDir))
-
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgd/staging.yml", testDir))
 
 	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/", testDir)
 
@@ -171,67 +146,68 @@ func TestDeployClientAndServer(t *testing.T) {
 	testDir := "static/test/infra_test_dir"
 
 	t.Cleanup(func() {
-		err := os.RemoveAll(fmt.Sprintf("%s/.omgdtmp", testDir))
-
-		if err != nil {
-			t.Fatal(err)
-		}
-
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
+
+		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
+
+		profile.UpdateProfile("omgd.deploy.server.gcloud.host", "???")
 	})
 
 	profile := GetProfileFromDir("profiles/staging.yml", testDir)
 
 	infraChange := InfraChange{
-		OutputDir:    "static/test/infra_test_dir",
-		Profile:      profile,
-		CmdOnDir:     testCmdOnDir,
-		Verbosity:    false,
-		CopyToTmpDir: true,
+		OutputDir:       "static/test/infra_test_dir",
+		Profile:         profile,
+		CmdOnDir:        testCmdOnDir,
+		CmdOnDirWithEnv: testCmdOnDirWithEnv,
+		Verbosity:       false,
 	}
 
 	infraChange.DeployClientAndServer()
 
-	// 1. Should create or empty .omgdtmp directory to work in
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp", testDir))
+	testFileShouldExist(t, fmt.Sprintf("%s/game", testDir))
+	testFileShouldExist(t, fmt.Sprintf("%s/server", testDir))
+	testFileShouldExist(t, fmt.Sprintf("%s/profiles", testDir))
 
-	// 2. Should clone repo at base of dir (? how to test w/o submodules? clone entire base repo maybe?)
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/game", testDir))
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/server", testDir))
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/profiles", testDir))
+	testFileShouldExist(t, fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
-	// 3. Copy profiles directory into new .omgdtmp dir (add staging.yml to static/test/infraDir)
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/profiles/staging.yml", testDir))
-
-	// 4. Build profiles directory in new .omgdtmp dir
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgdtmp/.omgd/staging.yml", testDir))
+	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/", testDir)
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:    "omgd run task set-ip-to-profile --profile=.omgd/staging.yml",
-			cmdDesc:   "",
-			cmdDir:    fmt.Sprintf("%s/.omgdtmp", testDir),
+			cmdStr:    "terraform output -raw server_ip",
+			cmdDesc:   "getting ip of newly created server...",
+			cmdDir:    cmdDirStrTf,
 			verbosity: false,
 		},
 		{
-			cmdStr:    "omgd build-templates --profile=.omgd/staging.yml",
+			cmdStr:    "omgd build-templates --profile=profiles/staging.yml",
 			cmdDesc:   "",
-			cmdDir:    fmt.Sprintf("%s/.omgdtmp", testDir),
+			cmdDir:    testDir,
 			verbosity: false,
 		},
 		{
-			cmdStr:    "omgd build-clients --profile=.omgd/staging.yml",
+			cmdStr:    "omgd build-clients --profile=profiles/staging.yml",
 			cmdDesc:   "",
-			cmdDir:    fmt.Sprintf("%s/.omgdtmp", testDir),
+			cmdDir:    testDir,
 			verbosity: false,
 		},
 		{
-			cmdStr:    "omgd run nakama-server --profile=.omgd/staging.yml",
-			cmdDesc:   "",
-			cmdDir:    fmt.Sprintf("%s/.omgdtmp", testDir),
+			cmdStr:    "cp -rf ../game/dist/web-staging/* nakama/website",
+			cmdDesc:   "copy web build into server",
+			cmdDir:    testDir,
+			verbosity: false,
+		},
+		{
+			cmdStr:    "./deploy.sh",
+			env:       []string{"GCP_PROJECT=test", "GCP_ZONE=us-east4c"},
+			cmdDesc:   "deploying game server to gcp",
+			cmdDir:    testDir,
 			verbosity: false,
 		},
 	}
+
+	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/profiles/staging.yml", testDir), "127.6.6.6")
 
 	// 5. Run main task in new .omgdtmp dir profiles/profile.yml file
 	testCmdOnDirValidCmdSet(t, "DeployInfra")

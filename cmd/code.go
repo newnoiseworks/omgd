@@ -21,7 +21,8 @@ new [project_name (will name folder)] - Starts a new OMGD project using Godot as
 channel [channel_name (must be snake and lowercase!)] [events (must be snake and lowercase, separated by blank spaces)]* - Creates a new OMGD multiplayer channel to communicate with
 
 Example code plans:
-example-2d-player-movement [channel_name] - Demonstrates 2d player movement. requires a channel to have been created with omgd code channel [channel_name]
+example-2d-player-movement - Complete example. Demonstrates 2d player movement. 
+example-partial-2d-player-movement [channel_name] - Partial example. Demonstrates 2d player movement. Requires new project and a channel to have been created with omgd code channel [channel_name]
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		plan := args[0]

@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -207,69 +206,6 @@ func getValueToKeyWithArray(keys []string, keyIndex int, obj map[interface{}]int
 	}
 
 	return nil
-}
-
-func BuildProfiles(dir string, verbose bool) {
-	files, err := ioutil.ReadDir(fmt.Sprintf("%s/profiles", dir))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = os.Mkdir(fmt.Sprintf("%s/.omgd", dir), 0755)
-	if err != nil && !os.IsExist(err) {
-		log.Fatal(err)
-	}
-
-	for _, file := range files {
-		splits := strings.Split(file.Name(), ".")
-		ext := splits[len(splits)-1]
-
-		if ext == "yml" && splits[0] != "example" {
-			profile := GetProfile(fmt.Sprintf("%s/profiles/%s", dir, file.Name()))
-
-			BuildTemplateFromPath(
-				fmt.Sprintf("%s/profiles/profile.yml.omgdptpl", dir),
-				profile,
-				fmt.Sprintf("%s/profiles", dir),
-				"omgdptpl",
-				false,
-				verbose,
-			)
-
-			oldPath := fmt.Sprintf("%s/profiles/profile.yml", dir)
-			newPath := fmt.Sprintf("%s/.omgd/%s", dir, file.Name())
-
-			if verbose {
-				log.Printf("moving file from %s >> %s", oldPath, newPath)
-			}
-
-			origFile, err := os.ReadFile(oldPath)
-
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			err = os.WriteFile(newPath, origFile, 0755)
-
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			err = os.Remove(oldPath)
-
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			_, err = os.Stat(newPath)
-
-			if err != nil {
-				log.Fatal(err)
-			} else if verbose {
-				log.Println("file successfully moved")
-			}
-		}
-	}
 }
 
 // c/o https://github.com/wiebew/golang_merge_yml/blob/main/merge_yaml.go

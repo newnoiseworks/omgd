@@ -32,7 +32,6 @@ $ omgd infra destroy | Destroys cloud infrastructure via terraform`,
 			CmdOnDir:        utils.CmdOnDir,
 			CmdOnDirWithEnv: utils.CmdOnDirWithEnv,
 			Verbosity:       Verbosity,
-			CopyToTmpDir:    CopyToTmpDir,
 		}
 
 		switch args[0] {
@@ -58,5 +57,4 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// infraCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	infraCmd.Flags().BoolVar(&CopyToTmpDir, "copy", false, "Copies the project to an .omgdtmp folder and executes all commands there")
 }

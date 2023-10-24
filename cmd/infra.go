@@ -27,11 +27,12 @@ $ omgd infra destroy | Destroys cloud infrastructure via terraform`,
 		profile := utils.GetProfile(ProfilePath)
 
 		infraChange := utils.InfraChange{
-			OutputDir:    OutputDir,
-			Profile:      profile,
-			CmdOnDir:     utils.CmdOnDir,
-			Verbosity:    Verbosity,
-			CopyToTmpDir: CopyToTmpDir,
+			OutputDir:       OutputDir,
+			Profile:         profile,
+			CmdOnDir:        utils.CmdOnDir,
+			CmdOnDirWithEnv: utils.CmdOnDirWithEnv,
+			Verbosity:       Verbosity,
+			CopyToTmpDir:    CopyToTmpDir,
 		}
 
 		switch args[0] {

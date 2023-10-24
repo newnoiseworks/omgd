@@ -8,12 +8,13 @@ import (
 )
 
 type InfraChange struct {
-	OutputDir    string
-	Profile      *ProfileConf
-	CmdOnDir     func(string, string, string, bool) string
-	Verbosity    bool
-	CopyToTmpDir bool
-	tmpDir       string
+	OutputDir       string
+	Profile         *ProfileConf
+	CmdOnDir        func(string, string, string, bool) string
+	CmdOnDirWithEnv func(string, string, string, []string, bool) string
+	Verbosity       bool
+	CopyToTmpDir    bool
+	tmpDir          string
 }
 
 func (infraChange *InfraChange) DeployClientAndServer() {
@@ -21,12 +22,14 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 
 	tmpProfilePath := strings.ReplaceAll(infraChange.Profile.path, "profiles/", ".omgd/")
 
-	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd run task set-ip-to-profile --profile=%s", tmpProfilePath),
-		"",
-		infraChange.OutputDir,
+	ipAddress := infraChange.CmdOnDir(
+		"terraform output -raw server_ip",
+		"getting ip of newly created server...",
+		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 		infraChange.Verbosity,
 	)
+
+	infraChange.Profile.UpdateProfile("omgd.deploy.server.gcloud.host", ipAddress)
 
 	infraChange.CmdOnDir(
 		fmt.Sprintf("omgd build-templates --profile=%s", tmpProfilePath),
@@ -43,9 +46,20 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 	)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd run nakama-server --profile=%s", tmpProfilePath),
-		"",
+		fmt.Sprintf("cp -rf ../game/dist/web-%s/* nakama/website", infraChange.Profile.Name),
+		"copy web build into server",
 		infraChange.OutputDir,
+		infraChange.Verbosity,
+	)
+
+	infraChange.CmdOnDirWithEnv(
+		"./deploy.sh",
+		"deploying game server to gcp",
+		infraChange.OutputDir,
+		[]string{
+			fmt.Sprintf("GCP_PROJECT=%s", infraChange.Profile.Get("omgd.deploy.server.gcloud.project")),
+			fmt.Sprintf("GCP_ZONE=%s", infraChange.Profile.Get("omgd.deploy.server.gcloud.zone")),
+		},
 		infraChange.Verbosity,
 	)
 }

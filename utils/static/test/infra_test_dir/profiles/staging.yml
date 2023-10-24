@@ -5,4 +5,5 @@ omgd:
         host: ???
         project: test
         region: whatever
+        zone: us-east4c
   override: overriden

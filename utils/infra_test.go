@@ -193,7 +193,7 @@ func TestDeployClientAndServer(t *testing.T) {
 			verbosity: false,
 		},
 		{
-			cmdStr:    "cp -rf ../game/dist/web-staging/* nakama/website",
+			cmdStr:    "cp -rf game/dist/web-staging/. server/nakama/website",
 			cmdDesc:   "copy web build into server",
 			cmdDir:    testDir,
 			verbosity: false,
@@ -202,7 +202,7 @@ func TestDeployClientAndServer(t *testing.T) {
 			cmdStr:    "./deploy.sh",
 			env:       []string{"GCP_PROJECT=test", "GCP_ZONE=us-east4c"},
 			cmdDesc:   "deploying game server to gcp",
-			cmdDir:    testDir,
+			cmdDir:    fmt.Sprintf("%s/server/deploy/gcp", testDir),
 			verbosity: false,
 		},
 	}

@@ -37,7 +37,7 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 	)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("cp -rf ../game/dist/web-%s/* nakama/website", infraChange.Profile.Name),
+		fmt.Sprintf("cp -rf game/dist/web-%s/. server/nakama/website", infraChange.Profile.Name),
 		"copy web build into server",
 		infraChange.OutputDir,
 		infraChange.Verbosity,
@@ -46,7 +46,7 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 	infraChange.CmdOnDirWithEnv(
 		"./deploy.sh",
 		"deploying game server to gcp",
-		infraChange.OutputDir,
+		fmt.Sprintf("%s/server/deploy/gcp", infraChange.OutputDir),
 		[]string{
 			fmt.Sprintf("GCP_PROJECT=%s", infraChange.Profile.Get("omgd.deploy.server.gcloud.project")),
 			fmt.Sprintf("GCP_ZONE=%s", infraChange.Profile.Get("omgd.deploy.server.gcloud.zone")),

@@ -4,9 +4,17 @@ database:
     - "root@cockroachdb:26257"
 socket:
   max_message_size_bytes: 51200
-  server_key: {{ .profile.nakama.key }}
+{{ if .profile.nakama.key }}
+  server_key: "{{ .profile.nakama.key }}"
+{{ else }}
+  server_key: "default-key"
+{{ end }}
 session:
   token_expiry_sec: 864900
-  server_key: {{ .profile.nakama.key }}
+{{ if .profile.nakama.key }}
+  server_key: "{{ .profile.nakama.key }}"
+{{ else }}
+  server_key: "default-key"
+{{ end }}
 runtime:
   http_key: defaultkey

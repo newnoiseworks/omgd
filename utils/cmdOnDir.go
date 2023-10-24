@@ -16,11 +16,12 @@ func CmdOnDir(cmdStr string, cmdDesc string, cmdDir string, verbosity bool) stri
 
 	output, err := cmd.Output()
 
-	if verbosity {
+	if verbosity && err == nil {
 		log.Println(string(output))
 	}
 
 	if err != nil {
+		log.Println(string(output))
 		log.Println(aurora.Red("Error!\n"))
 		log.Println(err)
 		log.Fatal(aurora.Yellow(fmt.Sprintf("Attempted to run: %s\n on dir: %s\n", cmdStr, cmdDir)))
@@ -41,11 +42,12 @@ func CmdOnDirWithEnv(cmdStr string, cmdDesc string, cmdDir string, env []string,
 
 	output, err := cmd.Output()
 
-	if verbosity {
+	if verbosity && err == nil {
 		log.Println(string(output))
 	}
 
 	if err != nil {
+		log.Println(string(output))
 		log.Println(aurora.Red("Error!\n"))
 		log.Println(err)
 		log.Fatal(aurora.Yellow(fmt.Sprintf("Attempted to run: %s\n on dir: %s\n", cmdStr, cmdDir)))
@@ -67,9 +69,7 @@ func getCmd(cmdStr string, cmdDesc string, cmdDir string, verbosity bool) *exec.
 
 	log.Print(aurora.Cyan(fmt.Sprintf("%s... ", cmdDesc)))
 
-	if verbosity {
-		cmd.Stderr = os.Stderr
-	}
+	cmd.Stderr = os.Stderr
 
 	return cmd
 }

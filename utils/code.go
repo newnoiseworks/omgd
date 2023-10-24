@@ -23,8 +23,10 @@ func (cp *CodeGenerationPlan) Generate() {
 	switch cp.Plan {
 	case "new":
 		cp.generateNew()
-	case "example-2d-player-movement":
+	case "example-partial-2d-player-movement":
 		cp.generateExample2DPlayerMovement()
+	case "example-2d-player-movement":
+		cp.generateExampleComplete2DPlayerMovement()
 	case "channel":
 		cp.generateChannel()
 	}
@@ -63,6 +65,19 @@ func (cp *CodeGenerationPlan) generateNew() {
 	)
 
 	err = os.Mkdir(fmt.Sprintf("%s/resources", outputPath), 0755)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+// generates example 2d player movement code
+// TODO: Write tests
+func (cp *CodeGenerationPlan) generateExampleComplete2DPlayerMovement() {
+	outputPath := fmt.Sprintf("%s/%s", cp.OutputDir, cp.Target)
+
+	sccp := StaticCodeCopyPlan{}
+
+	err := sccp.CopyStaticDirectory("static/example-2d-player-movement-complete", outputPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -160,7 +175,7 @@ func (cp *CodeGenerationPlan) generateChannel() {
 func (cp *CodeGenerationPlan) Cleanup() {
 	switch cp.Plan {
 	// case "new":
-	case "example-2d-player-movement":
+	case "example-partial-2d-player-movement":
 		cp.cleanupExample2DPlayerMovement()
 	case "channel":
 		cp.cleanupChannel()

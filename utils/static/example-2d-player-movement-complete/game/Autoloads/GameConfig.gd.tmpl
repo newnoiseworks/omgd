@@ -1,0 +1,24 @@
+extends Node
+
+{{- if .profile.omgd.deploy.server.gcloud.host }}
+const nakama_host = "{{.profile.omgd.deploy.server.gcloud.host}}"
+{{- else }}
+const nakama_host = "127.0.0.1"
+{{- end }}
+{{- if .profile.nakama.key }}
+const nakama_key = "{{.profile.nakama.key}}"
+{{- else }}
+const nakama_key = "default-key"
+{{- end }}
+{{- if .profile.nakama.port }}
+const nakama_port = {{.profile.nakama.port}}
+{{- else }}
+const nakama_port = 7350
+{{- end }}
+{{- if .profile.nakama.secure }}
+const nakama_secure = {{.profile.nakama.secure}}
+{{- else }}
+const nakama_secure = false
+{{- end }}
+
+const version = "{{.profile.game.version}}"

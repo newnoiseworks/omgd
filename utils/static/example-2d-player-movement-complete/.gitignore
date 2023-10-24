@@ -1,0 +1,9 @@
+.omgdtmp
+
+profiles/*
+!profiles/example.yml
+!profiles/local.yml
+
+.omgd/*
+!.omgd/profile.yml.omgdtpl
+

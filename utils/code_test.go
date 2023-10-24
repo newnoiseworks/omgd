@@ -53,7 +53,7 @@ func TestCodeGenCmdNewProjectWritesAndCleansUpFiles(t *testing.T) {
 }
 
 // tests generation of godot example 2d player movement project
-func TestCodeGenCmdExample2DPlayerMovement(t *testing.T) {
+func TestCodeGenCmdExamplePartial2DPlayerMovement(t *testing.T) {
 	t.Cleanup(func() {
 		err := os.RemoveAll("static/test/newProject")
 
@@ -74,7 +74,7 @@ func TestCodeGenCmdExample2DPlayerMovement(t *testing.T) {
 	// generates code plan for 2d movement, skips cleanup for testing
 	codePlan := CodeGenerationPlan{
 		OutputDir:   "static/test/newProject",
-		Plan:        "example-2d-player-movement",
+		Plan:        "example-partial-2d-player-movement",
 		Target:      "movement",
 		SkipCleanup: true,
 	}

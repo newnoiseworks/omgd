@@ -1,42 +1,39 @@
-version: "3"
+version: '3'
 services:
-  cockroachdb:
-    container_name: cockroachdb
-    image: cockroachdb/cockroach:v19.2.5
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "5"
-        max-size: "1m"
-    command: start --insecure --store=attrs=ssd,path=/var/lib/cockroach/
-    restart: always
+  postgres:
+    container_name: postgres
+    image: postgres:12.2-alpine
+    environment:
+      - POSTGRES_DB=nakama
+      - POSTGRES_PASSWORD=localdb
     volumes:
-      - data:/var/lib/cockroach
+      - data:/var/lib/postgresql/data
     expose:
       - "8080"
-      - "26257"
+      - "5432"
     ports:
-      - "26257:26257"
+      - "5432:5432"
       - "8080:8080"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "nakama"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
   nakama:
     container_name: nakama
-    image: heroiclabs/nakama:2.11.1
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "5"
-        max-size: "1m"
+    image: registry.heroiclabs.com/heroiclabs/nakama:3.18.0
     entrypoint:
       - "/bin/sh"
       - "-ecx"
       - >
-        /nakama/nakama migrate up --database.address root@cockroachdb:26257 &&
-        exec /nakama/nakama --config /nakama/data/config.yml
+          /nakama/nakama migrate up --database.address postgres:localdb@postgres:5432/nakama &&
+          exec /nakama/nakama --name nakama1 --database.address postgres:localdb@postgres:5432/nakama --logger.level DEBUG --session.token_expiry_sec 7200          
     restart: always
     links:
-      - "cockroachdb:db"
+      - "postgres:db"
     depends_on:
-      - cockroachdb
+      postgres:
+        condition: service_healthy
     volumes:
       - ./nakama/data:/nakama/data
     expose:

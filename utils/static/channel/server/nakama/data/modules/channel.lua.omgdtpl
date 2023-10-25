@@ -112,4 +112,8 @@ function M.match_terminate(context, dispatcher, tick, state, grace_seconds)
   return nil
 end
 
+function M.match_signal(context, dispatcher, tick, state, data)
+  return nil
+end
+
 return M

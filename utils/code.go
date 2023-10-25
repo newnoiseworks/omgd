@@ -29,6 +29,8 @@ func (cp *CodeGenerationPlan) Generate() {
 		cp.generateExampleComplete2DPlayerMovement()
 	case "channel":
 		cp.generateChannel()
+	default:
+		log.Fatalln(fmt.Sprintf("Found no code plan matching %s", cp.Plan))
 	}
 
 	// optionally skip cleanup to observe files, mostly for testing

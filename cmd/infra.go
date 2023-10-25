@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/newnoiseworks/omgd/utils"
 	"github.com/spf13/cobra"
@@ -41,6 +42,8 @@ $ omgd infra destroy | Destroys cloud infrastructure via terraform`,
 			infraChange.DeployClientAndServer()
 		case "destroy":
 			infraChange.DestroyInfra()
+		default:
+			log.Println(fmt.Sprintf("Found no infra command for %s", args[0]))
 		}
 	},
 }

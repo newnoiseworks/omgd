@@ -16,7 +16,7 @@ func CmdOnDir(cmdStr string, cmdDesc string, cmdDir string, verbosity bool) stri
 
 	output, err := cmd.Output()
 
-	if verbosity && err == nil {
+	if verbosity == true && err == nil {
 		log.Println(string(output))
 	}
 
@@ -42,7 +42,7 @@ func CmdOnDirWithEnv(cmdStr string, cmdDesc string, cmdDir string, env []string,
 
 	output, err := cmd.Output()
 
-	if verbosity && err == nil {
+	if verbosity == true && err == nil {
 		log.Println(string(output))
 	}
 

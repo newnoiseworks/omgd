@@ -8,7 +8,7 @@ const nakama_host = "127.0.0.1"
 {{- if .profile.nakama.key }}
 const nakama_key = "{{.profile.nakama.key}}"
 {{- else }}
-const nakama_key = "default-key"
+const nakama_key = "defaultkey"
 {{- end }}
 {{- if .profile.nakama.port }}
 const nakama_port = {{.profile.nakama.port}}

@@ -9,12 +9,12 @@ gcloud compute scp --project ${GCP_PROJECT} --zone ${GCP_ZONE} --force-key-file-
 
 # $GCP_UPDATE_REMOVE_VOLUME not set, then...
 if [[ -z "${GCP_UPDATE_REMOVE_VOLUME}" ]]; then
-    gcloud compute ssh --project ${GCP_PROJECT} --zone ${GCP_ZONE} --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "\$PWD:\$PWD" -w="\$PWD" docker/compose:1.24.0 down" nakama-instance
+    gcloud compute ssh --project ${GCP_PROJECT} --zone ${GCP_ZONE} --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "\$PWD:\$PWD" -w="\$PWD" docker/compose:1.27.0 down" nakama-instance
 else
-    gcloud compute ssh --project ${GCP_PROJECT} --zone ${GCP_ZONE} --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "\$PWD:\$PWD" -w="\$PWD" docker/compose:1.24.0 down -v" nakama-instance
+    gcloud compute ssh --project ${GCP_PROJECT} --zone ${GCP_ZONE} --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "\$PWD:\$PWD" -w="\$PWD" docker/compose:1.27.0 down -v" nakama-instance
 fi
 
 gcloud compute scp --project ${GCP_PROJECT} --zone ${GCP_ZONE} --recurse --force-key-file-overwrite ../../nakama nakama-instance:
 
-gcloud compute ssh --project ${GCP_PROJECT} --zone ${GCP_ZONE} --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "\$PWD:\$PWD" -w="\$PWD" docker/compose:1.24.0 up -d" nakama-instance
+gcloud compute ssh --project ${GCP_PROJECT} --zone ${GCP_ZONE} --command "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "\$PWD:\$PWD" -w="\$PWD" docker/compose:1.27.0 up -d" nakama-instance
 

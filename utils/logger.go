@@ -79,7 +79,9 @@ func init() {
 }
 
 func LogFatal(message string) {
+	debug.PrintStack()
 	processMessageAgainstLogLevel(message, FATAL_LOG)
+	os.Exit(1)
 }
 
 func LogError(message string) {

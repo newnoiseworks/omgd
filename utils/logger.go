@@ -79,7 +79,10 @@ func init() {
 }
 
 func LogFatal(message string) {
-	debug.PrintStack()
+	if _envLogLevel >= DEBUG_LOG {
+		debug.PrintStack()
+	}
+
 	processMessageAgainstLogLevel(message, FATAL_LOG)
 	os.Exit(1)
 }

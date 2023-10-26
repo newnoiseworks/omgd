@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -14,18 +13,7 @@ import (
 func CmdOnDir(cmdStr string, cmdDesc string, cmdDir string, verbosity bool) string {
 	cmd := getCmd(cmdStr, cmdDesc, cmdDir, verbosity)
 
-	output, err := cmd.Output()
-
-	if err != nil {
-		log.Println(string(output))
-		log.Println(aurora.Red("Error!\n"))
-		log.Println(err)
-		log.Fatal(aurora.Yellow(fmt.Sprintf("Attempted to run: %s\n on dir: %s\n", cmdStr, cmdDir)))
-	} else if verbosity {
-		log.Println(string(output))
-	}
-
-	return string(output)
+	return runCmd(cmd, cmdStr, cmdDir, verbosity)
 }
 
 func CmdOnDirWithEnv(cmdStr string, cmdDesc string, cmdDir string, env []string, verbosity bool) string {
@@ -36,18 +24,7 @@ func CmdOnDirWithEnv(cmdStr string, cmdDesc string, cmdDir string, env []string,
 		cmd.Env = append(cmd.Env, envVar)
 	}
 
-	output, err := cmd.Output()
-
-	if err != nil {
-		log.Println(string(output))
-		log.Println(aurora.Red("Error!\n"))
-		log.Println(err)
-		log.Fatal(aurora.Yellow(fmt.Sprintf("Attempted to run: %s\n on dir: %s\n", cmdStr, cmdDir)))
-	} else if verbosity {
-		log.Println(string(output))
-	}
-
-	return string(output)
+	return runCmd(cmd, cmdStr, cmdDir, verbosity)
 }
 
 func getCmd(cmdStr string, cmdDesc string, cmdDir string, verbosity bool) *exec.Cmd {
@@ -61,11 +38,26 @@ func getCmd(cmdStr string, cmdDesc string, cmdDir string, verbosity bool) *exec.
 		cmd.Dir = cmdDir
 	}
 
-	log.Print(aurora.Cyan(fmt.Sprintf("%s... ", cmdDesc)))
+	LogDebug(fmt.Sprint(aurora.Cyan(fmt.Sprintf("%s... ", cmdDesc))))
 
 	if verbosity {
 		cmd.Stderr = os.Stderr
 	}
 
 	return cmd
+}
+
+func runCmd(cmd *exec.Cmd, cmdStr string, cmdDir string, verbosity bool) string {
+	output, err := cmd.Output()
+
+	if err != nil {
+		LogError(string(output))
+		LogError(fmt.Sprint(aurora.Red("Error!\n")))
+		LogError(fmt.Sprint(err))
+		LogFatal(fmt.Sprint(aurora.Yellow(fmt.Sprintf("Attempted to run: %s\n on dir: %s\n", cmdStr, cmdDir))))
+	} else if verbosity {
+		LogError(string(output))
+	}
+
+	return string(output)
 }

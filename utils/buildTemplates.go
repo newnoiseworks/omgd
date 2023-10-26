@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/fs"
 	"io/ioutil"
-	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -43,7 +42,7 @@ func getData(profile *ProfileConf, buildPath string, verbose bool) *map[interfac
 		err = filepath.Walk(resourceDir, func(tmpl string, info fs.FileInfo, err error) error {
 			if err != nil {
 				if verbose {
-					log.Printf("no resources directory found in %v", resourceDir)
+					LogDebug(fmt.Sprintf("no resources directory found in %v", resourceDir))
 				}
 				return nil
 			}
@@ -55,12 +54,12 @@ func getData(profile *ProfileConf, buildPath string, verbose bool) *map[interfac
 
 				yamlFile, err := ioutil.ReadFile(tmpl)
 				if err != nil {
-					log.Printf("yamlFile Get err: #%v ", err)
+					LogDebug(fmt.Sprintf("yamlFile Get err: #%v ", err))
 				}
 
 				err = yaml.Unmarshal(yamlFile, &c)
 				if err != nil {
-					log.Fatalf("Unmarshal err: %v", err)
+					LogDebug(fmt.Sprintf("Unmarshal err: %v", err))
 				}
 
 				for k, v := range c {
@@ -73,7 +72,7 @@ func getData(profile *ProfileConf, buildPath string, verbose bool) *map[interfac
 
 		if err != nil {
 			if verbose {
-				log.Println(err)
+				LogDebug(fmt.Sprint(err))
 			}
 		}
 	}
@@ -85,12 +84,12 @@ func BuildTemplatesFromPath(profile *ProfileConf, buildPath string, templateExte
 	fp := getData(profile, buildPath, verbose)
 
 	if verbose {
-		log.Println(fmt.Sprintf("building template files in %s", buildPath))
+		LogDebug(fmt.Sprintf("building template files in %s", buildPath))
 	}
 
 	err := filepath.Walk(buildPath, func(tmpl string, info fs.FileInfo, err error) error {
 		if err != nil {
-			log.Fatal(err)
+			LogFatal(fmt.Sprint(err))
 		}
 
 		name := info.Name()
@@ -103,7 +102,7 @@ func BuildTemplatesFromPath(profile *ProfileConf, buildPath string, templateExte
 	})
 
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 }
 
@@ -116,7 +115,7 @@ func processTemplate(tmpl string, fp *map[interface{}]interface{}, templateExten
 	final_path := strings.ReplaceAll(tmpl, "."+templateExtension, "")
 
 	if verbose {
-		log.Println(fmt.Sprintf("processing template file %s >> %s", tmpl, final_path))
+		LogDebug(fmt.Sprintf("processing template file %s >> %s", tmpl, final_path))
 	}
 
 	t := template.New(path.Base(tmpl)).Funcs(template.FuncMap{
@@ -132,23 +131,23 @@ func processTemplate(tmpl string, fp *map[interface{}]interface{}, templateExten
 	t, err := t.ParseFiles(tmpl)
 
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 
 	f, err := os.Create(final_path)
 	if err != nil {
-		log.Fatal("create file: ", err)
+		LogFatal(fmt.Sprint(err))
 	}
 
 	err = t.Execute(f, fp)
 	if err != nil {
-		log.Fatal("execute: ", err)
+		LogFatal(fmt.Sprint(err))
 	}
 
 	if removeTemplateAfterProcessing {
 		err = os.Remove(tmpl)
 		if err != nil {
-			log.Fatal(err)
+			LogFatal(fmt.Sprint(err))
 		}
 	}
 }

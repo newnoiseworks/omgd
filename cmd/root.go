@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"log"
+	"fmt"
 	"os"
 
+	"github.com/newnoiseworks/omgd/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -34,7 +35,7 @@ Godot is the current game engine of focus with a likelihood of expansion to Unit
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		log.Println(err)
+		utils.LogError(fmt.Sprint(err))
 		os.Exit(1)
 	}
 }

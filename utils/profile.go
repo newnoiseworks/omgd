@@ -1,12 +1,11 @@
 package utils
 
 import (
+	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"reflect"
-	"runtime/debug"
 	"strings"
 
 	"gopkg.in/yaml.v2"
@@ -49,7 +48,7 @@ func (pc ProfileConf) getTopLevelOMGDProfileAsMap() map[interface{}]interface{} 
 	err = yaml.Unmarshal(yamlFile, &c)
 
 	if err != nil {
-		log.Fatalf("Unmarshal err: %v", err)
+		LogFatal(fmt.Sprintf("Unmarshal err: %v", err))
 	}
 
 	return c
@@ -67,13 +66,13 @@ func (pc ProfileConf) getRootProfileAsMap() map[interface{}]interface{} {
 	yamlFile, err := ioutil.ReadFile(profilePath)
 
 	if err != nil {
-		log.Fatalf("could not read file: %v", err)
+		LogFatal(fmt.Sprintf("could not read file: %v", err))
 	}
 
 	err = yaml.Unmarshal(yamlFile, &c)
 
 	if err != nil {
-		log.Fatalf("Unmarshal err: %v", err)
+		LogFatal(fmt.Sprintf("Unmarshal err: %v", err))
 	}
 
 	return c
@@ -102,12 +101,11 @@ func GetProfile(path string) *ProfileConf {
 
 	yamlFile, err := os.ReadFile(c.path)
 	if err != nil {
-		debug.PrintStack()
-		log.Fatalf("yamlFile Get err: #%v ", err)
+		LogFatal(fmt.Sprintf("yamlFile Get err: #%v ", err))
 	}
 	err = yaml.Unmarshal(yamlFile, &c)
 	if err != nil {
-		log.Fatalf("Unmarshal err: %v", err)
+		LogFatal(fmt.Sprintf("Unmarshal err: %v", err))
 	}
 
 	splits := strings.Split(path, "/")
@@ -119,12 +117,12 @@ func GetProfile(path string) *ProfileConf {
 func GetProfileFromDir(path string, dir string) *ProfileConf {
 	root, err := os.Getwd()
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 
 	err = os.Chdir(filepath.Join(root, dir))
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 
 	profile := GetProfile(path)
@@ -132,7 +130,7 @@ func GetProfileFromDir(path string, dir string) *ProfileConf {
 
 	err = os.Chdir(root)
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 
 	return profile
@@ -142,7 +140,7 @@ func (profile ProfileConf) SaveProfileFromMap(profileMap *map[interface{}]interf
 	yamlBytes, err := yaml.Marshal(profileMap)
 
 	if err != nil {
-		log.Fatal("Error marshalling from data to saving profile to yaml!")
+		LogFatal("Error marshalling from data to saving profile to yaml!")
 	}
 
 	profilePath := profile.path
@@ -154,8 +152,7 @@ func (profile ProfileConf) SaveProfileFromMap(profileMap *map[interface{}]interf
 	err = ioutil.WriteFile(profilePath, yamlBytes, 0755)
 
 	if err != nil {
-		log.Println("Error on file write to saving profile to yaml!")
-		log.Fatal(err)
+		LogFatal(fmt.Sprintf("Error on file write to saving profile to yaml! >> %s", err))
 	}
 }
 
@@ -234,14 +231,14 @@ func mergerecursive(master *map[interface{}]interface{}, merge *map[interface{}]
 					mergenode := (*merge)[k].(map[interface{}]interface{}) // type assertion
 					mergerecursive(&masternode, &mergenode, level+1)
 				} else {
-					log.Fatal("Key [", k, "] is map/list of values in one yaml and a singular value in the other yaml, can't merge them")
+					LogFatal(fmt.Sprint("Key [", k, "] is map/list of values in one yaml and a singular value in the other yaml, can't merge them"))
 				}
 			} else {
 				// key is not a map, so we just need to copy the value if they are both non-map types
 				if !isMap(reflect.TypeOf((*merge)[k]).String()) {
 					(*merge)[k] = v
 				} else {
-					log.Fatal("Key [", k, "] is map/list of values in one yaml and a singular value in the other yaml, can't merge them")
+					LogFatal(fmt.Sprint("Key [", k, "] is map/list of values in one yaml and a singular value in the other yaml, can't merge them"))
 				}
 			}
 		} else {

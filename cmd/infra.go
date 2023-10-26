@@ -22,8 +22,6 @@ $ omgd infra deploy | Deploys cloud infrastructure via terraform
 $ omgd infra game-deploy | Builds and deploys clients and server to infra
 $ omgd infra destroy | Destroys cloud infrastructure via terraform`,
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.LogInfo("infra called")
-
 		profile := utils.GetProfile(ProfilePath)
 
 		infraChange := utils.InfraChange{
@@ -42,7 +40,8 @@ $ omgd infra destroy | Destroys cloud infrastructure via terraform`,
 		case "destroy":
 			infraChange.DestroyInfra()
 		default:
-			utils.LogWarn(fmt.Sprintf("Found no infra command for %s", args[0]))
+			utils.LogFatal(fmt.Sprintf("Found no infra command for %s", args[0]))
+			utils.LogWarn("hello")
 		}
 	},
 }

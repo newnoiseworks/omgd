@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"log"
+	"os"
 	"runtime/debug"
 )
 
@@ -20,6 +21,7 @@ const (
 // Logger._logFn used internally for logging, SetLogFn adjusts for tests
 var _logFn = log.Println
 
+// Sets Logger._logFn for tests
 func SetLogFn(logFn func(v ...any)) {
 	_logFn = logFn
 }
@@ -27,25 +29,87 @@ func SetLogFn(logFn func(v ...any)) {
 // Logger._printFn used internally for logging, SetPrintFn adjusts for tests
 var _printFn = fmt.Println
 
+// Sets Logger._printFn for tests
 func SetPrintFn(printFn func(v ...any) (n int, err error)) {
 	_printFn = printFn
 }
 
-var envLogLevel = FATAL_LOG
-var envLogOutputWithTimestamp = false
+// Contains log level according to environment var, adjusted for tests
+var _envLogLevel LogLevel
 
-func TraceLog(message string) {
+// Sets environment log level variable, used for tests
+func SetEnvLogLevel(logLevel LogLevel) {
+	_envLogLevel = logLevel
+}
+
+var _envLogOutputWithTimestamp bool
+
+func init() {
+	switch os.Getenv("OMGD_LOG_LEVEL") {
+	case "FATAL":
+		_envLogLevel = FATAL_LOG
+		break
+	case "ERROR":
+		_envLogLevel = ERROR_LOG
+		break
+	case "WARN":
+		_envLogLevel = WARN_LOG
+		break
+	case "INFO":
+		_envLogLevel = INFO_LOG
+		break
+	case "DEBUG":
+		_envLogLevel = DEBUG_LOG
+		break
+	case "TRACE":
+		_envLogLevel = TRACE_LOG
+		break
+	default:
+		_envLogLevel = WARN_LOG
+		break
+	}
+
+	timestampVal, timestampValSet := os.LookupEnv("OMGD_LOG_WITH_TIMESTAMP")
+
+	if timestampValSet && timestampVal != "false" {
+		_envLogOutputWithTimestamp = true
+	} else {
+		_envLogOutputWithTimestamp = false
+	}
+}
+
+func LogFatal(message string) {
+	processMessageAgainstLogLevel(message, FATAL_LOG)
+}
+
+func LogError(message string) {
+	processMessageAgainstLogLevel(message, ERROR_LOG)
+}
+
+func LogWarn(message string) {
+	processMessageAgainstLogLevel(message, WARN_LOG)
+}
+
+func LogInfo(message string) {
+	processMessageAgainstLogLevel(message, INFO_LOG)
+}
+
+func LogDebug(message string) {
+	processMessageAgainstLogLevel(message, DEBUG_LOG)
+}
+
+func LogTrace(message string) {
 	processMessageAgainstLogLevel(message, TRACE_LOG)
 }
 
 func processMessageAgainstLogLevel(message string, logLevel LogLevel) {
-	if envLogLevel <= logLevel {
+	if logLevel <= _envLogLevel {
 		outputLogMessage(message)
 	}
 }
 
 func outputLogMessage(message string) {
-	if envLogOutputWithTimestamp {
+	if _envLogOutputWithTimestamp {
 		_logFn(message)
 	} else {
 		_, err := _printFn(message)

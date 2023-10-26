@@ -70,7 +70,7 @@ func init() {
 		envLogLevel = TRACE_LOG
 		break
 	default:
-		envLogLevel = WARN_LOG
+		envLogLevel = INFO_LOG
 		break
 	}
 

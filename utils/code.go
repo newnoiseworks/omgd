@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strings"
 )
@@ -12,7 +11,6 @@ type CodeGenerationPlan struct {
 	Target      string
 	Plan        string
 	Args        string
-	Verbosity   bool
 	SkipCleanup bool
 }
 
@@ -30,7 +28,7 @@ func (cp *CodeGenerationPlan) Generate() {
 	case "channel":
 		cp.generateChannel()
 	default:
-		log.Fatalln(fmt.Sprintf("Found no code plan matching %s", cp.Plan))
+		LogFatal(fmt.Sprintf("Found no code plan matching %s", cp.Plan))
 	}
 
 	// optionally skip cleanup to observe files, mostly for testing
@@ -48,14 +46,14 @@ func (cp *CodeGenerationPlan) generateNew() {
 	err := sccp.CopyStaticDirectory("static/new", outputPath)
 
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 
 	newProfile := GetProfile(fmt.Sprintf("%s/profiles/omgd.yml", outputPath))
 	newProfile.UpdateProfile("omgd.name", cp.Target)
 
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 
 	BuildTemplatesFromPath(
@@ -63,12 +61,11 @@ func (cp *CodeGenerationPlan) generateNew() {
 		outputPath,
 		"omgdtpl",
 		!cp.SkipCleanup,
-		cp.Verbosity,
 	)
 
 	err = os.Mkdir(fmt.Sprintf("%s/resources", outputPath), 0755)
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 }
 
@@ -81,7 +78,7 @@ func (cp *CodeGenerationPlan) generateExampleComplete2DPlayerMovement() {
 
 	err := sccp.CopyStaticDirectory("static/example-2d-player-movement-complete", outputPath)
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 }
 
@@ -93,7 +90,7 @@ func (cp *CodeGenerationPlan) generateExample2DPlayerMovement() {
 
 	err := sccp.CopyStaticDirectory("static/example-2d-player-movement", tmpDir)
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 
 	newProfile := GetProfile(fmt.Sprintf("%s/profiles/local.yml", tmpDir))
@@ -104,7 +101,6 @@ func (cp *CodeGenerationPlan) generateExample2DPlayerMovement() {
 		tmpDir,
 		"omgdtpl",
 		true,
-		cp.Verbosity,
 	)
 }
 
@@ -154,7 +150,7 @@ func (cp *CodeGenerationPlan) generateChannel() {
 
 	err := sccp.CopyStaticDirectory("static/channel", tmpDir)
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 
 	newProfile := GetProfile(fmt.Sprintf("%s/profiles/local.yml", tmpDir))
@@ -169,7 +165,6 @@ func (cp *CodeGenerationPlan) generateChannel() {
 		tmpDir,
 		"omgdtpl",
 		true,
-		cp.Verbosity,
 	)
 }
 
@@ -190,19 +185,19 @@ func (cp *CodeGenerationPlan) cleanupExample2DPlayerMovement() {
 
 	err := os.RemoveAll(fmt.Sprintf("%s/profiles", tmpDir))
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 
 	sccp := StaticCodeCopyPlan{}
 
 	err = sccp.CopyStaticDirectory(tmpDir, cp.OutputDir)
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 
 	err = os.RemoveAll(tmpDir)
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 }
 
@@ -212,7 +207,7 @@ func (cp *CodeGenerationPlan) cleanupChannel() {
 
 	err := os.RemoveAll(fmt.Sprintf("%s/profiles", tmpDir))
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 
 	sccp := StaticCodeCopyPlan{}
@@ -220,12 +215,12 @@ func (cp *CodeGenerationPlan) cleanupChannel() {
 	err = sccp.CopyStaticDirectory(tmpDir, cp.OutputDir)
 
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 
 	err = os.RemoveAll(tmpDir)
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 }
 
@@ -235,11 +230,11 @@ func (cp *CodeGenerationPlan) resetOMGDTmpDir() {
 
 	err := os.RemoveAll(tmpDir)
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 
 	err = os.Mkdir(tmpDir, 0755)
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 }

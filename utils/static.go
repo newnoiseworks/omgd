@@ -3,7 +3,6 @@ package utils
 import (
 	"embed"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 )
@@ -113,7 +112,7 @@ func writeFile(filePathToWrite string, fileBytes []byte) error {
 
 	if err != nil {
 		if os.IsExist(err) {
-			log.Printf("Attempting to overwrite file at %s, skipping\n", filePathToWrite)
+			LogDebug(fmt.Sprintf("Attempting to overwrite file at %s, skipping\n", filePathToWrite))
 		} else {
 			return err
 		}

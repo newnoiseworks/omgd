@@ -5,7 +5,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/newnoiseworks/omgd/utils"
 	"github.com/spf13/cobra"
@@ -23,8 +22,6 @@ $ omgd infra deploy | Deploys cloud infrastructure via terraform
 $ omgd infra game-deploy | Builds and deploys clients and server to infra
 $ omgd infra destroy | Destroys cloud infrastructure via terraform`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("infra called")
-
 		profile := utils.GetProfile(ProfilePath)
 
 		infraChange := utils.InfraChange{
@@ -32,7 +29,6 @@ $ omgd infra destroy | Destroys cloud infrastructure via terraform`,
 			Profile:         profile,
 			CmdOnDir:        utils.CmdOnDir,
 			CmdOnDirWithEnv: utils.CmdOnDirWithEnv,
-			Verbosity:       Verbosity,
 		}
 
 		switch args[0] {
@@ -43,7 +39,8 @@ $ omgd infra destroy | Destroys cloud infrastructure via terraform`,
 		case "destroy":
 			infraChange.DestroyInfra()
 		default:
-			log.Println(fmt.Sprintf("Found no infra command for %s", args[0]))
+			utils.LogFatal(fmt.Sprintf("Found no infra command for %s", args[0]))
+			utils.LogWarn("hello")
 		}
 	},
 }

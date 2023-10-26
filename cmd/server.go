@@ -30,26 +30,23 @@ $ omgd server status         | prints status of running docker containers
 				"docker-compose up -d",
 				fmt.Sprintf("spinning up docker containers"),
 				"server",
-				true,
 			)
 		case "stop":
 			utils.CmdOnDir(
 				"docker-compose down",
 				fmt.Sprintf("stopping docker containers"),
 				"server",
-				true,
 			)
 		case "reset-data":
 			utils.CmdOnDir(
 				"docker-compose down -v",
 				fmt.Sprintf("removing data volumes and stopping docker containers"),
 				"server",
-				true,
 			)
 		case "logs":
 			cmd := "docker-compose logs"
 
-			if Verbosity {
+			if utils.GetEnvLogLevel() == utils.DEBUG_LOG {
 				cmd = "docker-compose logs --follow"
 			}
 
@@ -57,14 +54,12 @@ $ omgd server status         | prints status of running docker containers
 				cmd,
 				fmt.Sprintf("printing server logs via $ %s", cmd),
 				"server",
-				true,
 			)
 		case "status":
 			utils.CmdOnDir(
 				"docker-compose ps",
 				fmt.Sprintf("printing server status via $ docker-compose ps"),
 				"server",
-				true,
 			)
 		}
 	},

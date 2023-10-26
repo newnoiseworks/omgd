@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"log"
+	"fmt"
 	"os"
 	"testing"
 )
@@ -11,7 +11,7 @@ func TestStaticGetStaticFileCmd(t *testing.T) {
 	received, err := GetStaticFile("static/test/test.md")
 
 	if err != nil {
-		log.Fatal(err)
+		LogFatal(fmt.Sprint(err))
 	}
 
 	expected := "This is a test test test\n"

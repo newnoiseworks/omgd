@@ -271,7 +271,6 @@ func TestCodeGenCmdOMGDChannelCreationWithEventArgs(t *testing.T) {
 		"static/test/newProject",
 		"tmpl",
 		false,
-		false,
 	)
 
 	// check for MatchChannelEvent.gd file

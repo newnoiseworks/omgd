@@ -5,7 +5,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/newnoiseworks/omgd/utils"
 	"github.com/spf13/cobra"
@@ -43,12 +42,11 @@ example-partial-2d-player-movement [channel_name] - Partial example. Demonstrate
 			Target:    target,
 			Plan:      plan,
 			Args:      codePlanArgs,
-			Verbosity: Verbosity,
 		}
 
 		cp.Generate()
 
-		log.Println(fmt.Sprintf("Code generated based on plan to %s dir %s", cp.Plan, cp.OutputDir))
+		utils.LogWarn(fmt.Sprintf("Code generated based on plan to %s dir %s", cp.Plan, cp.OutputDir))
 	},
 }
 

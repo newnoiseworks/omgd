@@ -1,8 +1,8 @@
 package utils
 
 import (
+	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"regexp"
 	"runtime/debug"
@@ -10,8 +10,8 @@ import (
 )
 
 func testLogComparison(expected interface{}, received interface{}) {
-	log.Printf("received %s", received)
-	log.Printf("expected %s", expected)
+	LogWarn(fmt.Sprintf("received %s", received))
+	LogWarn(fmt.Sprintf("expected %s", expected))
 }
 
 // tests file exists and contains a string

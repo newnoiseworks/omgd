@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"log"
+	"fmt"
 	"os"
 
+	"github.com/newnoiseworks/omgd/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -12,9 +13,6 @@ var ProfilePath string
 
 // OutputDir this is where all builds and build artifacts will be written to
 var OutputDir string
-
-// Verbosity how verbose should output be
-var Verbosity bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -34,7 +32,7 @@ Godot is the current game engine of focus with a likelihood of expansion to Unit
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		log.Println(err)
+		utils.LogError(fmt.Sprint(err))
 		os.Exit(1)
 	}
 }
@@ -49,8 +47,6 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&ProfilePath, "profile", "p", "profiles/local.yml", "yml profile representing this build in the build/profiles folder")
 
 	rootCmd.PersistentFlags().StringVar(&OutputDir, "output-dir", ".", "output dir of files that are generated etc")
-
-	rootCmd.PersistentFlags().BoolVar(&Verbosity, "verbose", false, "include for verbose output of commands")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.

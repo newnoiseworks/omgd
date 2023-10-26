@@ -24,7 +24,6 @@ func TestDeployInfra(t *testing.T) {
 		OutputDir: "static/test/infra_test_dir",
 		Profile:   profile,
 		CmdOnDir:  testCmdOnDir,
-		Verbosity: false,
 	}
 
 	infraChange.DeployInfra()
@@ -105,7 +104,6 @@ func TestDestroyInfra(t *testing.T) {
 		OutputDir: testDir,
 		Profile:   profile,
 		CmdOnDir:  testCmdOnDir,
-		Verbosity: false,
 	}
 
 	infraChange.DestroyInfra()
@@ -160,7 +158,6 @@ func TestDeployClientAndServer(t *testing.T) {
 		Profile:         profile,
 		CmdOnDir:        testCmdOnDir,
 		CmdOnDirWithEnv: testCmdOnDirWithEnv,
-		Verbosity:       false,
 	}
 
 	infraChange.DeployClientAndServer()

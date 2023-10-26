@@ -42,7 +42,6 @@ example-partial-2d-player-movement [channel_name] - Partial example. Demonstrate
 			Target:    target,
 			Plan:      plan,
 			Args:      codePlanArgs,
-			Verbosity: Verbosity,
 		}
 
 		cp.Generate()

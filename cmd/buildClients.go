@@ -32,7 +32,6 @@ var buildClientsCmd = &cobra.Command{
 			[]string{
 				fmt.Sprintf("BUILD_ENV=%s", profile.Name),
 			},
-			Verbosity,
 		)
 	},
 }

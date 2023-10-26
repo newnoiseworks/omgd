@@ -14,9 +14,6 @@ var ProfilePath string
 // OutputDir this is where all builds and build artifacts will be written to
 var OutputDir string
 
-// Verbosity how verbose should output be
-var Verbosity bool
-
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "omgd",
@@ -50,8 +47,6 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&ProfilePath, "profile", "p", "profiles/local.yml", "yml profile representing this build in the build/profiles folder")
 
 	rootCmd.PersistentFlags().StringVar(&OutputDir, "output-dir", ".", "output dir of files that are generated etc")
-
-	rootCmd.PersistentFlags().BoolVar(&Verbosity, "verbose", false, "include for verbose output of commands")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.

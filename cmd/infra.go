@@ -29,7 +29,6 @@ $ omgd infra destroy | Destroys cloud infrastructure via terraform`,
 			Profile:         profile,
 			CmdOnDir:        utils.CmdOnDir,
 			CmdOnDirWithEnv: utils.CmdOnDirWithEnv,
-			Verbosity:       Verbosity,
 		}
 
 		switch args[0] {

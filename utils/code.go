@@ -11,7 +11,6 @@ type CodeGenerationPlan struct {
 	Target      string
 	Plan        string
 	Args        string
-	Verbosity   bool
 	SkipCleanup bool
 }
 
@@ -62,7 +61,6 @@ func (cp *CodeGenerationPlan) generateNew() {
 		outputPath,
 		"omgdtpl",
 		!cp.SkipCleanup,
-		cp.Verbosity,
 	)
 
 	err = os.Mkdir(fmt.Sprintf("%s/resources", outputPath), 0755)
@@ -103,7 +101,6 @@ func (cp *CodeGenerationPlan) generateExample2DPlayerMovement() {
 		tmpDir,
 		"omgdtpl",
 		true,
-		cp.Verbosity,
 	)
 }
 
@@ -168,7 +165,6 @@ func (cp *CodeGenerationPlan) generateChannel() {
 		tmpDir,
 		"omgdtpl",
 		true,
-		cp.Verbosity,
 	)
 }
 

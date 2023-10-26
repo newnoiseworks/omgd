@@ -17,12 +17,11 @@ type testCmdOnDirResponse struct {
 var testCmdOnDirResponses = []testCmdOnDirResponse{}
 var testCmdOnDirValidResponseSet = []testCmdOnDirResponse{}
 
-var testCmdOnDir = func(cmdStr string, cmdDesc string, cmdDir string, verbosity bool) string {
+var testCmdOnDir = func(cmdStr string, cmdDesc string, cmdDir string) string {
 	testCmdOnDirResponses = append(testCmdOnDirResponses, testCmdOnDirResponse{
-		cmdStr:    cmdStr,
-		cmdDesc:   cmdDesc,
-		cmdDir:    cmdDir,
-		verbosity: verbosity,
+		cmdStr:  cmdStr,
+		cmdDesc: cmdDesc,
+		cmdDir:  cmdDir,
 	})
 
 	if cmdStr == "terraform output -raw server_ip" {
@@ -32,13 +31,12 @@ var testCmdOnDir = func(cmdStr string, cmdDesc string, cmdDir string, verbosity 
 	return ""
 }
 
-var testCmdOnDirWithEnv = func(cmdStr string, cmdDesc string, cmdDir string, env []string, verbosity bool) string {
+var testCmdOnDirWithEnv = func(cmdStr string, cmdDesc string, cmdDir string, env []string) string {
 	testCmdOnDirResponses = append(testCmdOnDirResponses, testCmdOnDirResponse{
-		cmdStr:    cmdStr,
-		cmdDesc:   cmdDesc,
-		cmdDir:    cmdDir,
-		verbosity: verbosity,
-		env:       env,
+		cmdStr:  cmdStr,
+		cmdDesc: cmdDesc,
+		cmdDir:  cmdDir,
+		env:     env,
 	})
 
 	return ""

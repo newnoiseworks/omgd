@@ -17,7 +17,7 @@ import (
 var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
 var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
 
-func getData(profile *ProfileConf, buildPath string, verbose bool) *map[interface{}]interface{} {
+func getData(profile *ProfileConf, buildPath string) *map[interface{}]interface{} {
 	fp := make(map[interface{}]interface{})
 	fp["profile"] = profile.GetProfileAsMap()
 
@@ -41,9 +41,7 @@ func getData(profile *ProfileConf, buildPath string, verbose bool) *map[interfac
 	if !os.IsNotExist(err) {
 		err = filepath.Walk(resourceDir, func(tmpl string, info fs.FileInfo, err error) error {
 			if err != nil {
-				if verbose {
-					LogDebug(fmt.Sprintf("no resources directory found in %v", resourceDir))
-				}
+				LogDebug(fmt.Sprintf("no resources directory found in %v", resourceDir))
 				return nil
 			}
 
@@ -71,21 +69,17 @@ func getData(profile *ProfileConf, buildPath string, verbose bool) *map[interfac
 		})
 
 		if err != nil {
-			if verbose {
-				LogDebug(fmt.Sprint(err))
-			}
+			LogDebug(fmt.Sprint(err))
 		}
 	}
 
 	return &fp
 }
 
-func BuildTemplatesFromPath(profile *ProfileConf, buildPath string, templateExtension string, removeTemplateAfterProcessing bool, verbose bool) {
-	fp := getData(profile, buildPath, verbose)
+func BuildTemplatesFromPath(profile *ProfileConf, buildPath string, templateExtension string, removeTemplateAfterProcessing bool) {
+	fp := getData(profile, buildPath)
 
-	if verbose {
-		LogDebug(fmt.Sprintf("building template files in %s", buildPath))
-	}
+	LogDebug(fmt.Sprintf("building template files in %s", buildPath))
 
 	err := filepath.Walk(buildPath, func(tmpl string, info fs.FileInfo, err error) error {
 		if err != nil {
@@ -95,7 +89,7 @@ func BuildTemplatesFromPath(profile *ProfileConf, buildPath string, templateExte
 		name := info.Name()
 
 		if info.IsDir() == false && strings.HasSuffix(name, "."+templateExtension) {
-			processTemplate(tmpl, fp, templateExtension, removeTemplateAfterProcessing, verbose)
+			processTemplate(tmpl, fp, templateExtension, removeTemplateAfterProcessing)
 		}
 
 		return nil
@@ -106,17 +100,15 @@ func BuildTemplatesFromPath(profile *ProfileConf, buildPath string, templateExte
 	}
 }
 
-func BuildTemplateFromPath(tmplPath string, profile *ProfileConf, buildPath string, templateExtension string, removeTemplateAfterProcessing bool, verbose bool) {
-	fp := getData(profile, buildPath, verbose)
-	processTemplate(tmplPath, fp, templateExtension, removeTemplateAfterProcessing, verbose)
+func BuildTemplateFromPath(tmplPath string, profile *ProfileConf, buildPath string, templateExtension string, removeTemplateAfterProcessing bool) {
+	fp := getData(profile, buildPath)
+	processTemplate(tmplPath, fp, templateExtension, removeTemplateAfterProcessing)
 }
 
-func processTemplate(tmpl string, fp *map[interface{}]interface{}, templateExtension string, removeTemplateAfterProcessing bool, verbose bool) {
+func processTemplate(tmpl string, fp *map[interface{}]interface{}, templateExtension string, removeTemplateAfterProcessing bool) {
 	final_path := strings.ReplaceAll(tmpl, "."+templateExtension, "")
 
-	if verbose {
-		LogDebug(fmt.Sprintf("processing template file %s >> %s", tmpl, final_path))
-	}
+	LogDebug(fmt.Sprintf("processing template file %s >> %s", tmpl, final_path))
 
 	t := template.New(path.Base(tmpl)).Funcs(template.FuncMap{
 		"md5":        StrToMd5,

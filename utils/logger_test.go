@@ -26,7 +26,7 @@ func testPrintFn(v ...any) (n int, err error) {
 	return 0, nil
 }
 
-var defaultLogLevel = _envLogLevel
+var defaultLogLevel = envLogLevel
 
 func TestMain(m *testing.M) {
 	SetLogFn(testLogFn)

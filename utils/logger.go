@@ -22,16 +22,16 @@ const (
 var logFn = log.Println
 
 // Sets Logger.logFn for tests
-func SetLogFn(logFn func(v ...any)) {
-	logFn = logFn
+func SetLogFn(_logFn func(v ...any)) {
+	logFn = _logFn
 }
 
 // Logger.printFn used internally for logging, SetPrintFn adjusts for tests
 var printFn = fmt.Println
 
 // Sets Logger.printFn for tests
-func SetPrintFn(printFn func(v ...any) (n int, err error)) {
-	printFn = printFn
+func SetPrintFn(_printFn func(v ...any) (n int, err error)) {
+	printFn = _printFn
 }
 
 // Contains log level according to environment var, adjusted for tests
@@ -40,6 +40,11 @@ var envLogLevel LogLevel
 // Sets environment log level variable, used for tests
 func SetEnvLogLevel(logLevel LogLevel) {
 	envLogLevel = logLevel
+}
+
+// Gets log level being used
+func GetEnvLogLevel() LogLevel {
+	return envLogLevel
 }
 
 var envLogOutputWithTimestamp bool

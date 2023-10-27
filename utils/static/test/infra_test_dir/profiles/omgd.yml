@@ -1,3 +1,7 @@
 omgd:
+  gcp:
+    project: test
+    region: whatever
+    zone: us-east4c
   name: top-level-name
   override: not-overriden

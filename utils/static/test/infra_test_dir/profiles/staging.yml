@@ -1,9 +1,4 @@
 omgd:
-  deploy:
-    server:
-      gcloud:
-        host: ???
-        project: test
-        region: whatever
-        zone: us-east4c
+  gcp:
+    host: ???
   override: overriden

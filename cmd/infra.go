@@ -20,9 +20,15 @@ var infraCmd = &cobra.Command{
 
 $ omgd infra deploy | Deploys cloud infrastructure via terraform
 $ omgd infra game-deploy | Builds and deploys clients and server to infra
-$ omgd infra destroy | Destroys cloud infrastructure via terraform`,
+$ omgd infra destroy | Destroys cloud infrastructure via terraform
+$ omgd infra project-setup | Initial one time project level infra setup`,
 	Run: func(cmd *cobra.Command, args []string) {
 		profile := utils.GetProfile(ProfilePath)
+		command := args[0]
+
+		if (profile.Name == "local" || profile.Name == "omgd") && command != "project-setup" {
+			utils.LogFatal("Cannot run infra commands against local or top level omgd profile, please supply a profile with -p")
+		}
 
 		infraChange := utils.InfraChange{
 			OutputDir:       OutputDir,
@@ -31,13 +37,15 @@ $ omgd infra destroy | Destroys cloud infrastructure via terraform`,
 			CmdOnDirWithEnv: utils.CmdOnDirWithEnv,
 		}
 
-		switch args[0] {
+		switch command {
 		case "deploy":
 			infraChange.DeployInfra()
 		case "game-deploy":
 			infraChange.DeployClientAndServer()
 		case "destroy":
 			infraChange.DestroyInfra()
+		case "project-setup":
+			infraChange.ProjectSetup()
 		default:
 			utils.LogFatal(fmt.Sprintf("Found no infra command for %s", args[0]))
 			utils.LogWarn("hello")

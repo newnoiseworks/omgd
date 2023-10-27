@@ -1,8 +1,10 @@
-gcp_project = "{{.profile.omgd.deploy.server.gcloud.project}}"
-gcp_region  = "{{.profile.omgd.deploy.server.gcloud.region}}"
-gcp_zone    = "{{.profile.omgd.deploy.server.gcloud.zone}}"
-{{ if .profile.omgd.deploy.server.gcloud.machine_type }}
-gcp_type = "{{.profile.omgd.deploy.server.gcloud.machine_type}}"
+gcp_project = "{{.profile.omgd.gcp.project}}"
+gcp_region  = "{{.profile.omgd.gcp.region}}"
+gcp_zone    = "{{.profile.omgd.gcp.zone}}"
+{{ if .profile.omgd.gcp.machine_type }}
+gcp_type = "{{.profile.omgd.gcp.machine_type}}"
 {{ else }}
 gcp_type = "f1-micro"
 {{ end }}
+project     = "{{.profile.omgd.name}}"
+profile     = "{{.profile.Name}}"

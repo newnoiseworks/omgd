@@ -12,23 +12,25 @@ type InfraChange struct {
 }
 
 func (infraChange *InfraChange) DeployClientAndServer() {
+	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
+
+	infraChange.CmdOnDir(
+		fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s-bucket-tfstate -backend-config prefix=terraform/state/%s", infraChange.Profile.Get("omgd.name"), infraChange.Profile.Name),
+		fmt.Sprintf("setting up terraform on profile %s", infraChange.Profile.Name),
+		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
+	)
+
 	ipAddress := infraChange.CmdOnDir(
 		"terraform output -raw server_ip",
 		"getting ip of newly created server...",
 		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 	)
 
-	infraChange.Profile.UpdateProfile("omgd.deploy.server.gcloud.host", ipAddress)
-
-	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd build-templates --profile=%s", infraChange.Profile.path),
-		"",
-		infraChange.OutputDir,
-	)
+	infraChange.Profile.UpdateProfile("omgd.gcp.host", ipAddress)
 
 	infraChange.CmdOnDir(
 		fmt.Sprintf("omgd build-clients --profile=%s", infraChange.Profile.path),
-		"",
+		"building game clients against profile",
 		infraChange.OutputDir,
 	)
 
@@ -43,8 +45,9 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 		"deploying game server to gcp",
 		fmt.Sprintf("%s/server/deploy/gcp", infraChange.OutputDir),
 		[]string{
-			fmt.Sprintf("GCP_PROJECT=%s", infraChange.Profile.Get("omgd.deploy.server.gcloud.project")),
-			fmt.Sprintf("GCP_ZONE=%s", infraChange.Profile.Get("omgd.deploy.server.gcloud.zone")),
+			fmt.Sprintf("GCP_PROJECT=%s", infraChange.Profile.Get("omgd.gcp.project")),
+			fmt.Sprintf("GCP_ZONE=%s", infraChange.Profile.Get("omgd.gcp.zone")),
+			fmt.Sprintf("PROFILE=%s", infraChange.Profile.Name),
 		},
 	)
 }
@@ -53,7 +56,7 @@ func (infraChange *InfraChange) DeployInfra() {
 	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("terraform init -reconfigure -force-copy --backend-config path=.omgd/%s/terraform.tfstate", infraChange.Profile.Name),
+		fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s-bucket-tfstate -backend-config prefix=terraform/state/%s", infraChange.Profile.Get("omgd.name"), infraChange.Profile.Name),
 		"setting up terraform locally",
 		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 	)
@@ -70,14 +73,14 @@ func (infraChange *InfraChange) DeployInfra() {
 		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 	)
 
-	infraChange.Profile.UpdateProfile("omgd.deploy.server.gcloud.host", ipAddress)
+	infraChange.Profile.UpdateProfile("omgd.gcp.host", ipAddress)
 }
 
 func (infraChange *InfraChange) DestroyInfra() {
 	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("terraform init -reconfigure -force-copy --backend-config path=.omgd/%s/terraform.tfstate", infraChange.Profile.Name),
+		fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s-bucket-tfstate -backend-config prefix=terraform/state/%s", infraChange.Profile.Get("omgd.name"), infraChange.Profile.Name),
 		fmt.Sprintf("setting up terraform on profile %s", infraChange.Profile.Name),
 		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 	)
@@ -86,5 +89,21 @@ func (infraChange *InfraChange) DestroyInfra() {
 		"terraform destroy -auto-approve",
 		"destroying infrastructure",
 		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
+	)
+}
+
+func (infraChange *InfraChange) ProjectSetup() {
+	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
+
+	infraChange.CmdOnDir(
+		"terraform init -reconfigure -force-copy -backend-config path=../../../../.omgd/terraform.tfstate",
+		"setting up terraform locally",
+		fmt.Sprintf("%s/server/infra/project-setup/gcp/", infraChange.OutputDir),
+	)
+
+	infraChange.CmdOnDir(
+		"terraform apply -auto-approve",
+		"setting up initial infra",
+		fmt.Sprintf("%s/server/infra/project-setup/gcp/", infraChange.OutputDir),
 	)
 }

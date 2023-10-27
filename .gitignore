@@ -1,5 +1,6 @@
 .tmp
 
-tpl-fred.*
 dist/*
 !dist/OMGD_DOT_FILEgitkeep
+
+game/.import

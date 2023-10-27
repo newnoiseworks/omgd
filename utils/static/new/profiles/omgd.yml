@@ -1,8 +1,9 @@
-# omgd settings
-omgd:
-  name: ???
-
-# use "game" for custom attributes
 game:
   version: 0.0.1
+omgd:
+  gcp:
+    project: your-project-name
+    region: us-east1
+    zone: us-east1-c
+  name: your-game-name
 

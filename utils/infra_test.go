@@ -10,11 +10,22 @@ func TestDeployInfra(t *testing.T) {
 	testDir := "static/test/infra_test_dir"
 
 	t.Cleanup(func() {
+		err := os.RemoveAll(
+			fmt.Sprintf(
+				"%s/server/infra/gcp/terraform.tfvars",
+				testDir,
+			),
+		)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
 
 		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
-		profile.UpdateProfile("omgd.deploy.server.gcloud.host", "???")
+		profile.UpdateProfile("omgd.gcp.host", "???")
 	})
 
 	// profile := GetProfileFromDir("profiles/staging.yml", testDir)
@@ -48,22 +59,19 @@ func TestDeployInfra(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:    fmt.Sprintf("terraform init -reconfigure -force-copy --backend-config path=.omgd/%s/terraform.tfstate", profile.Name),
-			cmdDesc:   "setting up terraform locally",
-			cmdDir:    cmdDirStrTf,
-			verbosity: false,
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s-bucket-tfstate -backend-config prefix=terraform/state/%s", profile.Get("omgd.name"), profile.Name),
+			cmdDesc: "setting up terraform locally",
+			cmdDir:  cmdDirStrTf,
 		},
 		{
-			cmdStr:    "terraform apply -auto-approve",
-			cmdDesc:   "updating cloud infra if needed",
-			cmdDir:    cmdDirStrTf,
-			verbosity: false,
+			cmdStr:  "terraform apply -auto-approve",
+			cmdDesc: "updating cloud infra if needed",
+			cmdDir:  cmdDirStrTf,
 		},
 		{
-			cmdStr:    "terraform output -raw server_ip",
-			cmdDesc:   "getting ip of newly created server...",
-			cmdDir:    cmdDirStrTf,
-			verbosity: false,
+			cmdStr:  "terraform output -raw server_ip",
+			cmdDesc: "getting ip of newly created server...",
+			cmdDir:  cmdDirStrTf,
 		},
 	}
 
@@ -116,23 +124,16 @@ func TestDestroyInfra(t *testing.T) {
 
 	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/", testDir)
 
-	// - cmd: terraform init -reconfigure -force-copy --backend-config path=.omgd/{{ .profile.Name }}/terraform.tfstate
-	//   desc: setting up terraform on profile {{ .profile.Name }}
-	// - cmd: terraform destroy -auto-approve
-	//   desc: destroying infrastructure
-
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:    fmt.Sprintf("terraform init -reconfigure -force-copy --backend-config path=.omgd/%s/terraform.tfstate", profile.Name),
-			cmdDesc:   fmt.Sprintf("setting up terraform on profile %s", profile.Name),
-			cmdDir:    cmdDirStrTf,
-			verbosity: false,
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s-bucket-tfstate -backend-config prefix=terraform/state/%s", profile.Get("omgd.name"), profile.Name),
+			cmdDesc: fmt.Sprintf("setting up terraform on profile %s", profile.Name),
+			cmdDir:  cmdDirStrTf,
 		},
 		{
-			cmdStr:    "terraform destroy -auto-approve",
-			cmdDesc:   "destroying infrastructure",
-			cmdDir:    cmdDirStrTf,
-			verbosity: false,
+			cmdStr:  "terraform destroy -auto-approve",
+			cmdDesc: "destroying infrastructure",
+			cmdDir:  cmdDirStrTf,
 		},
 	}
 
@@ -144,11 +145,22 @@ func TestDeployClientAndServer(t *testing.T) {
 	testDir := "static/test/infra_test_dir"
 
 	t.Cleanup(func() {
+		err := os.RemoveAll(
+			fmt.Sprintf(
+				"%s/server/infra/gcp/terraform.tfvars",
+				testDir,
+			),
+		)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
 
 		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
-		profile.UpdateProfile("omgd.deploy.server.gcloud.host", "???")
+		profile.UpdateProfile("omgd.gcp.host", "???")
 	})
 
 	profile := GetProfileFromDir("profiles/staging.yml", testDir)
@@ -172,35 +184,30 @@ func TestDeployClientAndServer(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:    "terraform output -raw server_ip",
-			cmdDesc:   "getting ip of newly created server...",
-			cmdDir:    cmdDirStrTf,
-			verbosity: false,
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s-bucket-tfstate -backend-config prefix=terraform/state/%s", profile.Get("omgd.name"), profile.Name),
+			cmdDesc: fmt.Sprintf("setting up terraform on profile %s", profile.Name),
+			cmdDir:  cmdDirStrTf,
 		},
 		{
-			cmdStr:    "omgd build-templates --profile=profiles/staging.yml",
-			cmdDesc:   "",
-			cmdDir:    testDir,
-			verbosity: false,
+			cmdStr:  "terraform output -raw server_ip",
+			cmdDesc: "getting ip of newly created server...",
+			cmdDir:  cmdDirStrTf,
 		},
 		{
-			cmdStr:    "omgd build-clients --profile=profiles/staging.yml",
-			cmdDesc:   "",
-			cmdDir:    testDir,
-			verbosity: false,
+			cmdStr:  "omgd build-clients --profile=profiles/staging.yml",
+			cmdDesc: "building game clients against profile",
+			cmdDir:  testDir,
 		},
 		{
-			cmdStr:    "cp -rf game/dist/web-staging/. server/nakama/website",
-			cmdDesc:   "copy web build into server",
-			cmdDir:    testDir,
-			verbosity: false,
+			cmdStr:  "cp -rf game/dist/web-staging/. server/nakama/website",
+			cmdDesc: "copy web build into server",
+			cmdDir:  testDir,
 		},
 		{
-			cmdStr:    "./deploy.sh",
-			env:       []string{"GCP_PROJECT=test", "GCP_ZONE=us-east4c"},
-			cmdDesc:   "deploying game server to gcp",
-			cmdDir:    fmt.Sprintf("%s/server/deploy/gcp", testDir),
-			verbosity: false,
+			cmdStr:  "./deploy.sh",
+			env:     []string{"GCP_PROJECT=test", "GCP_ZONE=us-east4c", "PROFILE=staging"},
+			cmdDesc: "deploying game server to gcp",
+			cmdDir:  fmt.Sprintf("%s/server/deploy/gcp", testDir),
 		},
 	}
 
@@ -208,4 +215,55 @@ func TestDeployClientAndServer(t *testing.T) {
 
 	// 5. Run main task in new .omgdtmp dir profiles/profile.yml file
 	testCmdOnDirValidCmdSet(t, "DeployInfra")
+}
+
+func TestProjectSetup(t *testing.T) {
+	testDir := "static/test/infra_test_dir"
+
+	t.Cleanup(func() {
+		err := os.RemoveAll(
+			fmt.Sprintf(
+				"%s/server/infra/gcp/terraform.tfvars",
+				testDir,
+			),
+		)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		testCmdOnDirResponses = []testCmdOnDirResponse{}
+
+		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
+
+		profile.UpdateProfile("omgd.gcp.host", "???")
+	})
+
+	profile := GetProfileFromDir("profiles/staging.yml", testDir)
+
+	infraChange := InfraChange{
+		OutputDir:       "static/test/infra_test_dir",
+		Profile:         profile,
+		CmdOnDir:        testCmdOnDir,
+		CmdOnDirWithEnv: testCmdOnDirWithEnv,
+	}
+
+	infraChange.ProjectSetup()
+
+	cmdDirStrTf := fmt.Sprintf("%s/server/infra/project-setup/gcp/", testDir)
+
+	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
+		{
+			cmdStr:  "terraform init -reconfigure -force-copy -backend-config path=../../../../.omgd/terraform.tfstate",
+			cmdDesc: "setting up terraform locally",
+			cmdDir:  cmdDirStrTf,
+		},
+		{
+			cmdStr:  "terraform apply -auto-approve",
+			cmdDesc: "setting up initial infra",
+			cmdDir:  cmdDirStrTf,
+		},
+	}
+
+	testCmdOnDirValidCmdSet(t, "ProjectSetup")
 }

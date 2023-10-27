@@ -14,6 +14,14 @@ variable "gcp_type" {
   type = string
 }
 
+variable "project" {
+  type = string
+}
+
+variable "profile" {
+  type = string
+}
+
 output "server_ip" {
   value = google_compute_instance.nakama_instance.network_interface[0].access_config[0].nat_ip
 }
@@ -25,34 +33,12 @@ provider "google" {
 }
 
 terraform {
-  backend "local" {}
-}
-
-resource "google_compute_network" "vpc_network" {
-  name                    = "nakama-instance-network"
-  auto_create_subnetworks = "true"
-}
-
-resource "google_compute_firewall" "default" {
-  name = "nakama-instance-firewall"
-  network = google_compute_network.vpc_network.self_link
-
-  allow {
-    protocol = "tcp"
-    ports = ["22", "80", "443", "7348-7351"]
+  backend "gcs" {
   }
-
-  allow {
-    protocol = "udp"
-    ports = ["7348-7351"]
-  }
-
-  target_tags = ["nakama"]
-  source_ranges = ["0.0.0.0/0"]
 }
 
 resource "google_compute_instance" "nakama_instance" {
-  name         = "nakama-instance"
+  name         = "nakama-instance-${var.profile}"
   machine_type = var.gcp_type
 
   tags = ["nakama"]
@@ -64,7 +50,8 @@ resource "google_compute_instance" "nakama_instance" {
   }
 
   network_interface {
-    network = google_compute_network.vpc_network.self_link
+    network = "https://www.googleapis.com/compute/v1/projects/${var.gcp_project}/global/networks/${var.project}-nakama-instance-network"
+
     access_config {
     }
   }

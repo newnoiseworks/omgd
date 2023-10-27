@@ -7,11 +7,10 @@ import (
 )
 
 type testCmdOnDirResponse struct {
-	cmdStr    string
-	cmdDesc   string
-	cmdDir    string
-	verbosity bool
-	env       []string
+	cmdStr  string
+	cmdDesc string
+	cmdDir  string
+	env     []string
 }
 
 var testCmdOnDirResponses = []testCmdOnDirResponse{}

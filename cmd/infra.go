@@ -24,8 +24,9 @@ $ omgd infra destroy | Destroys cloud infrastructure via terraform
 $ omgd infra project-setup | Initial one time project level infra setup`,
 	Run: func(cmd *cobra.Command, args []string) {
 		profile := utils.GetProfile(ProfilePath)
+		command := args[0]
 
-		if profile.Name == "local" || profile.Name == "omgd" {
+		if (profile.Name == "local" || profile.Name == "omgd") && command != "project-setup" {
 			utils.LogFatal("Cannot run infra commands against local or top level omgd profile, please supply a profile with -p")
 		}
 
@@ -36,7 +37,7 @@ $ omgd infra project-setup | Initial one time project level infra setup`,
 			CmdOnDirWithEnv: utils.CmdOnDirWithEnv,
 		}
 
-		switch args[0] {
+		switch command {
 		case "deploy":
 			infraChange.DeployInfra()
 		case "game-deploy":

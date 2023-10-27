@@ -1,17 +1,3 @@
-#### the "omgd" block emcompasses all omgd related configs
-#
-# leave out what you don't need -- if you're running locally you likely won't need the entire block, see local.yml
-#
 omgd:
-
-#
-#
-#
-#
-#### use the "game" namespace for custom variables
-#
-#
-game:
-  version: 0.0.1
-  example_custom_var: "this would be exposed in templates as {{profile.game.example_custom_var}}"
-
+  gcp:
+    host: ???

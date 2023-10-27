@@ -25,6 +25,10 @@ $ omgd infra project-setup | Initial one time project level infra setup`,
 	Run: func(cmd *cobra.Command, args []string) {
 		profile := utils.GetProfile(ProfilePath)
 
+		if profile.Name == "local" || profile.Name == "omgd" {
+			utils.LogFatal("Cannot run infra commands against local or top level omgd profile, please supply a profile with -p")
+		}
+
 		infraChange := utils.InfraChange{
 			OutputDir:       OutputDir,
 			Profile:         profile,

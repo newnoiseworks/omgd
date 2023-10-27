@@ -3,7 +3,6 @@ package utils
 import (
 	"fmt"
 	"log"
-	"os"
 	"testing"
 )
 
@@ -28,24 +27,22 @@ func testPrintFn(v ...any) (n int, err error) {
 
 var defaultLogLevel = envLogLevel
 
-func TestMain(m *testing.M) {
+func setupLoggingTests() {
 	SetLogFn(testLogFn)
 	SetPrintFn(testPrintFn)
+}
 
-	code := m.Run()
-
+func cleanupLoggingTests() {
+	testPrintFnOutput = []string{}
+	testLogFnOutput = []string{}
 	SetEnvLogLevel(defaultLogLevel)
 	SetLogFn(log.Println)
 	SetPrintFn(fmt.Println)
-
-	os.Exit(code)
 }
 
 func TestLoggerLogTrace(t *testing.T) {
-	t.Cleanup(func() {
-		testPrintFnOutput = []string{}
-		SetEnvLogLevel(defaultLogLevel)
-	})
+	setupLoggingTests()
+	t.Cleanup(cleanupLoggingTests)
 
 	SetEnvLogLevel(TRACE_LOG)
 
@@ -55,10 +52,11 @@ func TestLoggerLogTrace(t *testing.T) {
 		fmt.Println("failed test on trace level logging")
 		t.Fail()
 	}
-
 }
 
 func TestLoggerLogTraceDoesntFire(t *testing.T) {
+	setupLoggingTests()
+
 	t.Cleanup(func() {
 		testPrintFnOutput = []string{}
 		SetEnvLogLevel(defaultLogLevel)

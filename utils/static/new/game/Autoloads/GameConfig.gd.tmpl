@@ -1,7 +1,7 @@
 extends Node
 
-{{- if .profile.omgd.deploy.server.gcloud.host }}
-const nakama_host = "{{.profile.omgd.deploy.server.gcloud.host}}"
+{{- if .profile.omgd.gcp.host }}
+const nakama_host = "{{.profile.omgd.gcp.host}}"
 {{- else }}
 const nakama_host = "127.0.0.1"
 {{- end }}

@@ -14,7 +14,7 @@ func TestDeployInfra(t *testing.T) {
 
 		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
-		profile.UpdateProfile("omgd.deploy.server.gcloud.host", "???")
+		profile.UpdateProfile("omgd.gcp.host", "???")
 	})
 
 	// profile := GetProfileFromDir("profiles/staging.yml", testDir)
@@ -143,7 +143,7 @@ func TestDeployClientAndServer(t *testing.T) {
 
 		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
-		profile.UpdateProfile("omgd.deploy.server.gcloud.host", "???")
+		profile.UpdateProfile("omgd.gcp.host", "???")
 	})
 
 	profile := GetProfileFromDir("profiles/staging.yml", testDir)

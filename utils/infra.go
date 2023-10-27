@@ -18,7 +18,7 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 	)
 
-	infraChange.Profile.UpdateProfile("omgd.deploy.server.gcloud.host", ipAddress)
+	infraChange.Profile.UpdateProfile("omgd.gcp.host", ipAddress)
 
 	infraChange.CmdOnDir(
 		fmt.Sprintf("omgd build-templates --profile=%s", infraChange.Profile.path),
@@ -43,8 +43,8 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 		"deploying game server to gcp",
 		fmt.Sprintf("%s/server/deploy/gcp", infraChange.OutputDir),
 		[]string{
-			fmt.Sprintf("GCP_PROJECT=%s", infraChange.Profile.Get("omgd.deploy.server.gcloud.project")),
-			fmt.Sprintf("GCP_ZONE=%s", infraChange.Profile.Get("omgd.deploy.server.gcloud.zone")),
+			fmt.Sprintf("GCP_PROJECT=%s", infraChange.Profile.Get("omgd.gcp.project")),
+			fmt.Sprintf("GCP_ZONE=%s", infraChange.Profile.Get("omgd.gcp.zone")),
 		},
 	)
 }
@@ -70,7 +70,7 @@ func (infraChange *InfraChange) DeployInfra() {
 		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 	)
 
-	infraChange.Profile.UpdateProfile("omgd.deploy.server.gcloud.host", ipAddress)
+	infraChange.Profile.UpdateProfile("omgd.gcp.host", ipAddress)
 }
 
 func (infraChange *InfraChange) DestroyInfra() {

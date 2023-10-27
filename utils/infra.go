@@ -107,3 +107,19 @@ func (infraChange *InfraChange) ProjectSetup() {
 		fmt.Sprintf("%s/server/infra/project-setup/gcp/", infraChange.OutputDir),
 	)
 }
+
+func (infraChange *InfraChange) ProjectDestroy() {
+	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
+
+	infraChange.CmdOnDir(
+		"terraform init -reconfigure -force-copy -backend-config path=../../../../.omgd/terraform.tfstate",
+		"setting up terraform locally",
+		fmt.Sprintf("%s/server/infra/project-setup/gcp/", infraChange.OutputDir),
+	)
+
+	infraChange.CmdOnDir(
+		"terraform destroy -auto-approve",
+		"destroying initial infra",
+		fmt.Sprintf("%s/server/infra/project-setup/gcp/", infraChange.OutputDir),
+	)
+}

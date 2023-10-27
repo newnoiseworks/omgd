@@ -12,6 +12,8 @@ type InfraChange struct {
 }
 
 func (infraChange *InfraChange) DeployClientAndServer() {
+	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
+
 	ipAddress := infraChange.CmdOnDir(
 		"terraform output -raw server_ip",
 		"getting ip of newly created server...",

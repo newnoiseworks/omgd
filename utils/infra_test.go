@@ -10,6 +10,17 @@ func TestDeployInfra(t *testing.T) {
 	testDir := "static/test/infra_test_dir"
 
 	t.Cleanup(func() {
+		err := os.RemoveAll(
+			fmt.Sprintf(
+				"%s/server/infra/gcp/terraform.tfvars",
+				testDir,
+			),
+		)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
 
 		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
@@ -134,6 +145,17 @@ func TestDeployClientAndServer(t *testing.T) {
 	testDir := "static/test/infra_test_dir"
 
 	t.Cleanup(func() {
+		err := os.RemoveAll(
+			fmt.Sprintf(
+				"%s/server/infra/gcp/terraform.tfvars",
+				testDir,
+			),
+		)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
 
 		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
@@ -199,6 +221,17 @@ func TestProjectSetup(t *testing.T) {
 	testDir := "static/test/infra_test_dir"
 
 	t.Cleanup(func() {
+		err := os.RemoveAll(
+			fmt.Sprintf(
+				"%s/server/infra/gcp/terraform.tfvars",
+				testDir,
+			),
+		)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
 
 		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))

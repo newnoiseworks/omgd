@@ -20,7 +20,8 @@ var infraCmd = &cobra.Command{
 
 $ omgd infra deploy | Deploys cloud infrastructure via terraform
 $ omgd infra game-deploy | Builds and deploys clients and server to infra
-$ omgd infra destroy | Destroys cloud infrastructure via terraform`,
+$ omgd infra destroy | Destroys cloud infrastructure via terraform
+$ omgd infra project-setup | Initial one time project level infra setup`,
 	Run: func(cmd *cobra.Command, args []string) {
 		profile := utils.GetProfile(ProfilePath)
 
@@ -38,6 +39,8 @@ $ omgd infra destroy | Destroys cloud infrastructure via terraform`,
 			infraChange.DeployClientAndServer()
 		case "destroy":
 			infraChange.DestroyInfra()
+		case "project-setup":
+			infraChange.ProjectSetup()
 		default:
 			utils.LogFatal(fmt.Sprintf("Found no infra command for %s", args[0]))
 			utils.LogWarn("hello")

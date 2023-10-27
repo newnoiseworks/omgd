@@ -45,6 +45,7 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 		[]string{
 			fmt.Sprintf("GCP_PROJECT=%s", infraChange.Profile.Get("omgd.gcp.project")),
 			fmt.Sprintf("GCP_ZONE=%s", infraChange.Profile.Get("omgd.gcp.zone")),
+			fmt.Sprintf("PROFILE=%s", infraChange.Profile.Name),
 		},
 	)
 }
@@ -53,7 +54,7 @@ func (infraChange *InfraChange) DeployInfra() {
 	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("terraform init -reconfigure -force-copy --backend-config path=.omgd/%s/terraform.tfstate", infraChange.Profile.Name),
+		fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s-bucket-tfstate -backend-config prefix=terraform/state/%s", infraChange.Profile.Get("omgd.name"), infraChange.Profile.Name),
 		"setting up terraform locally",
 		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 	)
@@ -77,7 +78,7 @@ func (infraChange *InfraChange) DestroyInfra() {
 	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("terraform init -reconfigure -force-copy --backend-config path=.omgd/%s/terraform.tfstate", infraChange.Profile.Name),
+		fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s-bucket-tfstate -backend-config prefix=terraform/state/%s", infraChange.Profile.Get("omgd.name"), infraChange.Profile.Name),
 		fmt.Sprintf("setting up terraform on profile %s", infraChange.Profile.Name),
 		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 	)
@@ -86,5 +87,21 @@ func (infraChange *InfraChange) DestroyInfra() {
 		"terraform destroy -auto-approve",
 		"destroying infrastructure",
 		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
+	)
+}
+
+func (infraChange *InfraChange) ProjectSetup() {
+	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
+
+	infraChange.CmdOnDir(
+		"terraform init -reconfigure -force-copy -backend-config path=../../../../.omgd/terraform.tfstate",
+		"setting up terraform locally",
+		fmt.Sprintf("%s/server/infra/project-setup/gcp/", infraChange.OutputDir),
+	)
+
+	infraChange.CmdOnDir(
+		"terraform apply -auto-approve",
+		"setting up initial infra",
+		fmt.Sprintf("%s/server/infra/project-setup/gcp/", infraChange.OutputDir),
 	)
 }

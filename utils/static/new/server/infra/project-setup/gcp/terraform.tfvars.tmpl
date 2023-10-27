@@ -1,10 +1,5 @@
 gcp_project = "{{.profile.omgd.gcp.project}}"
 gcp_region  = "{{.profile.omgd.gcp.region}}"
 gcp_zone    = "{{.profile.omgd.gcp.zone}}"
-{{ if .profile.omgd.gcp.machine_type }}
-gcp_type = "{{.profile.omgd.gcp.machine_type}}"
-{{ else }}
-gcp_type = "f1-micro"
-{{ end }}
 project     = "{{.profile.omgd.name}}"
 profile     = "{{.profile.Name}}"

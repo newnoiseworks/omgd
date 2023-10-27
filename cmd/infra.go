@@ -26,7 +26,7 @@ $ omgd infra project-setup | Initial one time project level infra setup`,
 		profile := utils.GetProfile(ProfilePath)
 		command := args[0]
 
-		if (profile.Name == "local" || profile.Name == "omgd") && command != "project-setup" {
+		if (profile.Name == "local" || profile.Name == "omgd") && (command != "project-setup" && command != "project-destroy") {
 			utils.LogFatal("Cannot run infra commands against local or top level omgd profile, please supply a profile with -p")
 		}
 
@@ -46,6 +46,8 @@ $ omgd infra project-setup | Initial one time project level infra setup`,
 			infraChange.DestroyInfra()
 		case "project-setup":
 			infraChange.ProjectSetup()
+		case "project-destroy":
+			infraChange.ProjectDestroy()
 		default:
 			utils.LogFatal(fmt.Sprintf("Found no infra command for %s", args[0]))
 			utils.LogWarn("hello")

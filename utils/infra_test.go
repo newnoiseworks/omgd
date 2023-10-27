@@ -267,3 +267,54 @@ func TestProjectSetup(t *testing.T) {
 
 	testCmdOnDirValidCmdSet(t, "ProjectSetup")
 }
+
+func TestProjectDestroy(t *testing.T) {
+	testDir := "static/test/infra_test_dir"
+
+	t.Cleanup(func() {
+		err := os.RemoveAll(
+			fmt.Sprintf(
+				"%s/server/infra/gcp/terraform.tfvars",
+				testDir,
+			),
+		)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		testCmdOnDirResponses = []testCmdOnDirResponse{}
+
+		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
+
+		profile.UpdateProfile("omgd.gcp.host", "???")
+	})
+
+	profile := GetProfileFromDir("profiles/staging.yml", testDir)
+
+	infraChange := InfraChange{
+		OutputDir:       "static/test/infra_test_dir",
+		Profile:         profile,
+		CmdOnDir:        testCmdOnDir,
+		CmdOnDirWithEnv: testCmdOnDirWithEnv,
+	}
+
+	infraChange.ProjectDestroy()
+
+	cmdDirStrTf := fmt.Sprintf("%s/server/infra/project-setup/gcp/", testDir)
+
+	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
+		{
+			cmdStr:  "terraform init -reconfigure -force-copy -backend-config path=../../../../.omgd/terraform.tfstate",
+			cmdDesc: "setting up terraform locally",
+			cmdDir:  cmdDirStrTf,
+		},
+		{
+			cmdStr:  "terraform destroy -auto-approve",
+			cmdDesc: "destroying initial infra",
+			cmdDir:  cmdDirStrTf,
+		},
+	}
+
+	testCmdOnDirValidCmdSet(t, "ProjectDestroy")
+}

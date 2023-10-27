@@ -14,6 +14,12 @@ type InfraChange struct {
 func (infraChange *InfraChange) DeployClientAndServer() {
 	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
 
+	infraChange.CmdOnDir(
+		fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s-bucket-tfstate -backend-config prefix=terraform/state/%s", infraChange.Profile.Get("omgd.name"), infraChange.Profile.Name),
+		fmt.Sprintf("setting up terraform on profile %s", infraChange.Profile.Name),
+		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
+	)
+
 	ipAddress := infraChange.CmdOnDir(
 		"terraform output -raw server_ip",
 		"getting ip of newly created server...",
@@ -23,14 +29,8 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 	infraChange.Profile.UpdateProfile("omgd.gcp.host", ipAddress)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd build-templates --profile=%s", infraChange.Profile.path),
-		"",
-		infraChange.OutputDir,
-	)
-
-	infraChange.CmdOnDir(
 		fmt.Sprintf("omgd build-clients --profile=%s", infraChange.Profile.path),
-		"",
+		"building game clients against profile",
 		infraChange.OutputDir,
 	)
 

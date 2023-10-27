@@ -184,18 +184,18 @@ func TestDeployClientAndServer(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s-bucket-tfstate -backend-config prefix=terraform/state/%s", profile.Get("omgd.name"), profile.Name),
+			cmdDesc: fmt.Sprintf("setting up terraform on profile %s", profile.Name),
+			cmdDir:  cmdDirStrTf,
+		},
+		{
 			cmdStr:  "terraform output -raw server_ip",
 			cmdDesc: "getting ip of newly created server...",
 			cmdDir:  cmdDirStrTf,
 		},
 		{
-			cmdStr:  "omgd build-templates --profile=profiles/staging.yml",
-			cmdDesc: "",
-			cmdDir:  testDir,
-		},
-		{
 			cmdStr:  "omgd build-clients --profile=profiles/staging.yml",
-			cmdDesc: "",
+			cmdDesc: "building game clients against profile",
 			cmdDir:  testDir,
 		},
 		{

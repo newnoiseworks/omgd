@@ -48,22 +48,19 @@ func TestDeployInfra(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:    fmt.Sprintf("terraform init -reconfigure -force-copy --backend-config path=.omgd/%s/terraform.tfstate", profile.Name),
-			cmdDesc:   "setting up terraform locally",
-			cmdDir:    cmdDirStrTf,
-			verbosity: false,
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy --backend-config path=.omgd/%s/terraform.tfstate", profile.Name),
+			cmdDesc: "setting up terraform locally",
+			cmdDir:  cmdDirStrTf,
 		},
 		{
-			cmdStr:    "terraform apply -auto-approve",
-			cmdDesc:   "updating cloud infra if needed",
-			cmdDir:    cmdDirStrTf,
-			verbosity: false,
+			cmdStr:  "terraform apply -auto-approve",
+			cmdDesc: "updating cloud infra if needed",
+			cmdDir:  cmdDirStrTf,
 		},
 		{
-			cmdStr:    "terraform output -raw server_ip",
-			cmdDesc:   "getting ip of newly created server...",
-			cmdDir:    cmdDirStrTf,
-			verbosity: false,
+			cmdStr:  "terraform output -raw server_ip",
+			cmdDesc: "getting ip of newly created server...",
+			cmdDir:  cmdDirStrTf,
 		},
 	}
 
@@ -123,16 +120,14 @@ func TestDestroyInfra(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:    fmt.Sprintf("terraform init -reconfigure -force-copy --backend-config path=.omgd/%s/terraform.tfstate", profile.Name),
-			cmdDesc:   fmt.Sprintf("setting up terraform on profile %s", profile.Name),
-			cmdDir:    cmdDirStrTf,
-			verbosity: false,
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy --backend-config path=.omgd/%s/terraform.tfstate", profile.Name),
+			cmdDesc: fmt.Sprintf("setting up terraform on profile %s", profile.Name),
+			cmdDir:  cmdDirStrTf,
 		},
 		{
-			cmdStr:    "terraform destroy -auto-approve",
-			cmdDesc:   "destroying infrastructure",
-			cmdDir:    cmdDirStrTf,
-			verbosity: false,
+			cmdStr:  "terraform destroy -auto-approve",
+			cmdDesc: "destroying infrastructure",
+			cmdDir:  cmdDirStrTf,
 		},
 	}
 
@@ -172,35 +167,30 @@ func TestDeployClientAndServer(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:    "terraform output -raw server_ip",
-			cmdDesc:   "getting ip of newly created server...",
-			cmdDir:    cmdDirStrTf,
-			verbosity: false,
+			cmdStr:  "terraform output -raw server_ip",
+			cmdDesc: "getting ip of newly created server...",
+			cmdDir:  cmdDirStrTf,
 		},
 		{
-			cmdStr:    "omgd build-templates --profile=profiles/staging.yml",
-			cmdDesc:   "",
-			cmdDir:    testDir,
-			verbosity: false,
+			cmdStr:  "omgd build-templates --profile=profiles/staging.yml",
+			cmdDesc: "",
+			cmdDir:  testDir,
 		},
 		{
-			cmdStr:    "omgd build-clients --profile=profiles/staging.yml",
-			cmdDesc:   "",
-			cmdDir:    testDir,
-			verbosity: false,
+			cmdStr:  "omgd build-clients --profile=profiles/staging.yml",
+			cmdDesc: "",
+			cmdDir:  testDir,
 		},
 		{
-			cmdStr:    "cp -rf game/dist/web-staging/. server/nakama/website",
-			cmdDesc:   "copy web build into server",
-			cmdDir:    testDir,
-			verbosity: false,
+			cmdStr:  "cp -rf game/dist/web-staging/. server/nakama/website",
+			cmdDesc: "copy web build into server",
+			cmdDir:  testDir,
 		},
 		{
-			cmdStr:    "./deploy.sh",
-			env:       []string{"GCP_PROJECT=test", "GCP_ZONE=us-east4c"},
-			cmdDesc:   "deploying game server to gcp",
-			cmdDir:    fmt.Sprintf("%s/server/deploy/gcp", testDir),
-			verbosity: false,
+			cmdStr:  "./deploy.sh",
+			env:     []string{"GCP_PROJECT=test", "GCP_ZONE=us-east4c"},
+			cmdDesc: "deploying game server to gcp",
+			cmdDir:  fmt.Sprintf("%s/server/deploy/gcp", testDir),
 		},
 	}
 

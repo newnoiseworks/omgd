@@ -2,7 +2,9 @@ package utils
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -232,11 +234,32 @@ func TestProjectSetup(t *testing.T) {
 			t.Fatal(err)
 		}
 
+		tfFilePath := fmt.Sprintf("%s/server/infra/project-setup/gcp/main.tf", testDir)
+		input, err := ioutil.ReadFile(tfFilePath)
+		if err != nil {
+			LogFatal(fmt.Sprint(err))
+		}
+
+		lines := strings.Split(string(input), "\n")
+
+		for i, line := range lines {
+			if strings.Contains(line, "backend \"gcs\"") {
+				lines[i] = strings.Replace(lines[i], "backend \"gcs\"", "backend \"local\"", 1)
+			}
+		}
+		output := strings.Join(lines, "\n")
+		err = ioutil.WriteFile(tfFilePath, []byte(output), 0644)
+		if err != nil {
+			LogFatal(fmt.Sprint(err))
+		}
+
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
 
 		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
 		profile.UpdateProfile("omgd.gcp.host", "???")
+
+		GetProfileFromDir("profiles/omgd.yml", testDir).UpdateProfile("omgd.tfsettings.bucket", "???")
 	})
 
 	profile := GetProfileFromDir("profiles/staging.yml", testDir)
@@ -252,6 +275,13 @@ func TestProjectSetup(t *testing.T) {
 
 	cmdDirStrTf := fmt.Sprintf("%s/server/infra/project-setup/gcp/", testDir)
 
+	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/server/infra/project-setup/gcp/main.tf", testDir), "gcs")
+
+	if GetProfileFromDir("profiles/omgd.yml", testDir).Get("omgd.tfsettings.bucket") != "omgd.tfsettings.bucket" {
+		LogError("Bucket name not being set in profile")
+		t.Fail()
+	}
+
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
 			cmdStr:  "terraform init -reconfigure -force-copy -backend-config path=../../../../.omgd/terraform.tfstate",
@@ -261,6 +291,16 @@ func TestProjectSetup(t *testing.T) {
 		{
 			cmdStr:  "terraform apply -auto-approve",
 			cmdDesc: "setting up initial infra",
+			cmdDir:  cmdDirStrTf,
+		},
+		{
+			cmdStr:  "terraform output -raw bucket_name",
+			cmdDesc: "getting newly created bucket name",
+			cmdDir:  cmdDirStrTf,
+		},
+		{
+			cmdStr:  fmt.Sprintf("terraform init -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s", profile.Get("omgd.tfsettings.bucket"), profile.Get("omgd.name")),
+			cmdDesc: "setting up terraform to use gcs backend",
 			cmdDir:  cmdDirStrTf,
 		},
 	}
@@ -305,8 +345,8 @@ func TestProjectDestroy(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  "terraform init -reconfigure -force-copy -backend-config path=../../../../.omgd/terraform.tfstate",
-			cmdDesc: "setting up terraform locally",
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s", profile.Get("omgd.tfsettings.bucket"), profile.Get("omgd.name")),
+			cmdDesc: "setting up terraform to destroy project level infra",
 			cmdDir:  cmdDirStrTf,
 		},
 		{

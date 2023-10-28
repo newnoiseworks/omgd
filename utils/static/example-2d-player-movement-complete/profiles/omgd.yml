@@ -1,8 +1,10 @@
 game:
   version: 0.0.1
 omgd:
-  name: example-2d-player-movement
   gcp:
     project: your-project-name
     region: us-east4
     zone: us-east4-c
+  name: example-2d-player-movement
+  tfsettings:
+    bucket: ???

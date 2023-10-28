@@ -28,10 +28,6 @@ terraform {
   backend "local" {}
 }
 
-output "bucket_name" {
-  value = google_storage_bucket.default.name
-}
-
 resource "google_compute_network" "vpc_network" {
   name                    = "${var.project}-nakama-instance-network"
   auto_create_subnetworks = "true"
@@ -55,12 +51,8 @@ resource "google_compute_firewall" "default" {
   source_ranges = ["0.0.0.0/0"]
 }
 
-resource "random_id" "bucket_postfix" {
-    byte_length = 8
-}
-
 resource "google_storage_bucket" "default" {
-  name          = "${var.project}-bucket-tfstate-${random_id.bucket_postfix.hex}"
+  name          = "${var.project}-bucket-tfstate"
 	project 			= var.gcp_project
   force_destroy = true
   location      = "US"

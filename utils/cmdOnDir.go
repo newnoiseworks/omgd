@@ -39,6 +39,7 @@ func getCmd(cmdStr string, cmdDesc string, cmdDir string) *exec.Cmd {
 	}
 
 	LogInfo(fmt.Sprint(aurora.Cyan(fmt.Sprintf("%s... ", cmdDesc))))
+	LogDebug(fmt.Sprint(aurora.Cyan(fmt.Sprintf("running command %s... ", cmdStr))))
 
 	if GetEnvLogLevel() == DEBUG_LOG {
 		cmd.Stderr = os.Stderr

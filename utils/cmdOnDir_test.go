@@ -25,6 +25,8 @@ var testCmdOnDir = func(cmdStr string, cmdDesc string, cmdDir string) string {
 
 	if cmdStr == "terraform output -raw server_ip" {
 		return "127.6.6.6"
+	} else if cmdStr == "terraform output -raw bucket_name" {
+		return "omgd.tfsettings.bucket"
 	}
 
 	return ""

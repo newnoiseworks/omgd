@@ -155,6 +155,31 @@ func (infraChange *InfraChange) ProjectDestroy() {
 
 	infraChange.CmdOnDir(
 		fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s", infraChange.Profile.Get("omgd.tfsettings.bucket"), infraChange.Profile.Get("omgd.name")),
+		"setting up terraform to local backend",
+		fmt.Sprintf("%s/server/infra/project-setup/gcp/", infraChange.OutputDir),
+	)
+
+	tfFilePath := fmt.Sprintf("%s/server/infra/project-setup/gcp/main.tf", infraChange.OutputDir)
+	input, err := ioutil.ReadFile(tfFilePath)
+	if err != nil {
+		LogFatal(fmt.Sprint(err))
+	}
+
+	lines := strings.Split(string(input), "\n")
+
+	for i, line := range lines {
+		if strings.Contains(line, "backend \"gcs\"") {
+			lines[i] = strings.Replace(lines[i], "backend \"gcs\"", "backend \"local\"", 1)
+		}
+	}
+	output := strings.Join(lines, "\n")
+	err = ioutil.WriteFile(tfFilePath, []byte(output), 0644)
+	if err != nil {
+		LogFatal(fmt.Sprint(err))
+	}
+
+	infraChange.CmdOnDir(
+		"terraform init -force-copy -backend-config path=../../../../.omgd/terraform.tfstate",
 		"setting up terraform to destroy project level infra",
 		fmt.Sprintf("%s/server/infra/project-setup/gcp/", infraChange.OutputDir),
 	)

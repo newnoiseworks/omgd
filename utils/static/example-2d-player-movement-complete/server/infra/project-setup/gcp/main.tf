@@ -38,7 +38,7 @@ resource "google_compute_network" "vpc_network" {
 }
 
 resource "google_compute_firewall" "default" {
-  name = "omgd-dev-instance-firewall"
+  name = "${var.project}-omgd-dev-instance-firewall"
   network = google_compute_network.vpc_network.self_link
 
   allow {

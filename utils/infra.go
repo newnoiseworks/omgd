@@ -17,7 +17,7 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s-bucket-tfstate -backend-config prefix=terraform/state/%s", infraChange.Profile.Get("omgd.name"), infraChange.Profile.Name),
+		fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s", infraChange.Profile.Get("omgd.tfsettings.bucket"), infraChange.Profile.Name),
 		fmt.Sprintf("setting up terraform on profile %s", infraChange.Profile.Name),
 		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 	)
@@ -49,7 +49,8 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 		[]string{
 			fmt.Sprintf("GCP_PROJECT=%s", infraChange.Profile.Get("omgd.gcp.project")),
 			fmt.Sprintf("GCP_ZONE=%s", infraChange.Profile.Get("omgd.gcp.zone")),
-			fmt.Sprintf("PROFILE=%s", infraChange.Profile.Name),
+			fmt.Sprintf("OMGD_PROFILE=%s", infraChange.Profile.Name),
+			fmt.Sprintf("OMGD_PROJECT=%s", infraChange.Profile.Get("omgd.name")),
 		},
 	)
 }
@@ -58,7 +59,7 @@ func (infraChange *InfraChange) DeployInfra() {
 	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s-bucket-tfstate -backend-config prefix=terraform/state/%s", infraChange.Profile.Get("omgd.name"), infraChange.Profile.Name),
+		fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s", infraChange.Profile.Get("omgd.tfsettings.bucket"), infraChange.Profile.Name),
 		"setting up terraform locally",
 		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 	)
@@ -82,7 +83,7 @@ func (infraChange *InfraChange) DestroyInfra() {
 	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s-bucket-tfstate -backend-config prefix=terraform/state/%s", infraChange.Profile.Get("omgd.name"), infraChange.Profile.Name),
+		fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s", infraChange.Profile.Get("omgd.tfsettings.bucket"), infraChange.Profile.Name),
 		fmt.Sprintf("setting up terraform on profile %s", infraChange.Profile.Name),
 		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 	)

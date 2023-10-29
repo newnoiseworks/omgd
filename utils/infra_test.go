@@ -61,7 +61,7 @@ func TestDeployInfra(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s-bucket-tfstate -backend-config prefix=terraform/state/%s", profile.Get("omgd.name"), profile.Name),
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s", profile.Get("omgd.tfsettings.bucket"), profile.Name),
 			cmdDesc: "setting up terraform locally",
 			cmdDir:  cmdDirStrTf,
 		},
@@ -128,7 +128,7 @@ func TestDestroyInfra(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s-bucket-tfstate -backend-config prefix=terraform/state/%s", profile.Get("omgd.name"), profile.Name),
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s", profile.Get("omgd.tfsettings.bucket"), profile.Name),
 			cmdDesc: fmt.Sprintf("setting up terraform on profile %s", profile.Name),
 			cmdDir:  cmdDirStrTf,
 		},
@@ -186,7 +186,7 @@ func TestDeployClientAndServer(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s-bucket-tfstate -backend-config prefix=terraform/state/%s", profile.Get("omgd.name"), profile.Name),
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s", profile.Get("omgd.tfsettings.bucket"), profile.Name),
 			cmdDesc: fmt.Sprintf("setting up terraform on profile %s", profile.Name),
 			cmdDir:  cmdDirStrTf,
 		},
@@ -207,7 +207,7 @@ func TestDeployClientAndServer(t *testing.T) {
 		},
 		{
 			cmdStr:  "./deploy.sh",
-			env:     []string{"GCP_PROJECT=test", "GCP_ZONE=us-east4c", "PROFILE=staging"},
+			env:     []string{"GCP_PROJECT=test", "GCP_ZONE=us-east4c", "OMGD_PROFILE=staging", "OMGD_PROJECT=top-level-name"},
 			cmdDesc: "deploying game server to gcp",
 			cmdDir:  fmt.Sprintf("%s/server/deploy/gcp", testDir),
 		},

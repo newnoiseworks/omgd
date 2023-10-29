@@ -23,7 +23,7 @@ variable "profile" {
 }
 
 output "server_ip" {
-  value = google_compute_instance.nakama_instance.network_interface[0].access_config[0].nat_ip
+  value = google_compute_instance.omgd_dev_instance.network_interface[0].access_config[0].nat_ip
 }
 
 provider "google" {
@@ -37,11 +37,11 @@ terraform {
   }
 }
 
-resource "google_compute_instance" "nakama_instance" {
-  name         = "nakama-instance-${var.profile}"
+resource "google_compute_instance" "omgd_dev_instance" {
+  name         = "${var.project}-omgd-dev-instance-${var.profile}"
   machine_type = var.gcp_type
 
-  tags = ["nakama"]
+  tags = ["omgd", "nakama"]
 
   boot_disk {
     initialize_params {
@@ -50,7 +50,7 @@ resource "google_compute_instance" "nakama_instance" {
   }
 
   network_interface {
-    network = "https://www.googleapis.com/compute/v1/projects/${var.gcp_project}/global/networks/${var.project}-nakama-instance-network"
+    network = "https://www.googleapis.com/compute/v1/projects/${var.gcp_project}/global/networks/${var.project}-omgd-dev-instance-network"
 
     access_config {
     }

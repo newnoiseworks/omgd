@@ -49,7 +49,8 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 		[]string{
 			fmt.Sprintf("GCP_PROJECT=%s", infraChange.Profile.Get("omgd.gcp.project")),
 			fmt.Sprintf("GCP_ZONE=%s", infraChange.Profile.Get("omgd.gcp.zone")),
-			fmt.Sprintf("PROFILE=%s", infraChange.Profile.Name),
+			fmt.Sprintf("OMGD_PROFILE=%s", infraChange.Profile.Name),
+			fmt.Sprintf("OMGD_PROJECT=%s", infraChange.Profile.Get("omgd.name")),
 		},
 	)
 }

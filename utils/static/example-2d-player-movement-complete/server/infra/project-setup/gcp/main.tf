@@ -33,12 +33,12 @@ output "bucket_name" {
 }
 
 resource "google_compute_network" "vpc_network" {
-  name                    = "${var.project}-nakama-instance-network"
+  name                    = "${var.project}-omgd-dev-instance-network"
   auto_create_subnetworks = "true"
 }
 
 resource "google_compute_firewall" "default" {
-  name = "nakama-instance-firewall"
+  name = "omgd-dev-instance-firewall"
   network = google_compute_network.vpc_network.self_link
 
   allow {
@@ -51,16 +51,16 @@ resource "google_compute_firewall" "default" {
     ports = ["7348-7351"]
   }
 
-  target_tags = ["nakama"]
+  target_tags = ["omgd", "nakama"]
   source_ranges = ["0.0.0.0/0"]
 }
 
 resource "random_id" "bucket_postfix" {
-    byte_length = 8
+    byte_length = 4
 }
 
 resource "google_storage_bucket" "default" {
-  name          = "${var.project}-bucket-tfstate-${random_id.bucket_postfix.hex}"
+  name          = "${var.project}-omgd-${random_id.bucket_postfix.hex}"
 	project 			= var.gcp_project
   force_destroy = true
   location      = "US"

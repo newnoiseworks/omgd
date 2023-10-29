@@ -207,7 +207,7 @@ func TestDeployClientAndServer(t *testing.T) {
 		},
 		{
 			cmdStr:  "./deploy.sh",
-			env:     []string{"GCP_PROJECT=test", "GCP_ZONE=us-east4c", "PROFILE=staging"},
+			env:     []string{"GCP_PROJECT=test", "GCP_ZONE=us-east4c", "OMGD_PROFILE=staging", "OMGD_PROJECT=top-level-name"},
 			cmdDesc: "deploying game server to gcp",
 			cmdDir:  fmt.Sprintf("%s/server/deploy/gcp", testDir),
 		},

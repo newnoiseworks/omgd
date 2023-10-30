@@ -5,5 +5,4 @@ profiles/*
 !profiles/local.yml
 
 .omgd/*
-!.omgd/profile.yml.omgdtpl
 

@@ -35,7 +35,7 @@ func SetPrintFn(_printFn func(v ...any) (n int, err error)) {
 }
 
 // Contains log level according to environment var, adjusted for tests
-var envLogLevel LogLevel
+var envLogLevel LogLevel = INFO_LOG
 
 // Sets environment log level variable, used for tests
 func SetEnvLogLevel(logLevel LogLevel) {

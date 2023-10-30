@@ -1,6 +1,5 @@
 omgd:
   gcp:
     project: your-project-name
-    region: us-east1
     zone: us-east1-c
   name: your-game-name

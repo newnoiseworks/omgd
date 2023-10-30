@@ -22,3 +22,9 @@ func StrToUpperSnake(text string) string {
 func StrToCamel(text string) string {
 	return strcase.ToCamel(text)
 }
+
+func GCPZoneToRegion(zone string) string {
+	splits := strings.Split(zone, "-")
+
+	return strings.Join(splits[0:len(splits)-1], "-")
+}

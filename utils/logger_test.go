@@ -56,11 +56,7 @@ func TestLoggerLogTrace(t *testing.T) {
 
 func TestLoggerLogTraceDoesntFire(t *testing.T) {
 	setupLoggingTests()
-
-	t.Cleanup(func() {
-		testPrintFnOutput = []string{}
-		SetEnvLogLevel(defaultLogLevel)
-	})
+	t.Cleanup(cleanupLoggingTests)
 
 	SetEnvLogLevel(WARN_LOG)
 

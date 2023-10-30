@@ -183,11 +183,21 @@ func setValueToKeyWithArray(keys []string, keyIndex int, obj map[interface{}]int
 			if key == keys[keyIndex] {
 				if keyIndex == len(keys)-1 {
 					obj[k] = value
+					return
 				} else {
 					setValueToKeyWithArray(keys, keyIndex+1, v.(map[interface{}]interface{}), value)
+					return
 				}
 			}
 		}
+	}
+
+	// no match?
+	if keyIndex == len(keys)-1 {
+		obj[keys[keyIndex]] = value
+	} else {
+		obj[keys[keyIndex]] = map[interface{}]interface{}{}
+		setValueToKeyWithArray(keys, keyIndex+1, obj[keys[keyIndex]].(map[interface{}]interface{}), value)
 	}
 }
 

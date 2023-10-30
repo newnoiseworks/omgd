@@ -62,11 +62,6 @@ func (cp *CodeGenerationPlan) generateNew() {
 		"omgdtpl",
 		!cp.SkipCleanup,
 	)
-
-	err = os.Mkdir(fmt.Sprintf("%s/resources", outputPath), 0755)
-	if err != nil {
-		LogFatal(fmt.Sprint(err))
-	}
 }
 
 // generates example 2d player movement code

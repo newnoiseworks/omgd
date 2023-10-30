@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -23,5 +24,18 @@ func TestGetProfile(t *testing.T) {
 
 	if profile.Get("omgd.override") != "overriden" {
 		t.Fatalf("Profile not overriding properly")
+	}
+}
+
+func Test_setValueToKeyWithArray(t *testing.T) {
+	testObj := map[interface{}]interface{}{}
+
+	keys := strings.Split("this.is.a.test", ".")
+
+	setValueToKeyWithArray(keys, 0, testObj, "success")
+
+	if getValueToKeyWithArray(keys, 0, testObj) != "success" {
+		LogError("Could not set a nested key onto a map that doesn't have those keys in the first place")
+		t.Fail()
 	}
 }

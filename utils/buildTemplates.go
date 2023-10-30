@@ -111,9 +111,10 @@ func processTemplate(tmpl string, fp *map[interface{}]interface{}, templateExten
 	LogDebug(fmt.Sprintf("processing template file %s >> %s", tmpl, final_path))
 
 	t := template.New(path.Base(tmpl)).Funcs(template.FuncMap{
-		"md5":        StrToMd5,
-		"upperSnake": StrToUpperSnake,
-		"camel":      StrToCamel,
+		"md5":             StrToMd5,
+		"upperSnake":      StrToUpperSnake,
+		"camel":           StrToCamel,
+		"gcpZoneToRegion": GCPZoneToRegion,
 	})
 
 	if templateExtension == "omgdtpl" {

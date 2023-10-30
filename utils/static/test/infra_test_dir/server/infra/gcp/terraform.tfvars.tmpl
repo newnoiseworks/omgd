@@ -1,5 +1,5 @@
 gcp_project = "{{.profile.omgd.gcp.project}}"
-gcp_region  = "{{.profile.omgd.gcp.region}}"
+gcp_region  = "{{gcpZoneToRegion .profile.omgd.gcp.zone}}"
 gcp_zone    = "{{.profile.omgd.gcp.zone}}"
 {{ if .profile.omgd.gcp.machine_type }}
 gcp_type = "{{.profile.omgd.gcp.machine_type}}"

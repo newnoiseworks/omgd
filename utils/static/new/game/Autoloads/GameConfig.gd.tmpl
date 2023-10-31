@@ -1,22 +1,22 @@
 extends Node
 
-{{- if .profile.omgd.gcp.host }}
-const nakama_host = "{{.profile.omgd.gcp.host}}"
+{{- if .profile.omgd.nakama.host }}
+const nakama_host = "{{.profile.omgd.nakama.host}}"
 {{- else }}
 const nakama_host = "127.0.0.1"
 {{- end }}
-{{- if .profile.nakama.key }}
-const nakama_key = "{{.profile.nakama.key}}"
+{{- if .profile.omgd.nakama.key }}
+const nakama_key = "{{.profile.omgd.nakama.key}}"
 {{- else }}
 const nakama_key = "defaultkey"
 {{- end }}
-{{- if .profile.nakama.port }}
-const nakama_port = {{.profile.nakama.port}}
+{{- if .profile.omgd.nakama.port }}
+const nakama_port = {{.profile.omgd.nakama.port}}
 {{- else }}
 const nakama_port = 7350
 {{- end }}
-{{- if .profile.nakama.secure }}
-const nakama_secure = {{.profile.nakama.secure}}
+{{- if .profile.omgd.nakama.secure }}
+const nakama_secure = {{.profile.omgd.nakama.secure}}
 {{- else }}
 const nakama_secure = false
 {{- end }}

@@ -28,7 +28,7 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 	)
 
-	infraChange.Profile.UpdateProfile("omgd.gcp.host", ipAddress)
+	infraChange.Profile.UpdateProfile("omgd.nakama.host", ipAddress)
 
 	infraChange.CmdOnDir(
 		fmt.Sprintf("omgd build-clients --profile=%s", infraChange.Profile.path),
@@ -76,7 +76,7 @@ func (infraChange *InfraChange) DeployInfra() {
 		fmt.Sprintf("%s/server/infra/gcp/", infraChange.OutputDir),
 	)
 
-	infraChange.Profile.UpdateProfile("omgd.gcp.host", ipAddress)
+	infraChange.Profile.UpdateProfile("omgd.nakama.host", ipAddress)
 }
 
 func (infraChange *InfraChange) DestroyInfra() {

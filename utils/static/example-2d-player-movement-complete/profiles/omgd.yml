@@ -1,5 +1,0 @@
-omgd:
-  gcp:
-    project: your-project-name
-    zone: us-east4-c
-  name: example-2d-player-movement

@@ -27,6 +27,26 @@ func CmdOnDirWithEnv(cmdStr string, cmdDesc string, cmdDir string, env []string)
 	return runCmd(cmd, cmdStr, cmdDir)
 }
 
+func CmdOnDirToStdOut(cmdStr string, cmdDesc string, cmdDir string, env []string) {
+	cmd := getCmd(cmdStr, cmdDesc, cmdDir)
+
+	cmd.Env = os.Environ()
+	for _, envVar := range env {
+		cmd.Env = append(cmd.Env, envVar)
+	}
+
+	cmd.Stderr = os.Stderr
+	cmd.Stdout = os.Stdout
+
+	err := cmd.Run()
+
+	if err != nil {
+		LogError(fmt.Sprint(aurora.Red("Error!\n")))
+		LogError(fmt.Sprint(err))
+		LogFatal(fmt.Sprint(aurora.Yellow(fmt.Sprintf("Attempted to run: %s\n on dir: %s\n", cmdStr, cmdDir))))
+	}
+}
+
 func getCmd(cmdStr string, cmdDesc string, cmdDir string) *exec.Cmd {
 	str := strings.Split(cmdStr, " ")
 

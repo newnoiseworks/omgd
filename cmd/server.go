@@ -44,16 +44,13 @@ $ omgd server status         | prints status of running docker containers
 				"server",
 			)
 		case "logs":
-			cmd := "docker-compose logs"
+			cmd := "docker-compose logs --follow"
 
-			if utils.GetEnvLogLevel() == utils.DEBUG_LOG {
-				cmd = "docker-compose logs --follow"
-			}
-
-			utils.CmdOnDir(
+			utils.CmdOnDirToStdOut(
 				cmd,
 				fmt.Sprintf("printing server logs via $ %s", cmd),
 				"server",
+				[]string{},
 			)
 		case "status":
 			utils.CmdOnDir(

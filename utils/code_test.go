@@ -53,62 +53,42 @@ func TestCodeGenCmdNewProjectWritesAndCleansUpFiles(t *testing.T) {
 }
 
 // tests generation of godot example 2d player movement project
-func TestCodeGenCmdExamplePartial2DPlayerMovement(t *testing.T) {
+func TestCodeGenCmdExample2DPlayerMovement(t *testing.T) {
 	t.Cleanup(func() {
-		err := os.RemoveAll("static/test/newProject")
+		err := os.RemoveAll("static/test/example-2d")
 
 		if err != nil {
 			t.Fatal(err)
 		}
 	})
 
-	// generates a new project to work in
-	newProjectCodePlan := CodeGenerationPlan{
-		OutputDir: "static/test",
-		Target:    "newProject",
-		Plan:      "new",
-	}
-
-	newProjectCodePlan.Generate()
-
 	// generates code plan for 2d movement, skips cleanup for testing
 	codePlan := CodeGenerationPlan{
-		OutputDir:   "static/test/newProject",
-		Plan:        "example-partial-2d-player-movement",
-		Target:      "movement",
+		OutputDir:   "static/test",
+		Plan:        "example-2d-player-movement",
+		Target:      "example-2d",
 		SkipCleanup: true,
 	}
 
 	codePlan.Generate()
 
-	localProfile := GetProfile("static/test/newProject/.omgdtmp/profiles/local.yml")
-	expected := "movement"
-	received := localProfile.Get("omgd.channel_name")
-
-	// check to see if profile was edited
-	if expected != received {
-		testLogComparison(expected, received)
-
-		t.Fatalf("Profile didn't update with channel name in tmp folder")
-	}
-
 	// check to see if buildTemplates created new file
 	testForFileAndRegexpMatch(
 		t,
-		"static/test/newProject/.omgdtmp/game/Character/CharacterController.gd",
-		`MovementEvent`,
+		"static/test/example-2d/game/Character/CharacterController.gd",
+		`PlayerEvent`,
 	)
 
 	codePlan.Cleanup()
 
-	// check to make sure profiles dir in tmp folder cleaned up
-	testFileShouldNotExist(t, "static/test/newProject/.omgdtmp/profiles/local.yml")
-
 	// check to make sure templates were moved into main folder
-	testFileShouldExist(t, "static/test/newProject/game/Character/CharacterController.gd")
+	testFileShouldExist(t, "static/test/example-2d/game/Character/CharacterController.gd")
 
-	// make sure .omgdtmp folder is cleaned up
-	testFileShouldNotExist(t, "static/test/newProject/.omgdtmp")
+	// check to make sure new project was written in before
+	testFileShouldExist(t, "static/test/example-2d/game/Autoloads/GameConfig.gd")
+
+	// check to make sure new project was written in before
+	testFileShouldExist(t, "static/test/example-2d/game/Autoloads/GameConfig.gd.tmpl")
 }
 
 // tests generation of omgd channels

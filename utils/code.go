@@ -21,10 +21,8 @@ func (cp *CodeGenerationPlan) Generate() {
 	switch cp.Plan {
 	case "new":
 		cp.generateNew()
-	case "example-partial-2d-player-movement":
-		cp.generateExample2DPlayerMovement()
 	case "example-2d-player-movement":
-		cp.generateExampleComplete2DPlayerMovement()
+		cp.generateExample2DPlayerMovement()
 	case "channel":
 		cp.generateChannel()
 	default:
@@ -65,38 +63,17 @@ func (cp *CodeGenerationPlan) generateNew() {
 }
 
 // generates example 2d player movement code
-// TODO: Write tests
-func (cp *CodeGenerationPlan) generateExampleComplete2DPlayerMovement() {
+func (cp *CodeGenerationPlan) generateExample2DPlayerMovement() {
+	cp.generateNew()
+
 	outputPath := fmt.Sprintf("%s/%s", cp.OutputDir, cp.Target)
 
 	sccp := StaticCodeCopyPlan{}
 
-	err := sccp.CopyStaticDirectory("static/example-2d-player-movement-complete", outputPath)
+	err := sccp.CopyStaticDirectory("static/example-2d-player-movement", outputPath)
 	if err != nil {
 		LogFatal(fmt.Sprint(err))
 	}
-}
-
-// generates example 2d player movement code
-func (cp *CodeGenerationPlan) generateExample2DPlayerMovement() {
-	tmpDir := fmt.Sprintf("%s/.omgdtmp", cp.OutputDir)
-
-	sccp := StaticCodeCopyPlan{}
-
-	err := sccp.CopyStaticDirectory("static/example-2d-player-movement", tmpDir)
-	if err != nil {
-		LogFatal(fmt.Sprint(err))
-	}
-
-	newProfile := GetProfile(fmt.Sprintf("%s/profiles/local.yml", tmpDir))
-	newProfile.UpdateProfile("omgd.channel_name", cp.Target)
-
-	BuildTemplatesFromPath(
-		newProfile,
-		tmpDir,
-		"omgdtpl",
-		true,
-	)
 }
 
 // generates channel management code

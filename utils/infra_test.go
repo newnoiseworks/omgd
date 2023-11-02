@@ -198,6 +198,9 @@ func TestDeployClientAndServer(t *testing.T) {
 
 	cmdDirStrTf := fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", testDir)
 
+	gcloudEnvVars := []string{
+		"CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=~/.config/gcloud/application_default_credentials.json"}
+
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
 			cmdStr:  fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", profile.Get("omgd.tfsettings.bucket"), profile.Get("omgd.name"), profile.Name),
@@ -220,10 +223,64 @@ func TestDeployClientAndServer(t *testing.T) {
 			cmdDir:  testDir,
 		},
 		{
-			cmdStr:  "./deploy.sh",
-			env:     []string{"GCP_PROJECT=test", "GCP_ZONE=us-east4c", "OMGD_PROFILE=staging", "OMGD_PROJECT=top-level-name"},
-			cmdDesc: "deploying game server to gcp",
-			cmdDir:  fmt.Sprintf("%s/server/deploy/gcp", testDir),
+			cmdStr: fmt.Sprintf(
+				"gcloud compute ssh --project %s --zone %s --command \"truncate -s 0 /var/log/docker.log\" %s-omgd-dev-instance-%s",
+				profile.Get("omgd.gcp.project"),
+				profile.Get("omgd.gcp.zone"),
+				profile.Get("omgd.name"),
+				profile.Name,
+			),
+			env:     gcloudEnvVars,
+			cmdDesc: "truncating docker log on server",
+			cmdDir:  fmt.Sprintf("%s/server", testDir),
+		},
+		{
+			cmdStr: fmt.Sprintf(
+				"gcloud compute scp --project %s --zone %s --force-key-file-overwrite docker-compose.yml %s-omgd-dev-instance-%s:",
+				profile.Get("omgd.gcp.project"),
+				profile.Get("omgd.gcp.zone"),
+				profile.Get("omgd.name"),
+				profile.Name,
+			),
+			env:     gcloudEnvVars,
+			cmdDesc: "uploading docker-compose.yml file",
+			cmdDir:  fmt.Sprintf("%s/server", testDir),
+		},
+		{
+			cmdStr: fmt.Sprintf(
+				"gcloud compute ssh --project %s --zone %s --command \"docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v \"$PWD:$PWD\" -w=\"$PWD\" docker/compose:1.27.0 down\" %s-omgd-dev-instance-%s",
+				profile.Get("omgd.gcp.project"),
+				profile.Get("omgd.gcp.zone"),
+				profile.Get("omgd.name"),
+				profile.Name,
+			),
+			env:     gcloudEnvVars,
+			cmdDesc: "downing running containers on server",
+			cmdDir:  fmt.Sprintf("%s/server", testDir),
+		},
+		{
+			cmdStr: fmt.Sprintf(
+				"gcloud compute scp --project %s --zone %s --recurse --force-key-file-overwrite nakama %s-omgd-dev-instance-%s:",
+				profile.Get("omgd.gcp.project"),
+				profile.Get("omgd.gcp.zone"),
+				profile.Get("omgd.name"),
+				profile.Name,
+			),
+			env:     gcloudEnvVars,
+			cmdDesc: "uploading nakama modules",
+			cmdDir:  fmt.Sprintf("%s/server", testDir),
+		},
+		{
+			cmdStr: fmt.Sprintf(
+				"gcloud compute ssh --project %s --zone %s --command \"docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v \"$PWD:$PWD\" -w=\"$PWD\" docker/compose:1.27.0 up -d\" %s-omgd-dev-instance-%s",
+				profile.Get("omgd.gcp.project"),
+				profile.Get("omgd.gcp.zone"),
+				profile.Get("omgd.name"),
+				profile.Name,
+			),
+			env:     gcloudEnvVars,
+			cmdDesc: "spinning up docker containers on server",
+			cmdDir:  fmt.Sprintf("%s/server", testDir),
 		},
 	}
 

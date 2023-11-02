@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"regexp"
 	"runtime/debug"
@@ -20,7 +21,8 @@ func testForFileAndRegexpMatch(t *testing.T, filePath string, search string) {
 	file, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		debug.PrintStack()
-		t.Fatalf("Cannot find file: %s\n", err)
+		log.Println(fmt.Sprintf("Cannot find file: %s\n", err))
+		t.Fail()
 	}
 
 	// makes sure templates were adjusted with proper variables
@@ -31,8 +33,9 @@ func testForFileAndRegexpMatch(t *testing.T, filePath string, search string) {
 	}
 	if !matches {
 		debug.PrintStack()
-		// t.Fatalf("regexp for %s didn't match in file %s with contents: \n %s \n", search, filePath, file)
-		t.Fatalf("regexp for %s didn't match in file %s", search, filePath)
+		// log.Println("regexp for %s didn't match in file %s with contents: \n %s \n", search, filePath, file)
+		log.Println(fmt.Sprintf("regexp for %s didn't match in file %s", search, filePath))
+		t.Fail()
 	}
 }
 
@@ -41,7 +44,8 @@ func testFileShouldNotExist(t *testing.T, filePath string) {
 	_, err := os.Stat(filePath)
 	if !os.IsNotExist(err) {
 		debug.PrintStack()
-		t.Fatalf("File exists but should have been cleaned up at %s\n %s", filePath, err)
+		log.Println(fmt.Sprintf("File exists but should have been cleaned up at %s\n %s", filePath, err))
+		t.Fail()
 	}
 }
 
@@ -50,6 +54,7 @@ func testFileShouldExist(t *testing.T, filePath string) {
 	_, err := os.Stat(filePath)
 	if os.IsNotExist(err) {
 		debug.PrintStack()
-		t.Fatalf("File does not exist but should have been created up at %s\n %s", filePath, err)
+		log.Println(fmt.Sprintf("File does not exist but should have been created up at %s\n %s", filePath, err))
+		t.Fail()
 	}
 }

@@ -40,7 +40,7 @@ func (sccp *StaticCodeCopyPlan) CopyStaticDirectory(pathToCopy string, pathToCop
 		}
 	}
 
-	err = os.Mkdir(pathToCopyTo, FILE_WRITE_PERMS)
+	err = os.MkdirAll(pathToCopyTo, FILE_WRITE_PERMS)
 	if err != nil && !os.IsExist(err) {
 		return err
 	}

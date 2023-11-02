@@ -14,7 +14,7 @@ func TestDeployInfra(t *testing.T) {
 	t.Cleanup(func() {
 		err := os.RemoveAll(
 			fmt.Sprintf(
-				"%s/server/infra/gcp/terraform.tfvars",
+				"%s/server/infra/gcp/instance-setup/terraform.tfvars",
 				testDir,
 			),
 		)
@@ -53,15 +53,15 @@ func TestDeployInfra(t *testing.T) {
 	testFileShouldExist(t, fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
 	// 5. BuildTemplates runs
-	testFileShouldExist(t, fmt.Sprintf("%s/server/infra/gcp/terraform.tfvars", testDir))
+	testFileShouldExist(t, fmt.Sprintf("%s/server/infra/gcp/instance-setup/terraform.tfvars", testDir))
 
-	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/server/infra/gcp/terraform.tfvars", testDir), "gcp_project = \"test\"")
+	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/server/infra/gcp/instance-setup/terraform.tfvars", testDir), "gcp_project = \"test\"")
 
-	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/", testDir)
+	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/instance-setup/", testDir)
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s", profile.Get("omgd.tfsettings.bucket"), profile.Name),
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", profile.Get("omgd.tfsettings.bucket"), profile.Get("omgd.name"), profile.Name),
 			cmdDesc: "setting up terraform locally",
 			cmdDir:  cmdDirStrTf,
 		},
@@ -95,7 +95,7 @@ func TestDestroyInfra(t *testing.T) {
 
 		err = os.RemoveAll(
 			fmt.Sprintf(
-				"%s/server/infra/gcp/terraform.tfvars",
+				"%s/server/infra/gcp/instance-setup/terraform.tfvars",
 				testDir,
 			),
 		)
@@ -124,11 +124,11 @@ func TestDestroyInfra(t *testing.T) {
 
 	testFileShouldExist(t, fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
-	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/", testDir)
+	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/instance-setup/", testDir)
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s", profile.Get("omgd.tfsettings.bucket"), profile.Name),
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", profile.Get("omgd.tfsettings.bucket"), profile.Get("omgd.name"), profile.Name),
 			cmdDesc: fmt.Sprintf("setting up terraform on profile %s", profile.Name),
 			cmdDir:  cmdDirStrTf,
 		},
@@ -149,7 +149,7 @@ func TestDeployClientAndServer(t *testing.T) {
 	t.Cleanup(func() {
 		err := os.RemoveAll(
 			fmt.Sprintf(
-				"%s/server/infra/gcp/terraform.tfvars",
+				"%s/server/infra/gcp/instance-setup/terraform.tfvars",
 				testDir,
 			),
 		)
@@ -182,11 +182,11 @@ func TestDeployClientAndServer(t *testing.T) {
 
 	testFileShouldExist(t, fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
-	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/", testDir)
+	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/instance-setup/", testDir)
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s", profile.Get("omgd.tfsettings.bucket"), profile.Name),
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", profile.Get("omgd.tfsettings.bucket"), profile.Get("omgd.name"), profile.Name),
 			cmdDesc: fmt.Sprintf("setting up terraform on profile %s", profile.Name),
 			cmdDir:  cmdDirStrTf,
 		},
@@ -225,7 +225,7 @@ func TestProjectSetup(t *testing.T) {
 	t.Cleanup(func() {
 		err := os.RemoveAll(
 			fmt.Sprintf(
-				"%s/server/infra/gcp/terraform.tfvars",
+				"%s/server/infra/gcp/instance-setup/terraform.tfvars",
 				testDir,
 			),
 		)
@@ -234,7 +234,7 @@ func TestProjectSetup(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		tfFilePath := fmt.Sprintf("%s/server/infra/project-setup/gcp/main.tf", testDir)
+		tfFilePath := fmt.Sprintf("%s/server/infra/gcp/project-setup/main.tf", testDir)
 		input, err := ioutil.ReadFile(tfFilePath)
 		if err != nil {
 			LogFatal(fmt.Sprint(err))
@@ -273,9 +273,9 @@ func TestProjectSetup(t *testing.T) {
 
 	infraChange.ProjectSetup()
 
-	cmdDirStrTf := fmt.Sprintf("%s/server/infra/project-setup/gcp/", testDir)
+	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/project-setup/", testDir)
 
-	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/server/infra/project-setup/gcp/main.tf", testDir), "gcs")
+	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/server/infra/gcp/project-setup/main.tf", testDir), "gcs")
 
 	if GetProfileFromDir("profiles/omgd.yml", testDir).Get("omgd.tfsettings.bucket") != "omgd.tfsettings.bucket" {
 		LogError("Bucket name not being set in profile")
@@ -314,7 +314,7 @@ func TestProjectDestroy(t *testing.T) {
 	t.Cleanup(func() {
 		err := os.RemoveAll(
 			fmt.Sprintf(
-				"%s/server/infra/gcp/terraform.tfvars",
+				"%s/server/infra/gcp/instance-setup/terraform.tfvars",
 				testDir,
 			),
 		)
@@ -323,7 +323,7 @@ func TestProjectDestroy(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		tfFilePath := fmt.Sprintf("%s/server/infra/project-setup/gcp/main.tf", testDir)
+		tfFilePath := fmt.Sprintf("%s/server/infra/gcp/project-setup/main.tf", testDir)
 		input, err := ioutil.ReadFile(tfFilePath)
 		if err != nil {
 			LogFatal(fmt.Sprint(err))
@@ -349,7 +349,7 @@ func TestProjectDestroy(t *testing.T) {
 		profile.UpdateProfile("omgd.nakama.host", "???")
 	})
 
-	tfFilePath := fmt.Sprintf("%s/server/infra/project-setup/gcp/main.tf", testDir)
+	tfFilePath := fmt.Sprintf("%s/server/infra/gcp/project-setup/main.tf", testDir)
 	input, err := ioutil.ReadFile(tfFilePath)
 	if err != nil {
 		LogFatal(fmt.Sprint(err))
@@ -379,9 +379,9 @@ func TestProjectDestroy(t *testing.T) {
 
 	infraChange.ProjectDestroy()
 
-	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/server/infra/project-setup/gcp/main.tf", testDir), "local")
+	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/server/infra/gcp/project-setup/main.tf", testDir), "local")
 
-	cmdDirStrTf := fmt.Sprintf("%s/server/infra/project-setup/gcp/", testDir)
+	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/project-setup/", testDir)
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{

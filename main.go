@@ -1,13 +1,16 @@
 package main
 
 import (
-	"time"
-
-	"github.com/carlmjohnson/versioninfo"
 	"github.com/newnoiseworks/omgd/cmd"
 )
 
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
+
 func main() {
-	cmd.SetVersionInfo(versioninfo.Version, versioninfo.Revision, versioninfo.LastCommit.Format(time.RFC3339))
+	cmd.SetVersionInfo(version, commit, date)
 	cmd.Execute()
 }

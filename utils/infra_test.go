@@ -2,9 +2,7 @@ package utils
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
-	"strings"
 	"testing"
 )
 
@@ -14,7 +12,7 @@ func TestDeployInfra(t *testing.T) {
 	t.Cleanup(func() {
 		err := os.RemoveAll(
 			fmt.Sprintf(
-				"%s/server/infra/gcp/instance-setup/terraform.tfvars",
+				"%s/.omgd",
 				testDir,
 			),
 		)
@@ -34,34 +32,34 @@ func TestDeployInfra(t *testing.T) {
 	profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
 	infraChange := InfraChange{
-		OutputDir: "static/test/infra_test_dir",
-		Profile:   profile,
-		CmdOnDir:  testCmdOnDir,
+		OutputDir:   "static/test/infra_test_dir",
+		Profile:     profile,
+		CmdOnDir:    testCmdOnDir,
+		SkipCleanup: true,
 	}
 
 	infraChange.DeployInfra()
 
 	// 1. Should create or empty .omgdtmp directory to work in
-	testFileShouldExist(t, fmt.Sprintf("%s", testDir))
+	testFileShouldExist(t, fmt.Sprintf("%s/.omgd", testDir))
 
 	// 2. Should clone repo at base of dir (? how to test w/o submodules? clone entire base repo maybe?)
 	testFileShouldExist(t, fmt.Sprintf("%s/game", testDir))
-	testFileShouldExist(t, fmt.Sprintf("%s/server", testDir))
 	testFileShouldExist(t, fmt.Sprintf("%s/profiles", testDir))
 
 	// 3. Copy profiles directory into new .omgdtmp dir (add staging.yml to static/test/infraDir)
 	testFileShouldExist(t, fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
 	// 5. BuildTemplates runs
-	testFileShouldExist(t, fmt.Sprintf("%s/server/infra/gcp/instance-setup/terraform.tfvars", testDir))
+	testFileShouldExist(t, fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/terraform.tfvars", testDir))
 
-	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/server/infra/gcp/instance-setup/terraform.tfvars", testDir), "gcp_project = \"test\"")
+	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/terraform.tfvars", testDir), "gcp_project = \"test\"")
 
-	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/instance-setup/", testDir)
+	cmdDirStrTf := fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", testDir)
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", profile.Get("omgd.tfsettings.bucket"), profile.Get("omgd.name"), profile.Name),
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", profile.Get("omgd.tfsettings.bucket"), profile.Get("omgd.name"), profile.Name),
 			cmdDesc: "setting up terraform locally",
 			cmdDir:  cmdDirStrTf,
 		},
@@ -81,6 +79,11 @@ func TestDeployInfra(t *testing.T) {
 	testCmdOnDirValidCmdSet(t, "DeployInfra")
 
 	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/profiles/staging.yml", testDir), "127.6.6.6")
+
+	infraChange.PerformCleanup()
+
+	testFileShouldNotExist(t, fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/main.tf", testDir))
+	testFileShouldNotExist(t, fmt.Sprintf("%s/.omgd", testDir))
 }
 
 func TestDestroyInfra(t *testing.T) {
@@ -95,7 +98,7 @@ func TestDestroyInfra(t *testing.T) {
 
 		err = os.RemoveAll(
 			fmt.Sprintf(
-				"%s/server/infra/gcp/instance-setup/terraform.tfvars",
+				"%s/.omgd/infra/gcp/instance-setup/terraform.tfvars",
 				testDir,
 			),
 		)
@@ -111,24 +114,27 @@ func TestDestroyInfra(t *testing.T) {
 	profile := GetProfileFromDir("profiles/staging.yml", testDir)
 
 	infraChange := InfraChange{
-		OutputDir: testDir,
-		Profile:   profile,
-		CmdOnDir:  testCmdOnDir,
+		OutputDir:   testDir,
+		Profile:     profile,
+		CmdOnDir:    testCmdOnDir,
+		SkipCleanup: true,
 	}
 
 	infraChange.DestroyInfra()
 
+	// 1. Should create or empty .omgdtmp directory to work in
+	testFileShouldExist(t, fmt.Sprintf("%s/.omgd", testDir))
+
 	testFileShouldExist(t, fmt.Sprintf("%s/game", testDir))
-	testFileShouldExist(t, fmt.Sprintf("%s/server", testDir))
 	testFileShouldExist(t, fmt.Sprintf("%s/profiles", testDir))
 
 	testFileShouldExist(t, fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
-	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/instance-setup/", testDir)
+	cmdDirStrTf := fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", testDir)
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", profile.Get("omgd.tfsettings.bucket"), profile.Get("omgd.name"), profile.Name),
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", profile.Get("omgd.tfsettings.bucket"), profile.Get("omgd.name"), profile.Name),
 			cmdDesc: fmt.Sprintf("setting up terraform on profile %s", profile.Name),
 			cmdDir:  cmdDirStrTf,
 		},
@@ -141,6 +147,11 @@ func TestDestroyInfra(t *testing.T) {
 
 	// 5. Run destroy-infra task in new .omgdtmp dir profiles/profile.yml file
 	testCmdOnDirValidCmdSet(t, "DestroyInfra")
+
+	infraChange.PerformCleanup()
+
+	testFileShouldNotExist(t, fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/main.tf", testDir))
+	testFileShouldNotExist(t, fmt.Sprintf("%s/.omgd", testDir))
 }
 
 func TestDeployClientAndServer(t *testing.T) {
@@ -149,7 +160,7 @@ func TestDeployClientAndServer(t *testing.T) {
 	t.Cleanup(func() {
 		err := os.RemoveAll(
 			fmt.Sprintf(
-				"%s/server/infra/gcp/instance-setup/terraform.tfvars",
+				"%s/.omgd",
 				testDir,
 			),
 		)
@@ -172,21 +183,24 @@ func TestDeployClientAndServer(t *testing.T) {
 		Profile:         profile,
 		CmdOnDir:        testCmdOnDir,
 		CmdOnDirWithEnv: testCmdOnDirWithEnv,
+		SkipCleanup:     true,
 	}
 
 	infraChange.DeployClientAndServer()
 
+	// 1. Should create or empty .omgdtmp directory to work in
+	testFileShouldExist(t, fmt.Sprintf("%s/.omgd", testDir))
+
 	testFileShouldExist(t, fmt.Sprintf("%s/game", testDir))
-	testFileShouldExist(t, fmt.Sprintf("%s/server", testDir))
 	testFileShouldExist(t, fmt.Sprintf("%s/profiles", testDir))
 
 	testFileShouldExist(t, fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
-	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/instance-setup/", testDir)
+	cmdDirStrTf := fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", testDir)
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", profile.Get("omgd.tfsettings.bucket"), profile.Get("omgd.name"), profile.Name),
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", profile.Get("omgd.tfsettings.bucket"), profile.Get("omgd.name"), profile.Name),
 			cmdDesc: fmt.Sprintf("setting up terraform on profile %s", profile.Name),
 			cmdDir:  cmdDirStrTf,
 		},
@@ -217,6 +231,11 @@ func TestDeployClientAndServer(t *testing.T) {
 
 	// 5. Run main task in new .omgdtmp dir profiles/profile.yml file
 	testCmdOnDirValidCmdSet(t, "DeployInfra")
+
+	infraChange.PerformCleanup()
+
+	testFileShouldNotExist(t, fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/main.tf", testDir))
+	testFileShouldNotExist(t, fmt.Sprintf("%s/.omgd", testDir))
 }
 
 func TestProjectSetup(t *testing.T) {
@@ -225,32 +244,13 @@ func TestProjectSetup(t *testing.T) {
 	t.Cleanup(func() {
 		err := os.RemoveAll(
 			fmt.Sprintf(
-				"%s/server/infra/gcp/instance-setup/terraform.tfvars",
+				"%s/.omgd",
 				testDir,
 			),
 		)
 
 		if err != nil {
 			t.Fatal(err)
-		}
-
-		tfFilePath := fmt.Sprintf("%s/server/infra/gcp/project-setup/main.tf", testDir)
-		input, err := ioutil.ReadFile(tfFilePath)
-		if err != nil {
-			LogFatal(fmt.Sprint(err))
-		}
-
-		lines := strings.Split(string(input), "\n")
-
-		for i, line := range lines {
-			if strings.Contains(line, "backend \"gcs\"") {
-				lines[i] = strings.Replace(lines[i], "backend \"gcs\"", "backend \"local\"", 1)
-			}
-		}
-		output := strings.Join(lines, "\n")
-		err = ioutil.WriteFile(tfFilePath, []byte(output), 0644)
-		if err != nil {
-			LogFatal(fmt.Sprint(err))
 		}
 
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
@@ -269,13 +269,17 @@ func TestProjectSetup(t *testing.T) {
 		Profile:         profile,
 		CmdOnDir:        testCmdOnDir,
 		CmdOnDirWithEnv: testCmdOnDirWithEnv,
+		SkipCleanup:     true,
 	}
 
 	infraChange.ProjectSetup()
 
-	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/project-setup/", testDir)
+	// 1. Should create or empty .omgdtmp directory to work in
+	testFileShouldExist(t, fmt.Sprintf("%s/.omgd", testDir))
 
-	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/server/infra/gcp/project-setup/main.tf", testDir), "gcs")
+	cmdDirStrTf := fmt.Sprintf("%s/.omgd/infra/gcp/project-setup/", testDir)
+
+	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/.omgd/infra/gcp/project-setup/main.tf", testDir), "gcs")
 
 	if GetProfileFromDir("profiles/omgd.yml", testDir).Get("omgd.tfsettings.bucket") != "omgd.tfsettings.bucket" {
 		LogError("Bucket name not being set in profile")
@@ -284,7 +288,7 @@ func TestProjectSetup(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  "terraform init -reconfigure -force-copy -backend-config path=../../../../.omgd/terraform.tfstate",
+			cmdStr:  "terraform init -reconfigure -backend-config path=../../../../.omgd/terraform.tfstate",
 			cmdDesc: "setting up terraform locally",
 			cmdDir:  cmdDirStrTf,
 		},
@@ -306,6 +310,11 @@ func TestProjectSetup(t *testing.T) {
 	}
 
 	testCmdOnDirValidCmdSet(t, "ProjectSetup")
+
+	infraChange.PerformCleanup()
+
+	testFileShouldNotExist(t, fmt.Sprintf("%s/.omgd/infra/gcp/project-setup/main.tf", testDir))
+	testFileShouldNotExist(t, fmt.Sprintf("%s/.omgd", testDir))
 }
 
 func TestProjectDestroy(t *testing.T) {
@@ -314,32 +323,13 @@ func TestProjectDestroy(t *testing.T) {
 	t.Cleanup(func() {
 		err := os.RemoveAll(
 			fmt.Sprintf(
-				"%s/server/infra/gcp/instance-setup/terraform.tfvars",
+				"%s/.omgd",
 				testDir,
 			),
 		)
 
 		if err != nil {
 			t.Fatal(err)
-		}
-
-		tfFilePath := fmt.Sprintf("%s/server/infra/gcp/project-setup/main.tf", testDir)
-		input, err := ioutil.ReadFile(tfFilePath)
-		if err != nil {
-			LogFatal(fmt.Sprint(err))
-		}
-
-		lines := strings.Split(string(input), "\n")
-
-		for i, line := range lines {
-			if strings.Contains(line, "backend \"gcs\"") {
-				lines[i] = strings.Replace(lines[i], "backend \"gcs\"", "backend \"local\"", 1)
-			}
-		}
-		output := strings.Join(lines, "\n")
-		err = ioutil.WriteFile(tfFilePath, []byte(output), 0644)
-		if err != nil {
-			LogFatal(fmt.Sprint(err))
 		}
 
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
@@ -349,25 +339,6 @@ func TestProjectDestroy(t *testing.T) {
 		profile.UpdateProfile("omgd.nakama.host", "???")
 	})
 
-	tfFilePath := fmt.Sprintf("%s/server/infra/gcp/project-setup/main.tf", testDir)
-	input, err := ioutil.ReadFile(tfFilePath)
-	if err != nil {
-		LogFatal(fmt.Sprint(err))
-	}
-
-	lines := strings.Split(string(input), "\n")
-
-	for i, line := range lines {
-		if strings.Contains(line, "backend \"local\"") {
-			lines[i] = strings.Replace(lines[i], "backend \"local\"", "backend \"gcs\"", 1)
-		}
-	}
-	output := strings.Join(lines, "\n")
-	err = ioutil.WriteFile(tfFilePath, []byte(output), 0644)
-	if err != nil {
-		LogFatal(fmt.Sprint(err))
-	}
-
 	profile := GetProfileFromDir("profiles/staging.yml", testDir)
 
 	infraChange := InfraChange{
@@ -375,17 +346,21 @@ func TestProjectDestroy(t *testing.T) {
 		Profile:         profile,
 		CmdOnDir:        testCmdOnDir,
 		CmdOnDirWithEnv: testCmdOnDirWithEnv,
+		SkipCleanup:     true,
 	}
 
 	infraChange.ProjectDestroy()
 
-	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/server/infra/gcp/project-setup/main.tf", testDir), "local")
+	// 1. Should create or empty .omgdtmp directory to work in
+	testFileShouldExist(t, fmt.Sprintf("%s/.omgd", testDir))
 
-	cmdDirStrTf := fmt.Sprintf("%s/server/infra/gcp/project-setup/", testDir)
+	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/.omgd/infra/gcp/project-setup/main.tf", testDir), "local")
+
+	cmdDirStrTf := fmt.Sprintf("%s/.omgd/infra/gcp/project-setup/", testDir)
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  fmt.Sprintf("terraform init -reconfigure -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s", profile.Get("omgd.tfsettings.bucket"), profile.Get("omgd.name")),
+			cmdStr:  fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s", profile.Get("omgd.tfsettings.bucket"), profile.Get("omgd.name")),
 			cmdDesc: "setting up terraform to local backend",
 			cmdDir:  cmdDirStrTf,
 		},
@@ -402,4 +377,9 @@ func TestProjectDestroy(t *testing.T) {
 	}
 
 	testCmdOnDirValidCmdSet(t, "ProjectDestroy")
+
+	infraChange.PerformCleanup()
+
+	testFileShouldNotExist(t, fmt.Sprintf("%s/.omgd/infra/gcp/project-setup/main.tf", testDir))
+	testFileShouldNotExist(t, fmt.Sprintf("%s/.omgd", testDir))
 }

@@ -48,7 +48,16 @@ func CmdOnDirToStdOut(cmdStr string, cmdDesc string, cmdDir string, env []string
 }
 
 func getCmd(cmdStr string, cmdDesc string, cmdDir string) *exec.Cmd {
-	str := strings.Split(cmdStr, " ")
+	quoted := false
+
+	str := strings.FieldsFunc(cmdStr, func(r rune) bool {
+		if r == '"' {
+			quoted = !quoted
+		}
+		return !quoted && r == ' '
+	})
+
+	LogTrace(strings.Join(str, ", "))
 
 	cmd := exec.Command(str[0], str[1:]...)
 
@@ -61,7 +70,7 @@ func getCmd(cmdStr string, cmdDesc string, cmdDir string) *exec.Cmd {
 	LogInfo(fmt.Sprint(aurora.Cyan(fmt.Sprintf("%s... ", cmdDesc))))
 	LogDebug(fmt.Sprint(aurora.Cyan(fmt.Sprintf("running command %s... ", cmdStr))))
 
-	if GetEnvLogLevel() == DEBUG_LOG {
+	if GetEnvLogLevel() >= DEBUG_LOG {
 		cmd.Stderr = os.Stderr
 	}
 

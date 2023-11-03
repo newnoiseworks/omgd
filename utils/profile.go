@@ -11,24 +11,20 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type Command struct {
-	Cmd  string `yaml:"cmd"`
-	Dir  string `yaml:"dir"`
-	Desc string `yaml:"desc"`
+type GameConfig struct {
+	Targets []string `yaml:"targets"`
 }
 
-type CommandConfig struct {
-	Name  string    `yaml:"name"`
-	Dir   string    `yaml:"dir"`
-	Steps []Command `yaml:"steps"`
+type OMGDConfig struct {
+	Game GameConfig `yaml:"game"`
 }
 
 type ProfileConf struct {
-	Name    string
-	Main    []CommandConfig `yaml:"main"`
-	Tasks   []CommandConfig `yaml:"tasks"`
-	path    string
-	rootDir string
+	Name        string
+	OMGD        OMGDConfig `yaml:"omgd"`
+	OMGDProfile *ProfileConf
+	path        string
+	rootDir     string
 }
 
 func (pc ProfileConf) getTopLevelOMGDProfileAsMap() map[interface{}]interface{} {
@@ -112,6 +108,24 @@ func GetProfile(path string) *ProfileConf {
 
 	splits := strings.Split(path, "/")
 	c.Name = strings.Replace(splits[len(splits)-1], ".yml", "", 1)
+
+	omgdProfilePath := strings.Replace(path, fmt.Sprintf("%s.yml", c.Name), "omgd.yml", 1)
+
+	omgd := ProfileConf{
+		path: omgdProfilePath,
+	}
+
+	yamlFile, err = os.ReadFile(omgd.path)
+	if err != nil {
+		LogTrace(fmt.Sprintf("yamlFile Get err: #%v ", err))
+	} else {
+		err = yaml.Unmarshal(yamlFile, &omgd)
+		if err != nil {
+			LogFatal(fmt.Sprintf("Unmarshal err: %v", err))
+		}
+
+		c.OMGDProfile = &omgd
+	}
 
 	return &c
 }

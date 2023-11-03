@@ -1,0 +1,5 @@
+omgd:
+  game:
+    targets:
+    - build-windows
+    - build-web

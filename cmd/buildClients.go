@@ -4,9 +4,6 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/newnoiseworks/omgd/utils"
 	"github.com/spf13/cobra"
 )
@@ -22,17 +19,12 @@ var buildClientsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		profile := utils.GetProfile(ProfilePath)
 
-		buildFor := strings.ReplaceAll(BuildTargets, ",", " ")
+		cb := utils.ClientBuilder{
+			Profile:         profile,
+			CmdOnDirWithEnv: utils.CmdOnDirWithEnv,
+		}
 
-		utils.CmdOnDirWithEnv(
-			// TODO: break below into optional builds per OS based on... profile probably?
-			fmt.Sprintf("docker compose up %s", buildFor),
-			fmt.Sprintf("Building %s game clients into game/dist folder", profile.Name),
-			"game",
-			[]string{
-				fmt.Sprintf("BUILD_ENV=%s", profile.Name),
-			},
-		)
+		cb.Build()
 	},
 }
 
@@ -47,8 +39,8 @@ func init() {
 	buildClientsCmd.PersistentFlags().StringVar(
 		&BuildTargets,
 		"targets",
-		"build-web,build-windows,build-mac,build-x11",
-		"specify build targets comma separated no spaces",
+		"",
+		"specify build targets as listed in game/docker-compose.yml separated by a single space",
 	)
 
 	// Cobra supports local flags which will only run when this command

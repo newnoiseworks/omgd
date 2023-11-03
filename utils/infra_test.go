@@ -198,8 +198,16 @@ func TestDeployClientAndServer(t *testing.T) {
 
 	cmdDirStrTf := fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", testDir)
 
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+		LogFatal(fmt.Sprint(err))
+	}
+
 	gcloudEnvVars := []string{
-		"CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=~/.config/gcloud/application_default_credentials.json"}
+		fmt.Sprintf("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=%s/.config/gcloud/application_default_credentials.json", dirname),
+	}
+
+	// TODO: Adjust this to gcloud scp the deploy.sh file as well, and then run one gcloud ssh command to run that shell file - also consider moving deploy.sh somehwere internally, maybe
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
@@ -224,18 +232,6 @@ func TestDeployClientAndServer(t *testing.T) {
 		},
 		{
 			cmdStr: fmt.Sprintf(
-				"gcloud compute ssh --project %s --zone %s --command \"truncate -s 0 /var/log/docker.log\" %s-omgd-dev-instance-%s",
-				profile.Get("omgd.gcp.project"),
-				profile.Get("omgd.gcp.zone"),
-				profile.Get("omgd.name"),
-				profile.Name,
-			),
-			env:     gcloudEnvVars,
-			cmdDesc: "truncating docker log on server",
-			cmdDir:  fmt.Sprintf("%s/server", testDir),
-		},
-		{
-			cmdStr: fmt.Sprintf(
 				"gcloud compute scp --project %s --zone %s --force-key-file-overwrite docker-compose.yml %s-omgd-dev-instance-%s:",
 				profile.Get("omgd.gcp.project"),
 				profile.Get("omgd.gcp.zone"),
@@ -244,18 +240,6 @@ func TestDeployClientAndServer(t *testing.T) {
 			),
 			env:     gcloudEnvVars,
 			cmdDesc: "uploading docker-compose.yml file",
-			cmdDir:  fmt.Sprintf("%s/server", testDir),
-		},
-		{
-			cmdStr: fmt.Sprintf(
-				"gcloud compute ssh --project %s --zone %s --command \"docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v \"$PWD:$PWD\" -w=\"$PWD\" docker/compose:1.27.0 down\" %s-omgd-dev-instance-%s",
-				profile.Get("omgd.gcp.project"),
-				profile.Get("omgd.gcp.zone"),
-				profile.Get("omgd.name"),
-				profile.Name,
-			),
-			env:     gcloudEnvVars,
-			cmdDesc: "downing running containers on server",
 			cmdDir:  fmt.Sprintf("%s/server", testDir),
 		},
 		{
@@ -272,7 +256,19 @@ func TestDeployClientAndServer(t *testing.T) {
 		},
 		{
 			cmdStr: fmt.Sprintf(
-				"gcloud compute ssh --project %s --zone %s --command \"docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v \"$PWD:$PWD\" -w=\"$PWD\" docker/compose:1.27.0 up -d\" %s-omgd-dev-instance-%s",
+				"gcloud compute scp --project %s --zone %s --force-key-file-overwrite deploy/gcp/deploy.sh %s-omgd-dev-instance-%s:",
+				profile.Get("omgd.gcp.project"),
+				profile.Get("omgd.gcp.zone"),
+				profile.Get("omgd.name"),
+				profile.Name,
+			),
+			env:     gcloudEnvVars,
+			cmdDesc: "uploading deploy script",
+			cmdDir:  fmt.Sprintf("%s/server", testDir),
+		},
+		{
+			cmdStr: fmt.Sprintf(
+				"gcloud compute ssh --project %s --zone %s --command \"bash deploy.sh\" %s-omgd-dev-instance-%s",
 				profile.Get("omgd.gcp.project"),
 				profile.Get("omgd.gcp.zone"),
 				profile.Get("omgd.name"),

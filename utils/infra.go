@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/user"
 	"strings"
 )
 
@@ -46,16 +47,85 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 		infraChange.OutputDir,
 	)
 
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+		LogFatal(fmt.Sprint(err))
+	}
+
+	gcloudEnvVars := []string{
+		fmt.Sprintf("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=%s/.config/gcloud/application_default_credentials.json", dirname),
+	}
+
 	infraChange.CmdOnDirWithEnv(
-		"./deploy.sh",
-		"deploying game server to gcp",
-		fmt.Sprintf("%s/server/deploy/gcp", infraChange.OutputDir),
-		[]string{
-			fmt.Sprintf("GCP_PROJECT=%s", infraChange.Profile.Get("omgd.gcp.project")),
-			fmt.Sprintf("GCP_ZONE=%s", infraChange.Profile.Get("omgd.gcp.zone")),
-			fmt.Sprintf("OMGD_PROFILE=%s", infraChange.Profile.Name),
-			fmt.Sprintf("OMGD_PROJECT=%s", infraChange.Profile.Get("omgd.name")),
-		},
+		fmt.Sprintf(
+			"gcloud compute scp --project %s --zone %s --force-key-file-overwrite docker-compose.yml %s-omgd-dev-instance-%s:",
+			infraChange.Profile.Get("omgd.gcp.project"),
+			infraChange.Profile.Get("omgd.gcp.zone"),
+			infraChange.Profile.Get("omgd.name"),
+			infraChange.Profile.Name,
+		),
+		"uploading docker-compose.yml file",
+		fmt.Sprintf("%s/server", infraChange.OutputDir),
+		gcloudEnvVars,
+	)
+
+	infraChange.CmdOnDirWithEnv(
+		fmt.Sprintf(
+			"gcloud compute scp --project %s --zone %s --recurse --force-key-file-overwrite nakama %s-omgd-dev-instance-%s:",
+			infraChange.Profile.Get("omgd.gcp.project"),
+			infraChange.Profile.Get("omgd.gcp.zone"),
+			infraChange.Profile.Get("omgd.name"),
+			infraChange.Profile.Name,
+		),
+		"uploading nakama modules",
+		fmt.Sprintf("%s/server", infraChange.OutputDir),
+		gcloudEnvVars,
+	)
+
+	infraChange.CmdOnDirWithEnv(
+		fmt.Sprintf(
+			"gcloud compute scp --project %s --zone %s --force-key-file-overwrite deploy/gcp/deploy.sh %s-omgd-dev-instance-%s:",
+			infraChange.Profile.Get("omgd.gcp.project"),
+			infraChange.Profile.Get("omgd.gcp.zone"),
+			infraChange.Profile.Get("omgd.name"),
+			infraChange.Profile.Name,
+		),
+		"uploading deploy script",
+		fmt.Sprintf("%s/server", infraChange.OutputDir),
+		gcloudEnvVars,
+	)
+
+	// infraChange.CmdOnDirWithEnv(
+	// 	fmt.Sprintf(
+	// 		"gcloud compute ssh --project %s --zone %s --command \"chmod +x deploy.sh\" %s-omgd-dev-instance-%s",
+	// 		infraChange.Profile.Get("omgd.gcp.project"),
+	// 		infraChange.Profile.Get("omgd.gcp.zone"),
+	// 		infraChange.Profile.Get("omgd.name"),
+	// 		infraChange.Profile.Name,
+	// 	),
+	// 	"spinning up docker containers on server",
+	// 	fmt.Sprintf("%s/server", infraChange.OutputDir),
+	// 	gcloudEnvVars,
+	// )
+
+	user, err := user.Current()
+
+	if err != nil {
+		LogFatal(fmt.Sprint(err))
+	}
+
+	infraChange.CmdOnDirWithEnv(
+		fmt.Sprintf(
+			"gcloud compute ssh %s@%s-omgd-dev-instance-%s --project %s --zone %s --command=\"bash ./deploy.sh\"",
+			user.Username,
+			infraChange.Profile.Get("omgd.name"),
+			infraChange.Profile.Name,
+			infraChange.Profile.Get("omgd.gcp.project"),
+			infraChange.Profile.Get("omgd.gcp.zone"),
+		),
+		"spinning up docker containers on server",
+		fmt.Sprintf("%s/server", infraChange.OutputDir),
+		gcloudEnvVars,
 	)
 
 	if !infraChange.SkipCleanup {

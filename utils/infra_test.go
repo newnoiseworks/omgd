@@ -191,6 +191,11 @@ func TestDeployClientAndServer(t *testing.T) {
 	// 1. Should create or empty .omgdtmp directory to work in
 	testFileShouldExist(t, fmt.Sprintf("%s/.omgd", testDir))
 
+	testFileShouldExist(t, fmt.Sprintf("%s/.omgd/infra", testDir))
+
+	testFileShouldExist(t, fmt.Sprintf("%s/.omgd/deploy", testDir))
+	testFileShouldExist(t, fmt.Sprintf("%s/.omgd/deploy/gcp/deploy.sh", testDir))
+
 	testFileShouldExist(t, fmt.Sprintf("%s/game", testDir))
 	testFileShouldExist(t, fmt.Sprintf("%s/profiles", testDir))
 
@@ -223,7 +228,7 @@ func TestDeployClientAndServer(t *testing.T) {
 			cmdStr:  "./deploy.sh",
 			env:     []string{"GCP_PROJECT=test", "GCP_ZONE=us-east4c", "OMGD_PROFILE=staging", "OMGD_PROJECT=top-level-name"},
 			cmdDesc: "deploying game server to gcp",
-			cmdDir:  fmt.Sprintf("%s/server/deploy/gcp", testDir),
+			cmdDir:  fmt.Sprintf("%s/.omgd/deploy/gcp", testDir),
 		},
 	}
 

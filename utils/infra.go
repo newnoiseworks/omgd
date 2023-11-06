@@ -17,6 +17,7 @@ type InfraChange struct {
 
 func (infraChange *InfraChange) DeployClientAndServer() {
 	infraChange.setupInstanceInfraFiles()
+	infraChange.setupDeployFiles()
 
 	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
 
@@ -49,7 +50,7 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 	infraChange.CmdOnDirWithEnv(
 		"./deploy.sh",
 		"deploying game server to gcp",
-		fmt.Sprintf("%s/server/deploy/gcp", infraChange.OutputDir),
+		fmt.Sprintf("%s/.omgd/deploy/gcp", infraChange.OutputDir),
 		[]string{
 			fmt.Sprintf("GCP_PROJECT=%s", infraChange.Profile.Get("omgd.gcp.project")),
 			fmt.Sprintf("GCP_ZONE=%s", infraChange.Profile.Get("omgd.gcp.zone")),
@@ -204,6 +205,15 @@ func (infraChange *InfraChange) PerformCleanup() {
 	if err != nil {
 		LogFatal(fmt.Sprint(err))
 	}
+}
+
+func (infraChange *InfraChange) setupDeployFiles() {
+	sccp := StaticCodeCopyPlan{}
+
+	sccp.CopyStaticDirectory(
+		"static/deploy/gcp",
+		fmt.Sprintf("%s/.omgd/deploy/gcp", infraChange.OutputDir),
+	)
 }
 
 func (infraChange *InfraChange) setupInstanceInfraFiles() {

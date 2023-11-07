@@ -42,7 +42,7 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 	)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("cp -rf game/dist/web-%s/. servers/nakama/website", infraChange.Profile.Name),
+		fmt.Sprintf("cp -rf game/dist/web-%s/. servers/web-build", infraChange.Profile.Name),
 		"copy web build into server",
 		infraChange.OutputDir,
 	)

@@ -180,14 +180,14 @@ func TestCodeGenCmdOMGDChannelCreation(t *testing.T) {
 	// check for match_channel.lua file
 	testForFileAndRegexpMatch(
 		t,
-		"static/test/newProject/server/nakama/data/modules/match_channel.lua",
+		"static/test/newProject/servers/nakama/data/modules/match_channel.lua",
 		`match_channel_size`,
 	)
 
 	// check for match_channel_manager.lua file
 	testForFileAndRegexpMatch(
 		t,
-		"static/test/newProject/server/nakama/data/modules/match_channel_manager.lua",
+		"static/test/newProject/servers/nakama/data/modules/match_channel_manager.lua",
 		`max_match_channel_size`,
 	)
 }

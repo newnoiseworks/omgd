@@ -220,7 +220,7 @@ func TestDeployClientAndServer(t *testing.T) {
 			cmdDir:  testDir,
 		},
 		{
-			cmdStr:  "cp -rf game/dist/web-staging/. server/nakama/website",
+			cmdStr:  "cp -rf game/dist/web-staging/. servers/nakama/website",
 			cmdDesc: "copy web build into server",
 			cmdDir:  testDir,
 		},

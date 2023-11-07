@@ -42,7 +42,7 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 	)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("cp -rf game/dist/web-%s/. servers/web-build", infraChange.Profile.Name),
+		fmt.Sprintf("cp -rf game/dist/web-%s/. servers/web-build/src", infraChange.Profile.Name),
 		"copy web build into server",
 		infraChange.OutputDir,
 	)

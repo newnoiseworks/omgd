@@ -1,0 +1,6 @@
+config.yml
+nakama/data/.cookie
+
+web-build/*
+!web-build/.gitkeep
+

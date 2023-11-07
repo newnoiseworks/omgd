@@ -1,6 +1,0 @@
-config.yml
-nakama/data/.cookie
-
-nakama/website/*
-!nakama/website/.gitkeep
-

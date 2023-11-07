@@ -35,7 +35,7 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ./nakama/data:/nakama/data
+      - ./central/data:/nakama/data
     expose:
       - "7349"
       - "7350"
@@ -54,8 +54,8 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./nakama/nginx.conf:/etc/nginx/nginx.conf
-      - ./nakama/apache.htpasswd:/etc/nginx/.htpasswd
-      - ./nakama/website:/usr/share/nginx/html
+      - ./web-build/nginx.conf:/etc/nginx/nginx.conf
+      - ./web-build/apache.htpasswd:/etc/nginx/.htpasswd
+      - ./web-build/src:/usr/share/nginx/html
 volumes:
   data:

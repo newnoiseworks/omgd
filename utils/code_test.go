@@ -18,7 +18,7 @@ func TestCodeGenCmdNewProjectWritesAndCleansUpFiles(t *testing.T) {
 	codePlan := CodeGenerationPlan{
 		OutputDir: "static/test",
 		Target:    "newProject",
-		Plan:      "new",
+		Plan:      "godot3-nakama3/new",
 	}
 
 	codePlan.Generate()
@@ -65,7 +65,7 @@ func TestCodeGenCmdExample2DPlayerMovement(t *testing.T) {
 	// generates code plan for 2d movement, skips cleanup for testing
 	codePlan := CodeGenerationPlan{
 		OutputDir:   "static/test",
-		Plan:        "example-2d-player-movement",
+		Plan:        "godot3-nakama3/example-2d-player-movement",
 		Target:      "example-2d",
 		SkipCleanup: true,
 	}
@@ -105,7 +105,7 @@ func TestCodeGenCmdOMGDChannelCreation(t *testing.T) {
 	newProjectCodePlan := CodeGenerationPlan{
 		OutputDir: "static/test",
 		Target:    "newProject",
-		Plan:      "new",
+		Plan:      "godot3-nakama3/new",
 	}
 
 	newProjectCodePlan.Generate()
@@ -113,7 +113,7 @@ func TestCodeGenCmdOMGDChannelCreation(t *testing.T) {
 	// generates channel code within new project
 	codePlan := CodeGenerationPlan{
 		OutputDir:   "static/test/newProject",
-		Plan:        "channel",
+		Plan:        "godot3-nakama3/channel",
 		Target:      "match_channel",
 		SkipCleanup: true,
 	}
@@ -206,7 +206,7 @@ func TestCodeGenCmdOMGDChannelCreationWithEventArgs(t *testing.T) {
 	newProjectCodePlan := CodeGenerationPlan{
 		OutputDir: "static/test",
 		Target:    "newProject",
-		Plan:      "new",
+		Plan:      "godot3-nakama3/new",
 	}
 
 	newProjectCodePlan.Generate()
@@ -214,7 +214,7 @@ func TestCodeGenCmdOMGDChannelCreationWithEventArgs(t *testing.T) {
 	// generates channel code within new project
 	codePlan := CodeGenerationPlan{
 		OutputDir:   "static/test/newProject",
-		Plan:        "channel",
+		Plan:        "godot3-nakama3/channel",
 		Target:      "match_channel",
 		Args:        "movement trade",
 		SkipCleanup: true,

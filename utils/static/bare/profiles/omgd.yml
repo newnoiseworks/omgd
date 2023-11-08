@@ -1,0 +1,11 @@
+omgd:
+  game:
+    targets:
+    - build-windows
+    - build-mac
+    - build-web
+    - build-x11
+  gcp:
+    project: your-project-name
+    zone: us-east1-c
+  name: your-game-name

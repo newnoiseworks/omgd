@@ -1,3 +1,10 @@
 omgd:
   gcp:
     type: f1-micro
+  # servers:
+  #   central:
+  #     host: 127.0.0.1
+  # nakama:
+  #   key: defaultkey
+  #   port: 7350
+  #   secure: false

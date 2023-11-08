@@ -29,19 +29,19 @@ $ omgd server status         | prints status of running docker containers
 			utils.CmdOnDir(
 				"docker-compose up -d",
 				fmt.Sprintf("spinning up docker containers"),
-				"server",
+				"servers",
 			)
 		case "stop":
 			utils.CmdOnDir(
 				"docker-compose down",
 				fmt.Sprintf("stopping docker containers"),
-				"server",
+				"servers",
 			)
 		case "reset-data":
 			utils.CmdOnDir(
 				"docker-compose down -v",
 				fmt.Sprintf("removing data volumes and stopping docker containers"),
-				"server",
+				"servers",
 			)
 		case "logs":
 			cmd := "docker-compose logs --follow"
@@ -49,14 +49,14 @@ $ omgd server status         | prints status of running docker containers
 			utils.CmdOnDirToStdOut(
 				cmd,
 				fmt.Sprintf("printing server logs via $ %s", cmd),
-				"server",
+				"servers",
 				[]string{},
 			)
 		case "status":
 			utils.CmdOnDir(
 				"docker-compose ps",
 				fmt.Sprintf("printing server status via $ docker-compose ps"),
-				"server",
+				"servers",
 			)
 		}
 	},

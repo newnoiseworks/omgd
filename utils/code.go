@@ -19,12 +19,12 @@ func (cp *CodeGenerationPlan) Generate() {
 	cp.resetOMGDTmpDir()
 
 	switch cp.Plan {
-	case "new":
-		cp.generateNew()
-	case "example-2d-player-movement":
-		cp.generateExample2DPlayerMovement()
-	case "channel":
-		cp.generateChannel()
+	case "godot3-nakama3/new":
+		cp.godot3Nakama3New()
+	case "godot3-nakama3/example-2d-player-movement":
+		cp.godot3Nakama3Example2DPlayerMovement()
+	case "godot3-nakama3/channel":
+		cp.godot3Nakama3Channel()
 	default:
 		LogFatal(fmt.Sprintf("Found no code plan matching %s", cp.Plan))
 	}
@@ -36,12 +36,12 @@ func (cp *CodeGenerationPlan) Generate() {
 }
 
 // generates code needed for new projects
-func (cp *CodeGenerationPlan) generateNew() {
+func (cp *CodeGenerationPlan) godot3Nakama3New() {
 	outputPath := fmt.Sprintf("%s/%s", cp.OutputDir, cp.Target)
 
 	sccp := StaticCodeCopyPlan{}
 
-	err := sccp.CopyStaticDirectory("static/new", outputPath)
+	err := sccp.CopyStaticDirectory("static/godot3-nakama3/new", outputPath)
 
 	if err != nil {
 		LogFatal(fmt.Sprint(err))
@@ -63,23 +63,23 @@ func (cp *CodeGenerationPlan) generateNew() {
 }
 
 // generates example 2d player movement code
-func (cp *CodeGenerationPlan) generateExample2DPlayerMovement() {
-	cp.generateNew()
+func (cp *CodeGenerationPlan) godot3Nakama3Example2DPlayerMovement() {
+	cp.godot3Nakama3New()
 
 	outputPath := fmt.Sprintf("%s/%s", cp.OutputDir, cp.Target)
 
 	sccp := StaticCodeCopyPlan{}
 
-	err := sccp.CopyStaticDirectory("static/example-2d-player-movement", outputPath)
+	err := sccp.CopyStaticDirectory("static/godot3-nakama3/example-2d-player-movement", outputPath)
 	if err != nil {
 		LogFatal(fmt.Sprint(err))
 	}
 }
 
 // generates channel management code
-func (cp *CodeGenerationPlan) generateChannel() {
+func (cp *CodeGenerationPlan) godot3Nakama3Channel() {
 	tmpDir := fmt.Sprintf("%s/.omgdtmp", cp.OutputDir)
-	staticDir := "static/channel"
+	staticDir := "static/godot3-nakama3/channel"
 
 	// TODO: There should probably be a check to make sure the
 	// user passes in a snake_case_channel_name meaning no caps
@@ -120,7 +120,7 @@ func (cp *CodeGenerationPlan) generateChannel() {
 		},
 	}
 
-	err := sccp.CopyStaticDirectory("static/channel", tmpDir)
+	err := sccp.CopyStaticDirectory("static/godot3-nakama3/channel", tmpDir)
 	if err != nil {
 		LogFatal(fmt.Sprint(err))
 	}
@@ -144,15 +144,15 @@ func (cp *CodeGenerationPlan) generateChannel() {
 func (cp *CodeGenerationPlan) Cleanup() {
 	switch cp.Plan {
 	// case "new":
-	case "example-partial-2d-player-movement":
-		cp.cleanupExample2DPlayerMovement()
-	case "channel":
-		cp.cleanupChannel()
+	case "godot3-nakama3/example-2d-player-movement":
+		cp.cleanupGodot3Nakama3Example2DPlayerMovement()
+	case "godot3-nakama3/channel":
+		cp.cleanupGodot3Nakama3Channel()
 	}
 }
 
 // cleans up example 2d player movement code
-func (cp *CodeGenerationPlan) cleanupExample2DPlayerMovement() {
+func (cp *CodeGenerationPlan) cleanupGodot3Nakama3Example2DPlayerMovement() {
 	tmpDir := fmt.Sprintf("%s/.omgdtmp", cp.OutputDir)
 
 	err := os.RemoveAll(fmt.Sprintf("%s/profiles", tmpDir))
@@ -174,7 +174,7 @@ func (cp *CodeGenerationPlan) cleanupExample2DPlayerMovement() {
 }
 
 // cleans up channel code
-func (cp *CodeGenerationPlan) cleanupChannel() {
+func (cp *CodeGenerationPlan) cleanupGodot3Nakama3Channel() {
 	tmpDir := fmt.Sprintf("%s/.omgdtmp", cp.OutputDir)
 
 	err := os.RemoveAll(fmt.Sprintf("%s/profiles", tmpDir))

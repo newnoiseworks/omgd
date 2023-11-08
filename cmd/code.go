@@ -48,13 +48,10 @@ example-2d-player-movement - Complete example, demonstrates 2d player movement.
 		utils.LogWarn(fmt.Sprintf("Code generated based on plan to %s dir %s", cp.Plan, cp.OutputDir))
 	},
 	ValidArgs: []string{
-		// "godot3-nakama3/new",
-		// "godot3-nakama3/channel",
-		// "godot3-nakama3/example-2d-player-movement",
-		// "bare",
-		"new",
-		"channel",
-		"example-2d-player-movement",
+		"godot3-nakama3/new",
+		"godot3-nakama3/channel",
+		"godot3-nakama3/example-2d-player-movement",
+		"bare",
 	},
 }
 

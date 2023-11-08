@@ -1,3 +1,4 @@
 omgd:
-  central:
-    host: 127.0.0.1
+  servers:
+    central:
+      host: 127.0.0.1

@@ -2,3 +2,6 @@ omgd:
   nakama:
     host: ???
   override: overriden
+  servers:
+    central:
+      host: ???

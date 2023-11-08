@@ -1,7 +1,7 @@
 extends Node
 
-{{- if .profile.omgd.nakama.host }}
-const nakama_host = "{{.profile.omgd.nakama.host}}"
+{{- if .profile.omgd.servers.central.host }}
+const nakama_host = "{{.profile.omgd.servers.central.host}}"
 {{- else }}
 const nakama_host = "127.0.0.1"
 {{- end }}

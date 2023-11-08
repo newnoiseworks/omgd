@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/newnoiseworks/omgd/utils"
 	"github.com/spf13/cobra"
@@ -27,6 +28,13 @@ example-2d-player-movement - Complete example, demonstrates 2d player movement.
 		plan := args[0]
 		target := args[0]
 		codePlanArgs := ""
+
+		if len(args) == 1 {
+			if target == plan && strings.Contains(target, "/") {
+				splits := strings.Split(target, "/")
+				target = splits[len(splits)-1]
+			}
+		}
 
 		if len(args) > 1 {
 			target = args[1]

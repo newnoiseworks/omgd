@@ -25,7 +25,7 @@ func TestDeployInfra(t *testing.T) {
 
 		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
-		profile.UpdateProfile("omgd.nakama.host", "???")
+		profile.UpdateProfile("omgd.servers.central.host", "???")
 	})
 
 	// profile := GetProfileFromDir("profiles/staging.yml", testDir)
@@ -173,7 +173,7 @@ func TestDeployClientAndServer(t *testing.T) {
 
 		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
-		profile.UpdateProfile("omgd.nakama.host", "???")
+		profile.UpdateProfile("omgd.servers.central.host", "???")
 	})
 
 	profile := GetProfileFromDir("profiles/staging.yml", testDir)
@@ -262,7 +262,7 @@ func TestProjectSetup(t *testing.T) {
 
 		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
-		profile.UpdateProfile("omgd.nakama.host", "???")
+		profile.UpdateProfile("omgd.servers.central.host", "???")
 
 		GetProfileFromDir("profiles/omgd.yml", testDir).UpdateProfile("omgd.tfsettings.bucket", "???")
 	})
@@ -341,7 +341,7 @@ func TestProjectDestroy(t *testing.T) {
 
 		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
 
-		profile.UpdateProfile("omgd.nakama.host", "???")
+		profile.UpdateProfile("omgd.servers.central.host", "???")
 	})
 
 	profile := GetProfileFromDir("profiles/staging.yml", testDir)

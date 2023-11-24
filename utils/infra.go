@@ -33,7 +33,7 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 		fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", infraChange.OutputDir),
 	)
 
-	infraChange.Profile.UpdateProfile("omgd.servers.central.host", ipAddress)
+	infraChange.Profile.UpdateProfile("omgd.servers.host", ipAddress)
 
 	infraChange.CmdOnDir(
 		fmt.Sprintf("omgd build-clients --profile=%s", infraChange.Profile.path),
@@ -50,6 +50,7 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 			fmt.Sprintf("GCP_ZONE=%s", infraChange.Profile.Get("omgd.gcp.zone")),
 			fmt.Sprintf("OMGD_PROFILE=%s", infraChange.Profile.Name),
 			fmt.Sprintf("OMGD_PROJECT=%s", infraChange.Profile.Get("omgd.name")),
+			fmt.Sprintf("OMGD_SERVER_SERVICES=%s", strings.Join(infraChange.Profile.OMGD.Servers.Services, " ")),
 		},
 	)
 
@@ -81,7 +82,7 @@ func (infraChange *InfraChange) DeployInfra() {
 		fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", infraChange.OutputDir),
 	)
 
-	infraChange.Profile.UpdateProfile("omgd.servers.central.host", ipAddress)
+	infraChange.Profile.UpdateProfile("omgd.servers.host", ipAddress)
 
 	if !infraChange.SkipCleanup {
 		infraChange.PerformCleanup()

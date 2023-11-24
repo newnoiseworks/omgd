@@ -9,3 +9,7 @@ omgd:
     project: your-project-name
     zone: us-east1-c
   name: your-game-name
+  servers:
+    services:
+    - central
+    - web

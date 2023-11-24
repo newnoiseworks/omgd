@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/newnoiseworks/omgd/utils"
 	"github.com/spf13/cobra"
@@ -24,22 +25,26 @@ $ omgd server logs --verbose | tails / follows logs continuously
 $ omgd server status         | prints status of running docker containers
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
+		profile := utils.GetProfile(ProfilePath)
+
+		services := strings.Join(profile.OMGD.Servers.Services, " ")
+
 		switch args[0] {
 		case "start":
 			utils.CmdOnDir(
-				"docker-compose up -d",
+				fmt.Sprintf("docker-compose up -d %s", services),
 				fmt.Sprintf("spinning up docker containers"),
 				"servers",
 			)
 		case "stop":
 			utils.CmdOnDir(
-				"docker-compose down",
+				fmt.Sprintf("docker-compose down %s", services),
 				fmt.Sprintf("stopping docker containers"),
 				"servers",
 			)
 		case "reset-data":
 			utils.CmdOnDir(
-				"docker-compose down -v",
+				fmt.Sprintf("docker-compose down -v %s", services),
 				fmt.Sprintf("removing data volumes and stopping docker containers"),
 				"servers",
 			)

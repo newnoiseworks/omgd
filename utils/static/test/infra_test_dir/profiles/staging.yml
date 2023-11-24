@@ -3,5 +3,7 @@ omgd:
     host: ???
   override: overriden
   servers:
-    central:
-      host: ???
+    host: ???
+    services:
+    - central
+    - web

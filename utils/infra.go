@@ -50,6 +50,7 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 			fmt.Sprintf("GCP_ZONE=%s", infraChange.Profile.Get("omgd.gcp.zone")),
 			fmt.Sprintf("OMGD_PROFILE=%s", infraChange.Profile.Name),
 			fmt.Sprintf("OMGD_PROJECT=%s", infraChange.Profile.Get("omgd.name")),
+			fmt.Sprintf("OMGD_SERVER_SERVICES=%s", strings.Join(infraChange.Profile.OMGD.Servers.Services, " ")),
 		},
 	)
 

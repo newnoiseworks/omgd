@@ -11,12 +11,17 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+type ServersConfig struct {
+	Services []string `yaml:"services"`
+}
+
 type GameConfig struct {
 	Targets []string `yaml:"targets"`
 }
 
 type OMGDConfig struct {
-	Game GameConfig `yaml:"game"`
+	Game    GameConfig    `yaml:"game"`
+	Servers ServersConfig `yaml:"servers"`
 }
 
 type ProfileConf struct {

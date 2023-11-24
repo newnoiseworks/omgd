@@ -41,12 +41,6 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 		infraChange.OutputDir,
 	)
 
-	infraChange.CmdOnDir(
-		fmt.Sprintf("cp -rf game/dist/web-%s/. servers/web-build/src", infraChange.Profile.Name),
-		"copy web build into server",
-		infraChange.OutputDir,
-	)
-
 	infraChange.CmdOnDirWithEnv(
 		"./deploy.sh",
 		"deploying game server to gcp",

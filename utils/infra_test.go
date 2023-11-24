@@ -220,11 +220,6 @@ func TestDeployClientAndServer(t *testing.T) {
 			cmdDir:  testDir,
 		},
 		{
-			cmdStr:  "cp -rf game/dist/web-staging/. servers/web-build/src",
-			cmdDesc: "copy web build into server",
-			cmdDir:  testDir,
-		},
-		{
 			cmdStr:  "./deploy.sh",
 			env:     []string{"GCP_PROJECT=test", "GCP_ZONE=us-east4c", "OMGD_PROFILE=staging", "OMGD_PROJECT=top-level-name"},
 			cmdDesc: "deploying game server to gcp",

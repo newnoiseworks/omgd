@@ -31,4 +31,13 @@ func (cb *ClientBuilder) Build() {
 			fmt.Sprintf("BUILD_ENV=%s", cb.Profile.Name),
 		},
 	)
+
+	// TODO: Need to either internally store docker-compose.yml files ala terraform
+	// files or find a way to make the below configuratble, either way, currently this
+	// relies on a namespace to be set in those files to work
+	if strings.Contains(buildFor, "build-web") {
+		sccp := StaticCodeCopyPlan{}
+
+		sccp.CopyStaticDirectory(fmt.Sprintf("game/dist/web-%s", cb.Profile.Name), "servers/web-build/src")
+	}
 }

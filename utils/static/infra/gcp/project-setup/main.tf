@@ -48,7 +48,7 @@ resource "google_compute_firewall" "default" {
 
   allow {
     protocol = "udp"
-    ports = ["7348-7351"]
+    ports = ["7348-7351", "9999"]
   }
 
   target_tags = ["omgd", "nakama"]

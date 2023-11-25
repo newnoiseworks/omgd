@@ -38,13 +38,13 @@ $ omgd server status         | prints status of running docker containers
 			)
 		case "stop":
 			utils.CmdOnDir(
-				fmt.Sprintf("docker-compose down %s", services),
+				"docker-compose down",
 				fmt.Sprintf("stopping docker containers"),
 				"servers",
 			)
 		case "reset-data":
 			utils.CmdOnDir(
-				fmt.Sprintf("docker-compose down -v %s", services),
+				"docker-compose down -v",
 				fmt.Sprintf("removing data volumes and stopping docker containers"),
 				"servers",
 			)

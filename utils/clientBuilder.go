@@ -44,6 +44,6 @@ func (cb *ClientBuilder) Build() {
 	if strings.Contains(buildFor, "build-x11-server") {
 		sccp := StaticCodeCopyPlan{}
 
-		sccp.CopyStaticDirectory(fmt.Sprintf("game/dist/x11-server-%s", cb.Profile.Name), "servers/headless-build/src")
+		sccp.CopyStaticDirectory(fmt.Sprintf("game/dist/x11-server-%s", cb.Profile.Name), "servers/dedicated-build/src")
 	}
 }

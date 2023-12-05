@@ -40,4 +40,10 @@ func (cb *ClientBuilder) Build() {
 
 		sccp.CopyStaticDirectory(fmt.Sprintf("game/dist/web-%s", cb.Profile.Name), "servers/web-build/src")
 	}
+
+	if strings.Contains(buildFor, "build-x11-server") {
+		sccp := StaticCodeCopyPlan{}
+
+		sccp.CopyStaticDirectory(fmt.Sprintf("game/dist/x11-server-%s", cb.Profile.Name), "servers/dedicated-build/src")
+	}
 }

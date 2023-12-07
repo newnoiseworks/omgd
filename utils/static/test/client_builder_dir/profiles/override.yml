@@ -3,3 +3,5 @@ omgd:
     targets:
       - build-service: build-windows
       - build-service: build-web
+        copy: "test/dir"
+        to: "test/dir_to"

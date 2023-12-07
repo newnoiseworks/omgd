@@ -3,6 +3,8 @@ package utils
 import (
 	"fmt"
 	"os"
+	"reflect"
+	"strconv"
 	"testing"
 )
 
@@ -226,4 +228,37 @@ func TestStaticCopyStaticDirectoryInSameDirectory(t *testing.T) {
 	testFileShouldExist(t, "static/test/test_dir_to_copy/.omgdtmp")
 	testFileShouldExist(t, "static/test/test_dir_to_copy/.omgdtmp/test_three.md")
 	testFileShouldExist(t, "static/test/test_dir_to_copy/.omgdtmp/folder")
+}
+
+type testCopyStaticDirectoryResponse struct {
+	pathToCopy   string
+	pathToCopyTo string
+}
+
+var testCopyStaticDirectoryResponses = []testCopyStaticDirectoryResponse{}
+var testCopyStaticDirectoryValidResponseSet = []testCopyStaticDirectoryResponse{}
+
+var testCopyStaticDirectory = func(pathToCopy string, pathToCopyTo string) error {
+	testCopyStaticDirectoryResponses = append(testCopyStaticDirectoryResponses, testCopyStaticDirectoryResponse{
+		pathToCopy:   pathToCopy,
+		pathToCopyTo: pathToCopyTo,
+	})
+
+	return nil
+}
+
+func testCopyStaticDirectoryValidCmdSet(t *testing.T, method string) {
+	if len(testCopyStaticDirectoryValidResponseSet) != len(testCopyStaticDirectoryResponses) {
+		t.Errorf("%s didn't create enough commands", method)
+		testLogComparison(strconv.Itoa(len(testCopyStaticDirectoryValidResponseSet)), strconv.Itoa(len(testCopyStaticDirectoryResponses)))
+	}
+
+	for i := range testCopyStaticDirectoryValidResponseSet {
+		if !reflect.DeepEqual(testCopyStaticDirectoryValidResponseSet[i], testCopyStaticDirectoryResponses[i]) {
+			t.Errorf("%s failed on step %s", method, strconv.Itoa(i))
+			testLogComparison(testCopyStaticDirectoryValidResponseSet[i], testCopyStaticDirectoryResponses[i])
+		}
+	}
+
+	testCopyStaticDirectoryValidResponseSet = nil
 }

@@ -4,6 +4,8 @@ omgd:
       - build-service: build-windows
       - build-service: build-mac
       - build-service: build-web
+        copy: "test/dir"
+        to: "test/dir_to"
       - build-service: build-x11
   gcp:
     project: your-project-name

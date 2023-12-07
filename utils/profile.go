@@ -27,7 +27,13 @@ type OMGDConfig struct {
 }
 
 type ServersConfig struct {
-	Services []string `yaml:"services"`
+	Services []string   `yaml:"services"`
+	Ports    PortConfig `yaml:"ports"`
+}
+
+type PortConfig struct {
+	TCP string `yaml:"tcp"`
+	UDP string `yaml:"udp"`
 }
 
 type GameConfig struct {

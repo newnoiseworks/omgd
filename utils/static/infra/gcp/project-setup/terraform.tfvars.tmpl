@@ -3,3 +3,5 @@ gcp_region  = "{{gcpZoneToRegion .profile.omgd.gcp.zone}}"
 gcp_zone    = "{{.profile.omgd.gcp.zone}}"
 project     = "{{.profile.omgd.name}}"
 profile     = "{{.profile.Name}}"
+tcp_ports   = [{{.profile.omgd.servers.ports.tcp}}]
+udp_ports   = [{{.profile.omgd.servers.ports.udp}}]

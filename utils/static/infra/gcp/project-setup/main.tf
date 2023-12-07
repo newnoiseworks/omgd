@@ -18,6 +18,14 @@ variable "profile" {
   type = string
 }
 
+variable "tcp_ports" {
+  type = list
+}
+
+variable "udp_ports" {
+  type = list
+}
+
 provider "google" {
   project = var.gcp_project
   region  = var.gcp_region
@@ -43,12 +51,12 @@ resource "google_compute_firewall" "default" {
 
   allow {
     protocol = "tcp"
-    ports = ["22", "80", "443", "7348-7351", "9999"]
+    ports = var.tcp_ports
   }
 
   allow {
     protocol = "udp"
-    ports = ["7348-7351", "9999"]
+    ports = var.udp_ports
   }
 
   target_tags = ["omgd", "nakama"]

@@ -1,0 +1,5 @@
+omgd:
+  gcp:
+    bucket: ???
+    project: test
+    zone: us-east4c

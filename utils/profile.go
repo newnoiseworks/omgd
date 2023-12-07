@@ -46,33 +46,8 @@ type GCPConfig struct {
 	Bucket  string `yaml:"bucket"`
 }
 
-func (pc ProfileConf) getTopLevelOMGDProfileAsMap() map[interface{}]interface{} {
+func (pc ProfileConf) getProfileAsMapFromPath(profilePath string) (map[interface{}]interface{}, error) {
 	c := make(map[interface{}]interface{})
-
-	omgdProfilePath := strings.Replace(pc.path, pc.Name, "omgd", 1)
-
-	if pc.rootDir != "" {
-		omgdProfilePath = filepath.Join(pc.rootDir, omgdProfilePath)
-	}
-
-	yamlFile, err := ioutil.ReadFile(omgdProfilePath)
-
-	if err != nil {
-		return c
-	}
-	err = yaml.Unmarshal(yamlFile, &c)
-
-	if err != nil {
-		LogFatal(fmt.Sprintf("Unmarshal err: %v", err))
-	}
-
-	return c
-}
-
-func (pc ProfileConf) getRootProfileAsMap() map[interface{}]interface{} {
-	c := make(map[interface{}]interface{})
-
-	profilePath := pc.path
 
 	if pc.rootDir != "" {
 		profilePath = filepath.Join(pc.rootDir, profilePath)
@@ -81,16 +56,52 @@ func (pc ProfileConf) getRootProfileAsMap() map[interface{}]interface{} {
 	yamlFile, err := ioutil.ReadFile(profilePath)
 
 	if err != nil {
-		LogFatal(fmt.Sprintf("could not read file: %v", err))
+		return c, err
 	}
 
 	err = yaml.Unmarshal(yamlFile, &c)
 
 	if err != nil {
-		LogFatal(fmt.Sprintf("Unmarshal err: %v", err))
+		return c, err
 	}
 
-	return c
+	return c, nil
+}
+
+func (pc ProfileConf) getTopLevelOMGDProfileAsMap() map[interface{}]interface{} {
+	omgdProfilePath := strings.Replace(pc.path, pc.Name, "omgd", 1)
+
+	conf, err := pc.getProfileAsMapFromPath(omgdProfilePath)
+
+	if err != nil {
+		LogTrace(fmt.Sprintf("Error getting top level OMGD profile as map, %v", err))
+	}
+
+	return conf
+}
+
+func (pc ProfileConf) getOMGDCloudProfileAsMap() map[interface{}]interface{} {
+	omgdCloudProfilePath := strings.Replace(pc.path, pc.Name, "omgd.cloud", 1)
+
+	conf, err := pc.getProfileAsMapFromPath(omgdCloudProfilePath)
+
+	if err != nil {
+		LogTrace(fmt.Sprintf("Error getting OMGD cloud profile as map, %v", err))
+	}
+
+	return conf
+}
+
+func (pc ProfileConf) getRootProfileAsMap() map[interface{}]interface{} {
+	profilePath := pc.path
+
+	conf, err := pc.getProfileAsMapFromPath(profilePath)
+
+	if err != nil {
+		LogFatal(fmt.Sprintf("Error getting profile as map, %v", err))
+	}
+
+	return conf
 }
 
 func (pc ProfileConf) GetProfileAsMap() map[interface{}]interface{} {
@@ -101,10 +112,12 @@ func (pc ProfileConf) GetProfileAsMap() map[interface{}]interface{} {
 	}
 
 	omgdFile := pc.getTopLevelOMGDProfileAsMap()
+	cloudFile := pc.getOMGDCloudProfileAsMap()
+	profile := pc.getRootProfileAsMap()
 
-	c := pc.getRootProfileAsMap()
+	mergerecursive(&cloudFile, &profile, 4)
 
-	mergerecursive(&c, &omgdFile, 4)
+	mergerecursive(&profile, &omgdFile, 4)
 
 	omgdFile["Name"] = pc.Name
 

@@ -1,7 +1,3 @@
 omgd:
-  gcp:
-    bucket: ???
-    project: test
-    zone: us-east4c
   name: top-level-name
   override: not-overriden

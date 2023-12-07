@@ -1,3 +1,7 @@
 omgd:
   name: top-level-name
   override: not-overriden
+  servers:
+    ports:
+      tcp: '"80", "443"'
+      udp: '"9999"'

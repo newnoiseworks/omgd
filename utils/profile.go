@@ -11,6 +11,21 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+type ProfileConf struct {
+	Name        string
+	OMGD        OMGDConfig `yaml:"omgd"`
+	OMGDProfile *ProfileConf
+	path        string
+	rootDir     string
+}
+
+type OMGDConfig struct {
+	Name    string        `yaml:"name"`
+	Game    GameConfig    `yaml:"game"`
+	Servers ServersConfig `yaml:"servers"`
+	GCP     GCPConfig     `yaml:"gcp"`
+}
+
 type ServersConfig struct {
 	Services []string `yaml:"services"`
 }
@@ -19,17 +34,10 @@ type GameConfig struct {
 	Targets []string `yaml:"targets"`
 }
 
-type OMGDConfig struct {
-	Game    GameConfig    `yaml:"game"`
-	Servers ServersConfig `yaml:"servers"`
-}
-
-type ProfileConf struct {
-	Name        string
-	OMGD        OMGDConfig `yaml:"omgd"`
-	OMGDProfile *ProfileConf
-	path        string
-	rootDir     string
+type GCPConfig struct {
+	Project string `yaml:"project"`
+	Zone    string `yaml:"zone"`
+	Bucket  string `yaml:"bucket"`
 }
 
 func (pc ProfileConf) getTopLevelOMGDProfileAsMap() map[interface{}]interface{} {
@@ -102,34 +110,17 @@ func GetProfile(path string) *ProfileConf {
 		path: path,
 	}
 
-	yamlFile, err := os.ReadFile(c.path)
-	if err != nil {
-		LogFatal(fmt.Sprintf("yamlFile Get err: #%v ", err))
-	}
-	err = yaml.Unmarshal(yamlFile, &c)
-	if err != nil {
-		LogFatal(fmt.Sprintf("Unmarshal err: %v", err))
-	}
-
 	splits := strings.Split(path, "/")
 	c.Name = strings.Replace(splits[len(splits)-1], ".yml", "", 1)
 
-	omgdProfilePath := strings.Replace(path, fmt.Sprintf("%s.yml", c.Name), "omgd.yml", 1)
-
-	omgd := ProfileConf{
-		path: omgdProfilePath,
+	var bytes, err = yaml.Marshal(c.GetProfileAsMap())
+	if err != nil {
+		LogFatal(fmt.Sprintf("YAML marshal err from map: %v", err))
 	}
 
-	yamlFile, err = os.ReadFile(omgd.path)
+	err = yaml.Unmarshal(bytes, &c)
 	if err != nil {
-		LogTrace(fmt.Sprintf("yamlFile Get err: #%v ", err))
-	} else {
-		err = yaml.Unmarshal(yamlFile, &omgd)
-		if err != nil {
-			LogFatal(fmt.Sprintf("Unmarshal err: %v", err))
-		}
-
-		c.OMGDProfile = &omgd
+		LogFatal(fmt.Sprintf("YAML Unmarshal err: %v", err))
 	}
 
 	return &c
@@ -175,6 +166,22 @@ func (profile ProfileConf) SaveProfileFromMap(profileMap *map[interface{}]interf
 	if err != nil {
 		LogFatal(fmt.Sprintf("Error on file write to saving profile to yaml! >> %s", err))
 	}
+
+	profile.LoadProfile()
+}
+
+func (profile ProfileConf) LoadProfile() *ProfileConf {
+	var bytes, err = yaml.Marshal(profile.GetProfileAsMap())
+	if err != nil {
+		LogFatal(fmt.Sprintf("YAML marshal err from map: %v", err))
+	}
+
+	err = yaml.Unmarshal(bytes, &profile)
+	if err != nil {
+		LogFatal(fmt.Sprintf("YAML Unmarshal err: %v", err))
+	}
+
+	return &profile
 }
 
 func (profile ProfileConf) Get(key string) interface{} {

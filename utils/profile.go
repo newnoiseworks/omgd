@@ -31,7 +31,13 @@ type ServersConfig struct {
 }
 
 type GameConfig struct {
-	Targets []string `yaml:"targets"`
+	Targets []GameTargetConfig `yaml:"targets"`
+}
+
+type GameTargetConfig struct {
+	BuildService string `yaml:"build-service"`
+	Copy         string `yaml:"copy"`
+	To           string `yaml:"to"`
 }
 
 type GCPConfig struct {

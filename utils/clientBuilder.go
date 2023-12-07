@@ -15,10 +15,12 @@ func (cb *ClientBuilder) Build() {
 	buildFor := cb.Targets
 
 	if strings.TrimSpace(buildFor) == "" {
-		buildFor = strings.Join(cb.Profile.OMGD.Game.Targets, " ")
-
-		if buildFor == "" {
-			buildFor = strings.Join(cb.Profile.OMGDProfile.OMGD.Game.Targets, " ")
+		for x, target := range cb.Profile.OMGD.Game.Targets {
+			if x == 0 {
+				buildFor = target.BuildService
+			} else {
+				buildFor = fmt.Sprintf("%s %s", buildFor, target.BuildService)
+			}
 		}
 	}
 

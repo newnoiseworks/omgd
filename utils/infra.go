@@ -137,7 +137,7 @@ func (infraChange *InfraChange) ProjectSetup() {
 	omgdProfile := GetProfileFromDir(strings.Replace(
 		infraChange.Profile.path,
 		fmt.Sprintf("%s.yml", infraChange.Profile.Name),
-		"omgd.yml",
+		"omgd.cloud.yml",
 		1,
 	), infraChange.Profile.rootDir)
 	omgdProfile.UpdateProfile("omgd.gcp.bucket", bucketName)

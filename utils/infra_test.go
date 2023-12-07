@@ -259,7 +259,7 @@ func TestProjectSetup(t *testing.T) {
 
 		profile.UpdateProfile("omgd.servers.host", "???")
 
-		GetProfileFromDir("profiles/omgd.yml", testDir).UpdateProfile("omgd.gcp.bucket", "???")
+		GetProfileFromDir("profiles/omgd.cloud.yml", testDir).UpdateProfile("omgd.gcp.bucket", "???")
 	})
 
 	profile := GetProfileFromDir("profiles/staging.yml", testDir)

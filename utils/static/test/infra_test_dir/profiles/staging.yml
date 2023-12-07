@@ -1,6 +1,4 @@
 omgd:
-  nakama:
-    host: ???
   override: overriden
   servers:
     host: ???

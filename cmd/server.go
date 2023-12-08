@@ -60,6 +60,10 @@ $ omgd server status         | prints status of running docker containers
 				[]string{},
 			)
 		case "status":
+			if utils.GetEnvLogLevel() < utils.DEBUG_LOG {
+				utils.SetEnvLogLevel(utils.DEBUG_LOG)
+			}
+
 			utils.CmdOnDir(
 				fmt.Sprintf("docker compose -p %s-%s-servers ps", profile.OMGD.Name, profile.Name),
 				fmt.Sprintf("printing server status"),

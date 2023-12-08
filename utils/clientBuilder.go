@@ -26,7 +26,7 @@ func (cb *ClientBuilder) Build() {
 	}
 
 	cb.CmdOnDirWithEnv(
-		fmt.Sprintf("docker compose up %s", buildFor),
+		fmt.Sprintf("docker compose -p %s-%s up %s", cb.Profile.OMGD.Name, cb.Profile.Name, buildFor),
 		fmt.Sprintf("Building %s game clients into game/dist folder", cb.Profile.Name),
 		"game",
 		[]string{

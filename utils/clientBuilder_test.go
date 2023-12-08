@@ -25,7 +25,7 @@ func TestClientBuilderBuildFromProfile(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  "docker compose up build-windows build-mac build-web build-x11",
+			cmdStr:  "docker compose -p your-game-name-local up build-windows build-mac build-web build-x11",
 			cmdDesc: fmt.Sprintf("Building %s game clients into game/dist folder", profile.Name),
 			cmdDir:  "game",
 			env:     []string{fmt.Sprintf("BUILD_ENV=%s", profile.Name)},
@@ -56,7 +56,7 @@ func TestClientBuilderBuildFromArgs(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  "docker compose up build-mac build-x11",
+			cmdStr:  "docker compose -p your-game-name-local up build-mac build-x11",
 			cmdDesc: fmt.Sprintf("Building %s game clients into game/dist folder", profile.Name),
 			cmdDir:  "game",
 			env:     []string{fmt.Sprintf("BUILD_ENV=%s", profile.Name)},
@@ -86,7 +86,7 @@ func TestClientBuilderBuildFromProfileWithOverrides(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  "docker compose up build-windows build-web",
+			cmdStr:  "docker compose -p your-game-name-override up build-windows build-web",
 			cmdDesc: fmt.Sprintf("Building %s game clients into game/dist folder", profile.Name),
 			cmdDir:  "game",
 			env:     []string{fmt.Sprintf("BUILD_ENV=%s", profile.Name)},
@@ -116,7 +116,7 @@ func TestClientBuilderBuildCopiesFiles(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
-			cmdStr:  "docker compose up build-windows build-mac build-web build-x11",
+			cmdStr:  "docker compose -p your-game-name-local up build-windows build-mac build-web build-x11",
 			cmdDesc: fmt.Sprintf("Building %s game clients into game/dist folder", profile.Name),
 			cmdDir:  "game",
 			env:     []string{fmt.Sprintf("BUILD_ENV=%s", profile.Name)},

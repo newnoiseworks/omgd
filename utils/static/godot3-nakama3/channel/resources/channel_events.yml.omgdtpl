@@ -1,4 +1,0 @@
-{*.profile.omgd.channel_name*}_events:
-{*- range $i, $value := .profile.omgd.channel_events *}
-- {* $value *}
-{*- end *}

@@ -32,39 +32,37 @@ $ omgd server status         | prints status of running docker containers
 		switch args[0] {
 		case "start":
 			utils.CmdOnDir(
-				fmt.Sprintf("docker-compose up -d %s", services),
+				fmt.Sprintf("docker compose -p %s-%s-servers up %s -d", profile.OMGD.Name, profile.Name, services),
 				fmt.Sprintf("spinning up docker containers"),
 				"servers",
 			)
 		case "stop":
 			utils.CmdOnDir(
-				"docker-compose down",
+				fmt.Sprintf("docker compose -p %s-%s-servers down", profile.OMGD.Name, profile.Name),
 				fmt.Sprintf("stopping docker containers"),
 				"servers",
 			)
 		case "reset-data":
 			utils.CmdOnDir(
-				"docker-compose down -v",
+				fmt.Sprintf("docker compose -p %s-%s-servers down -v", profile.OMGD.Name, profile.Name),
 				fmt.Sprintf("removing data volumes and stopping docker containers"),
 				"servers",
 			)
 		case "logs":
-			cmd := "docker-compose logs --follow"
-
 			if utils.GetEnvLogLevel() < utils.DEBUG_LOG {
 				utils.SetEnvLogLevel(utils.DEBUG_LOG)
 			}
 
 			utils.CmdOnDirToStdOut(
-				cmd,
-				fmt.Sprintf("printing server logs via $ %s", cmd),
+				fmt.Sprintf("docker compose -p %s-%s-servers logs --follow", profile.OMGD.Name, profile.Name),
+				"printing server logs",
 				"servers",
 				[]string{},
 			)
 		case "status":
 			utils.CmdOnDir(
-				"docker-compose ps",
-				fmt.Sprintf("printing server status via $ docker-compose ps"),
+				fmt.Sprintf("docker compose -p %s-%s-servers ps", profile.OMGD.Name, profile.Name),
+				fmt.Sprintf("printing server status"),
 				"servers",
 			)
 		}

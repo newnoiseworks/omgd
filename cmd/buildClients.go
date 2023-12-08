@@ -19,6 +19,8 @@ var buildClientsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		profile := utils.GetProfile(ProfilePath)
 
+		buildTemplatesCmd.Run(cmd, args)
+
 		sccp := utils.StaticCodeCopyPlan{}
 
 		cb := utils.ClientBuilder{

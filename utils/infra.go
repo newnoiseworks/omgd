@@ -109,6 +109,8 @@ func (infraChange *InfraChange) DestroyInfra() {
 	if !infraChange.SkipCleanup {
 		infraChange.PerformCleanup()
 	}
+
+	infraChange.Profile.UpdateProfile("omgd.servers.host", "???")
 }
 
 func (infraChange *InfraChange) ProjectSetup() {
@@ -189,6 +191,15 @@ func (infraChange *InfraChange) ProjectDestroy() {
 	if !infraChange.SkipCleanup {
 		infraChange.PerformCleanup()
 	}
+
+	omgdProfile := GetProfileFromDir(strings.Replace(
+		infraChange.Profile.path,
+		fmt.Sprintf("%s.yml", infraChange.Profile.Name),
+		"omgd.cloud.yml",
+		1,
+	), infraChange.Profile.rootDir)
+
+	omgdProfile.UpdateProfile("omgd.gcp.bucket", "???")
 }
 
 func (infraChange *InfraChange) PerformCleanup() {

@@ -3,5 +3,5 @@ omgd:
   servers:
     host: ???
     services:
-    - central
-    - web
+    - build-service: central
+    - build-service: web

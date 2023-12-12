@@ -27,8 +27,12 @@ type OMGDConfig struct {
 }
 
 type ServersConfig struct {
-	Services []string   `yaml:"services"`
-	Ports    PortConfig `yaml:"ports"`
+	Services []ServerService `yaml:"services"`
+	Ports    PortConfig      `yaml:"ports"`
+}
+
+type ServerService struct {
+	BuildService string `yaml:"build-service"`
 }
 
 type PortConfig struct {

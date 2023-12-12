@@ -27,7 +27,13 @@ $ omgd server status         | prints status of running docker containers
 	Run: func(cmd *cobra.Command, args []string) {
 		profile := utils.GetProfile(ProfilePath)
 
-		services := strings.Join(profile.OMGD.Servers.Services, " ")
+		serviceArray := []string{}
+
+		for _, service := range profile.OMGD.Servers.Services {
+			serviceArray = append(serviceArray, service.BuildService)
+		}
+
+		services := strings.Join(serviceArray, " ")
 
 		switch args[0] {
 		case "start":

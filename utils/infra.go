@@ -41,6 +41,14 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 		infraChange.OutputDir,
 	)
 
+	serviceArray := []string{}
+
+	for _, service := range infraChange.Profile.OMGD.Servers.Services {
+		serviceArray = append(serviceArray, service.BuildService)
+	}
+
+	services := strings.Join(serviceArray, " ")
+
 	infraChange.CmdOnDirWithEnv(
 		"./deploy.sh",
 		"deploying game server to gcp",
@@ -50,7 +58,7 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 			fmt.Sprintf("GCP_ZONE=%s", infraChange.Profile.OMGD.GCP.Zone),
 			fmt.Sprintf("OMGD_PROFILE=%s", infraChange.Profile.Name),
 			fmt.Sprintf("OMGD_PROJECT=%s", infraChange.Profile.OMGD.Name),
-			fmt.Sprintf("OMGD_SERVER_SERVICES=%s", strings.Join(infraChange.Profile.OMGD.Servers.Services, " ")),
+			fmt.Sprintf("OMGD_SERVER_SERVICES=%s", services),
 		},
 	)
 

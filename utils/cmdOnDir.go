@@ -24,6 +24,8 @@ func CmdOnDirWithEnv(cmdStr string, cmdDesc string, cmdDir string, env []string)
 		cmd.Env = append(cmd.Env, envVar)
 	}
 
+	LogDebug(fmt.Sprintf("providing env args %s", strings.Join(env, " ")))
+
 	return runCmd(cmd, cmdStr, cmdDir)
 }
 

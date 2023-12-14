@@ -203,6 +203,12 @@ func TestDeployClientAndServer(t *testing.T) {
 
 	cmdDirStrTf := fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", testDir)
 
+	homeDir, err := os.UserHomeDir()
+
+	if err != nil {
+		LogFatal(fmt.Sprintf("Error finding user's home directory %s", err))
+	}
+
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
 			cmdStr:  fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", "???", "top-level-name", profile.Name),
@@ -220,8 +226,15 @@ func TestDeployClientAndServer(t *testing.T) {
 			cmdDir:  testDir,
 		},
 		{
-			cmdStr:  "./deploy.sh",
-			env:     []string{"GCP_PROJECT=test", "GCP_ZONE=us-east4c", "OMGD_PROFILE=staging", "OMGD_PROJECT=top-level-name", "OMGD_SERVER_SERVICES=central web"},
+			cmdStr: "./deploy.sh",
+			env: []string{
+				"GCP_PROJECT=test",
+				"GCP_ZONE=us-east4c",
+				"OMGD_PROFILE=staging",
+				"OMGD_PROJECT=top-level-name",
+				"OMGD_SERVER_SERVICES=central web",
+				fmt.Sprintf("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=%s/.config/gcloud/application_default_credentials.json", homeDir),
+			},
 			cmdDesc: "deploying game server to gcp",
 			cmdDir:  fmt.Sprintf("%s/.omgd/deploy/gcp", testDir),
 		},

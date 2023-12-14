@@ -59,6 +59,7 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 			fmt.Sprintf("OMGD_PROFILE=%s", infraChange.Profile.Name),
 			fmt.Sprintf("OMGD_PROJECT=%s", infraChange.Profile.OMGD.Name),
 			fmt.Sprintf("OMGD_SERVER_SERVICES=%s", services),
+			fmt.Sprintf("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=%s", infraChange.Profile.OMGD.GCP.CredsFile),
 		},
 	)
 

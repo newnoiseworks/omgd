@@ -52,9 +52,10 @@ type GameTargetConfig struct {
 }
 
 type GCPConfig struct {
-	Project string `yaml:"project"`
-	Zone    string `yaml:"zone"`
-	Bucket  string `yaml:"bucket"`
+	Project   string `yaml:"project"`
+	Zone      string `yaml:"zone"`
+	Bucket    string `yaml:"bucket"`
+	CredsFile string `yaml:"creds-file"`
 }
 
 func (pc ProfileConf) getProfileAsMapFromPath(profilePath string) (map[interface{}]interface{}, error) {
@@ -151,6 +152,18 @@ func GetProfile(path string) *ProfileConf {
 	err = yaml.Unmarshal(bytes, &c)
 	if err != nil {
 		LogFatal(fmt.Sprintf("YAML Unmarshal err: %v", err))
+	}
+
+	if c.OMGD.GCP.Project != "" {
+		if c.OMGD.GCP.CredsFile == "" {
+			homeDir, err := os.UserHomeDir()
+
+			if err != nil {
+				LogFatal(fmt.Sprintf("Error finding user's home directory %s", err))
+			}
+
+			c.OMGD.GCP.CredsFile = fmt.Sprintf("%s/.config/gcloud/application_default_credentials.json", homeDir)
+		}
 	}
 
 	return &c

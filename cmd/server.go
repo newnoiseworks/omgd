@@ -5,7 +5,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/newnoiseworks/omgd/utils"
@@ -68,12 +67,6 @@ $ omgd server status         | prints status of running docker containers
 					[]string{},
 				)
 			} else if profile.OMGD.Servers.Host != "" {
-				homeDir, err := os.UserHomeDir()
-
-				if err != nil {
-					utils.LogFatal(fmt.Sprintf("Error finding user's home directory when checking for logs %s", err))
-				}
-
 				cmd := "docker compose logs"
 
 				if profile.OMGD.GCP.Bucket != "" {
@@ -88,7 +81,7 @@ $ omgd server status         | prints status of running docker containers
 						"printing server logs from GCP compute instance",
 						OutputDir,
 						[]string{
-							fmt.Sprintf("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=%s/.config/gcloud/application_default_credentials.json", homeDir),
+							fmt.Sprintf("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=%s", profile.OMGD.GCP.CredsFile),
 						},
 					)
 				}

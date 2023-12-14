@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/newnoiseworks/omgd/utils"
@@ -59,12 +60,39 @@ $ omgd server status         | prints status of running docker containers
 				utils.SetEnvLogLevel(utils.DEBUG_LOG)
 			}
 
-			utils.CmdOnDirToStdOut(
-				fmt.Sprintf("docker compose -p %s-%s-servers logs --follow", profile.OMGD.Name, profile.Name),
-				"printing server logs",
-				"servers",
-				[]string{},
-			)
+			if profile.Name == "local" {
+				utils.CmdOnDirToStdOut(
+					fmt.Sprintf("docker compose -p %s-%s-servers logs --follow", profile.OMGD.Name, profile.Name),
+					"printing server logs",
+					"servers",
+					[]string{},
+				)
+			} else if profile.OMGD.Servers.Host != "" {
+				homeDir, err := os.UserHomeDir()
+
+				if err != nil {
+					utils.LogFatal(fmt.Sprintf("Error finding user's home directory when checking for logs %s", err))
+				}
+
+				cmd := "docker compose logs"
+
+				if profile.OMGD.GCP.Bucket != "" {
+					utils.CmdOnDirToStdOut(
+						fmt.Sprintf("gcloud compute ssh omgd-sa@%s-omgd-dev-instance-%s --project=%s --zone=%s -- %s",
+							profile.OMGD.Name,
+							profile.Name,
+							profile.OMGD.GCP.Project,
+							profile.OMGD.GCP.Zone,
+							cmd,
+						),
+						"printing server logs from GCP compute instance",
+						OutputDir,
+						[]string{
+							fmt.Sprintf("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=%s/.config/gcloud/application_default_credentials.json", homeDir),
+						},
+					)
+				}
+			}
 		case "status":
 			if utils.GetEnvLogLevel() < utils.DEBUG_LOG {
 				utils.SetEnvLogLevel(utils.DEBUG_LOG)

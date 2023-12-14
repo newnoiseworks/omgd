@@ -17,6 +17,8 @@ var buildClientsCmd = &cobra.Command{
 	Short: "Builds game clients into the game/dist folder.",
 	// Long:  `Builds local game clients into the game/dist folder based on your local profile.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		utils.LogInfo("Building game clients and copying to servers directory as specified in profile...")
+
 		profile := utils.GetProfile(ProfilePath)
 
 		buildTemplatesCmd.Run(cmd, args)

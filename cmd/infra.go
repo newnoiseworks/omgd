@@ -21,7 +21,8 @@ var infraCmd = &cobra.Command{
 $ omgd infra deploy | Deploys cloud infrastructure via terraform
 $ omgd infra game-deploy | Builds and deploys clients and server to infra
 $ omgd infra destroy | Destroys cloud infrastructure via terraform
-$ omgd infra project-setup | Initial one time project level infra setup`,
+$ omgd infra project-setup | Initial one time project level infra setup
+$ omgd infra project-destroy | Destroy project infra setup - NOTE: This does NOT destroy individual instances, and may leave compute boxes up to be destroyed manually. Use omgd infra destroy for that first.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		profile := utils.GetProfile(ProfilePath)
 		command := args[0]
@@ -39,14 +40,19 @@ $ omgd infra project-setup | Initial one time project level infra setup`,
 
 		switch command {
 		case "deploy":
+			utils.LogInfo("Setting up instance on cloud servers...")
 			infraChange.DeployInfra()
 		case "game-deploy":
+			utils.LogInfo("Building and deploying servers to cloud servers...")
 			infraChange.DeployClientAndServer()
 		case "destroy":
+			utils.LogInfo("Destroying instance on cloud servers...")
 			infraChange.DestroyInfra()
 		case "project-setup":
+			utils.LogInfo("Setting up OMGD project to work with cloud servers...")
 			infraChange.ProjectSetup()
 		case "project-destroy":
+			utils.LogInfo("Destroying OMGD project setup on cloud servers...")
 			infraChange.ProjectDestroy()
 		default:
 			utils.LogFatal(fmt.Sprintf("Found no infra command for %s", args[0]))

@@ -37,24 +37,29 @@ $ omgd server status         | prints status of running docker containers
 
 		switch args[0] {
 		case "start":
+			utils.LogInfo("Starting OMGD servers containers...")
 			utils.CmdOnDir(
 				fmt.Sprintf("docker compose -p %s-%s-servers up %s -d", profile.OMGD.Name, profile.Name, services),
 				fmt.Sprintf("spinning up docker containers"),
 				"servers",
 			)
 		case "stop":
+			utils.LogInfo("Stopping OMGD servers containers...")
 			utils.CmdOnDir(
 				fmt.Sprintf("docker compose -p %s-%s-servers down", profile.OMGD.Name, profile.Name),
 				fmt.Sprintf("stopping docker containers"),
 				"servers",
 			)
 		case "reset-data":
+			utils.LogInfo("Stopping OMGD servers containers and dropping data...")
 			utils.CmdOnDir(
 				fmt.Sprintf("docker compose -p %s-%s-servers down -v", profile.OMGD.Name, profile.Name),
 				fmt.Sprintf("removing data volumes and stopping docker containers"),
 				"servers",
 			)
 		case "logs":
+			utils.LogInfo("Getting OMGD servers logs...")
+
 			if utils.GetEnvLogLevel() < utils.DEBUG_LOG {
 				utils.SetEnvLogLevel(utils.DEBUG_LOG)
 			}
@@ -87,6 +92,8 @@ $ omgd server status         | prints status of running docker containers
 				}
 			}
 		case "status":
+			utils.LogInfo("Getting status of servers containers...")
+
 			if utils.GetEnvLogLevel() < utils.DEBUG_LOG {
 				utils.SetEnvLogLevel(utils.DEBUG_LOG)
 			}

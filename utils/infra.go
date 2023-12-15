@@ -36,7 +36,7 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 	infraChange.Profile.UpdateProfile("omgd.servers.host", ipAddress)
 
 	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd build-clients --profile=%s", infraChange.Profile.path),
+		fmt.Sprintf("omgd game build --profile=%s", infraChange.Profile.path),
 		"building game clients against profile",
 		infraChange.OutputDir,
 	)

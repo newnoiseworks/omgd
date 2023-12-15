@@ -221,7 +221,7 @@ func TestDeployClientAndServer(t *testing.T) {
 			cmdDir:  cmdDirStrTf,
 		},
 		{
-			cmdStr:  "omgd build-clients --profile=profiles/staging.yml",
+			cmdStr:  "omgd game build --profile=profiles/staging.yml",
 			cmdDesc: "building game clients against profile",
 			cmdDir:  testDir,
 		},

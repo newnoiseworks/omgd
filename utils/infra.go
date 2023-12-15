@@ -15,59 +15,6 @@ type InfraChange struct {
 	SkipCleanup     bool
 }
 
-func (infraChange *InfraChange) DeployClientAndServer() {
-	infraChange.setupInstanceInfraFiles()
-	infraChange.setupDeployFiles()
-
-	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
-
-	infraChange.CmdOnDir(
-		fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", infraChange.Profile.OMGD.GCP.Bucket, infraChange.Profile.OMGD.Name, infraChange.Profile.Name),
-		fmt.Sprintf("setting up terraform on profile %s", infraChange.Profile.Name),
-		fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", infraChange.OutputDir),
-	)
-
-	ipAddress := infraChange.CmdOnDir(
-		"terraform output -raw server_ip",
-		"getting ip of newly created server...",
-		fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", infraChange.OutputDir),
-	)
-
-	infraChange.Profile.UpdateProfile("omgd.servers.host", ipAddress)
-
-	infraChange.CmdOnDir(
-		fmt.Sprintf("omgd game build --profile=%s", infraChange.Profile.path),
-		"building game clients against profile",
-		infraChange.OutputDir,
-	)
-
-	serviceArray := []string{}
-
-	for _, service := range infraChange.Profile.OMGD.Servers.Services {
-		serviceArray = append(serviceArray, service.BuildService)
-	}
-
-	services := strings.Join(serviceArray, " ")
-
-	infraChange.CmdOnDirWithEnv(
-		"./deploy.sh",
-		"deploying game server to gcp",
-		fmt.Sprintf("%s/.omgd/deploy/gcp", infraChange.OutputDir),
-		[]string{
-			fmt.Sprintf("GCP_PROJECT=%s", infraChange.Profile.OMGD.GCP.Project),
-			fmt.Sprintf("GCP_ZONE=%s", infraChange.Profile.OMGD.GCP.Zone),
-			fmt.Sprintf("OMGD_PROFILE=%s", infraChange.Profile.Name),
-			fmt.Sprintf("OMGD_PROJECT=%s", infraChange.Profile.OMGD.Name),
-			fmt.Sprintf("OMGD_SERVER_SERVICES=%s", services),
-			fmt.Sprintf("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=%s", infraChange.Profile.OMGD.GCP.CredsFile),
-		},
-	)
-
-	if !infraChange.SkipCleanup {
-		infraChange.PerformCleanup()
-	}
-}
-
 func (infraChange *InfraChange) InstanceSetup() {
 	infraChange.setupInstanceInfraFiles()
 

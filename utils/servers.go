@@ -14,6 +14,23 @@ type ServersChange struct {
 	SkipCleanup     bool
 }
 
+func RemoteGCPCommand(cmd string, dir string, profile *ProfileConf) {
+	CmdOnDirToStdOut(
+		fmt.Sprintf("gcloud compute ssh omgd-sa@%s-omgd-dev-instance-%s --project=%s --zone=%s -- %s",
+			profile.OMGD.Name,
+			profile.Name,
+			profile.OMGD.GCP.Project,
+			profile.OMGD.GCP.Zone,
+			cmd,
+		),
+		"printing server logs from GCP compute instance",
+		dir,
+		[]string{
+			fmt.Sprintf("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=%s", profile.OMGD.GCP.CredsFile),
+		},
+	)
+}
+
 func (serversChange *ServersChange) Deploy() {
 	serversChange.setupInstanceInfraFiles()
 	serversChange.setupDeployFiles()

@@ -40,26 +40,43 @@ $ omgd servers deploy         | deploys servers folder to profile target, not us
 		switch args[0] {
 		case "start":
 			utils.LogInfo("Starting OMGD servers containers...")
-			utils.CmdOnDir(
-				fmt.Sprintf("docker compose -p %s-%s-servers up %s -d", profile.OMGD.Name, profile.Name, services),
-				fmt.Sprintf("spinning up docker containers"),
-				"servers",
-			)
+
+			if profile.Name == "local" {
+				utils.CmdOnDir(
+					fmt.Sprintf("docker compose -p %s-%s-servers up %s -d", profile.OMGD.Name, profile.Name, services),
+					fmt.Sprintf("spinning up docker containers"),
+					"servers",
+				)
+			} else if profile.OMGD.Servers.Host != "" {
+				cmd := "docker compose up -d"
+
+				if profile.OMGD.GCP.Bucket != "" {
+					utils.RemoteGCPCommand(cmd, OutputDir, profile)
+				}
+			}
 		case "stop":
 			dropVolumeArg := ""
 
 			if volumeDrop {
-				dropVolumeArg = "-v"
+				dropVolumeArg = " -v"
 				utils.LogInfo("Stopping OMGD servers containers and dropping data volumes...")
 			} else {
 				utils.LogInfo("Stopping OMGD servers containers...")
 			}
 
-			utils.CmdOnDir(
-				fmt.Sprintf("docker compose -p %s-%s-servers down %s", profile.OMGD.Name, profile.Name, dropVolumeArg),
-				fmt.Sprintf("stopping docker containers"),
-				"servers",
-			)
+			if profile.Name == "local" {
+				utils.CmdOnDir(
+					fmt.Sprintf("docker compose -p %s-%s-servers down%s", profile.OMGD.Name, profile.Name, dropVolumeArg),
+					fmt.Sprintf("stopping docker containers"),
+					"servers",
+				)
+			} else if profile.OMGD.Servers.Host != "" {
+				cmd := fmt.Sprintf("docker compose down%s", dropVolumeArg)
+
+				if profile.OMGD.GCP.Bucket != "" {
+					utils.RemoteGCPCommand(cmd, OutputDir, profile)
+				}
+			}
 		case "logs":
 			utils.LogInfo("Getting OMGD servers logs...")
 
@@ -78,20 +95,7 @@ $ omgd servers deploy         | deploys servers folder to profile target, not us
 				cmd := "docker compose logs"
 
 				if profile.OMGD.GCP.Bucket != "" {
-					utils.CmdOnDirToStdOut(
-						fmt.Sprintf("gcloud compute ssh omgd-sa@%s-omgd-dev-instance-%s --project=%s --zone=%s -- %s",
-							profile.OMGD.Name,
-							profile.Name,
-							profile.OMGD.GCP.Project,
-							profile.OMGD.GCP.Zone,
-							cmd,
-						),
-						"printing server logs from GCP compute instance",
-						OutputDir,
-						[]string{
-							fmt.Sprintf("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=%s", profile.OMGD.GCP.CredsFile),
-						},
-					)
+					utils.RemoteGCPCommand(cmd, OutputDir, profile)
 				}
 			}
 		case "status":
@@ -101,11 +105,19 @@ $ omgd servers deploy         | deploys servers folder to profile target, not us
 				utils.SetEnvLogLevel(utils.DEBUG_LOG)
 			}
 
-			utils.CmdOnDir(
-				fmt.Sprintf("docker compose -p %s-%s-servers ps", profile.OMGD.Name, profile.Name),
-				fmt.Sprintf("printing servers status"),
-				"servers",
-			)
+			if profile.Name == "local" {
+				utils.CmdOnDir(
+					fmt.Sprintf("docker compose -p %s-%s-servers ps", profile.OMGD.Name, profile.Name),
+					fmt.Sprintf("printing servers status"),
+					"servers",
+				)
+			} else if profile.OMGD.Servers.Host != "" {
+				cmd := "docker compose ps"
+
+				if profile.OMGD.GCP.Bucket != "" {
+					utils.RemoteGCPCommand(cmd, OutputDir, profile)
+				}
+			}
 		case "deploy":
 			if profile.Name == "local" {
 				utils.LogWarn("omgd servers deploy requires a non local yml profile to be passed in with -p")

@@ -68,7 +68,7 @@ func (infraChange *InfraChange) DeployClientAndServer() {
 	}
 }
 
-func (infraChange *InfraChange) DeployInfra() {
+func (infraChange *InfraChange) InstanceSetup() {
 	infraChange.setupInstanceInfraFiles()
 
 	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
@@ -98,7 +98,7 @@ func (infraChange *InfraChange) DeployInfra() {
 	}
 }
 
-func (infraChange *InfraChange) DestroyInfra() {
+func (infraChange *InfraChange) InstanceDestroy() {
 	infraChange.setupInstanceInfraFiles()
 
 	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)

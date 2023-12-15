@@ -39,21 +39,21 @@ $ omgd infra project-destroy | Destroy project infra setup - NOTE: This does NOT
 		}
 
 		switch command {
-		case "deploy":
+		case "instance-setup":
 			utils.LogInfo("Setting up instance on cloud servers...")
-			infraChange.DeployInfra()
-		case "game-deploy":
-			utils.LogInfo("Building and deploying servers to cloud servers...")
-			infraChange.DeployClientAndServer()
-		case "destroy":
+			infraChange.InstanceSetup()
+		case "instance-destroy":
 			utils.LogInfo("Destroying instance on cloud servers...")
-			infraChange.DestroyInfra()
+			infraChange.InstanceDestroy()
 		case "project-setup":
 			utils.LogInfo("Setting up OMGD project to work with cloud servers...")
 			infraChange.ProjectSetup()
 		case "project-destroy":
 			utils.LogInfo("Destroying OMGD project setup on cloud servers...")
 			infraChange.ProjectDestroy()
+		case "game-deploy":
+			utils.LogInfo("Building and deploying servers to cloud servers...")
+			infraChange.DeployClientAndServer()
 		default:
 			utils.LogFatal(fmt.Sprintf("Found no infra command for %s", args[0]))
 			utils.LogWarn("hello")

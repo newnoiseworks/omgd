@@ -11,18 +11,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// serverCmd represents the server command
-var serverCmd = &cobra.Command{
-	Use:   "server",
+var volumeDrop = false
+
+// serversCmd represents the servers command
+var serversCmd = &cobra.Command{
+	Use:   "servers",
 	Short: "Manages OMGD Docker containers",
 	Long: `Manages OMGD Docker containers
 
-$ omgd server start          | starts local docker server containers
-$ omgd server stop           | stops local docker server containers
-$ omgd server reset-data     | stops containers and resets the data volumes
-$ omgd server logs           | prints logs from docker containers
-$ omgd server logs --verbose | tails / follows logs continuously
-$ omgd server status         | prints status of running docker containers
+$ omgd servers start          | starts local docker servers containers
+$ omgd servers stop           | stops local docker servers containers
+$ omgd servers logs           | prints logs from docker containers
+$ omgd servers logs --verbose | tails / follows logs continuously
+$ omgd servers status         | prints status of running docker containers
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		profile := utils.GetProfile(ProfilePath)
@@ -44,17 +45,18 @@ $ omgd server status         | prints status of running docker containers
 				"servers",
 			)
 		case "stop":
-			utils.LogInfo("Stopping OMGD servers containers...")
+			dropVolumeArg := ""
+
+			if volumeDrop {
+				dropVolumeArg = "-v"
+				utils.LogInfo("Stopping OMGD servers containers and dropping data volumes...")
+			} else {
+				utils.LogInfo("Stopping OMGD servers containers...")
+			}
+
 			utils.CmdOnDir(
-				fmt.Sprintf("docker compose -p %s-%s-servers down", profile.OMGD.Name, profile.Name),
+				fmt.Sprintf("docker compose -p %s-%s-servers down %s", profile.OMGD.Name, profile.Name, dropVolumeArg),
 				fmt.Sprintf("stopping docker containers"),
-				"servers",
-			)
-		case "reset-data":
-			utils.LogInfo("Stopping OMGD servers containers and dropping data...")
-			utils.CmdOnDir(
-				fmt.Sprintf("docker compose -p %s-%s-servers down -v", profile.OMGD.Name, profile.Name),
-				fmt.Sprintf("removing data volumes and stopping docker containers"),
 				"servers",
 			)
 		case "logs":
@@ -100,7 +102,7 @@ $ omgd server status         | prints status of running docker containers
 
 			utils.CmdOnDir(
 				fmt.Sprintf("docker compose -p %s-%s-servers ps", profile.OMGD.Name, profile.Name),
-				fmt.Sprintf("printing server status"),
+				fmt.Sprintf("printing servers status"),
 				"servers",
 			)
 		}
@@ -108,15 +110,16 @@ $ omgd server status         | prints status of running docker containers
 }
 
 func init() {
-	rootCmd.AddCommand(serverCmd)
+	rootCmd.AddCommand(serversCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// serverCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// serversCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// serverCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// serversCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	serversCmd.Flags().BoolVarP(&volumeDrop, "volume-drop", "v", false, "Used with omgd servers stop -v, when passed will drop data volumes with containers, resetting data on next server start")
 }

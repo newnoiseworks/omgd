@@ -17,7 +17,7 @@ pygmentsUseClasses = true
   google_analytics_id = ""
   twitter_handle = "@zerostaticio"
   showAuthorOnHomepage = true
-  showAuthorOnPosts = false
+  showAuthorOnPosts = true
   showIntroContentOnHomepage = true
   showPostsOnHomepage = false
   usePaginationOnHomepage = false
@@ -60,7 +60,7 @@ pygmentsUseClasses = true
   #   name = "About"
   #   identifier = "about"
   #   weight = 3
-  #   url = "/About/"
+  #   url = "/pages/About/"
   [[menu.main]]
     name = "Github"
     identifier = "Github"

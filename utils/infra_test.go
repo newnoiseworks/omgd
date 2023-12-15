@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestDeployInfra(t *testing.T) {
+func TestInstanceSetup(t *testing.T) {
 	testDir := "static/test/infra_test_dir"
 
 	t.Cleanup(func() {
@@ -38,7 +38,7 @@ func TestDeployInfra(t *testing.T) {
 		SkipCleanup: true,
 	}
 
-	infraChange.DeployInfra()
+	infraChange.InstanceSetup()
 
 	// 1. Should create or empty .omgdtmp directory to work in
 	testFileShouldExist(t, fmt.Sprintf("%s/.omgd", testDir))
@@ -76,7 +76,7 @@ func TestDeployInfra(t *testing.T) {
 	}
 
 	// 5. Run main task in new .omgdtmp dir profiles/profile.yml file
-	testCmdOnDirValidCmdSet(t, "DeployInfra")
+	testCmdOnDirValidCmdSet(t, "InstanceSetup")
 
 	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/profiles/staging.yml", testDir), "127.6.6.6")
 
@@ -86,7 +86,7 @@ func TestDeployInfra(t *testing.T) {
 	testFileShouldNotExist(t, fmt.Sprintf("%s/.omgd", testDir))
 }
 
-func TestDestroyInfra(t *testing.T) {
+func TestInstanceDestroy(t *testing.T) {
 	testDir := "static/test/infra_test_dir"
 
 	t.Cleanup(func() {
@@ -120,7 +120,7 @@ func TestDestroyInfra(t *testing.T) {
 		SkipCleanup: true,
 	}
 
-	infraChange.DestroyInfra()
+	infraChange.InstanceDestroy()
 
 	// 1. Should create or empty .omgdtmp directory to work in
 	testFileShouldExist(t, fmt.Sprintf("%s/.omgd", testDir))
@@ -146,7 +146,7 @@ func TestDestroyInfra(t *testing.T) {
 	}
 
 	// 5. Run destroy-infra task in new .omgdtmp dir profiles/profile.yml file
-	testCmdOnDirValidCmdSet(t, "DestroyInfra")
+	testCmdOnDirValidCmdSet(t, "InstanceDestroy")
 
 	infraChange.PerformCleanup()
 
@@ -243,7 +243,7 @@ func TestDeployClientAndServer(t *testing.T) {
 	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/profiles/staging.yml", testDir), "127.6.6.6")
 
 	// 5. Run main task in new .omgdtmp dir profiles/profile.yml file
-	testCmdOnDirValidCmdSet(t, "DeployInfra")
+	testCmdOnDirValidCmdSet(t, "DeployClientAndServer")
 
 	infraChange.PerformCleanup()
 

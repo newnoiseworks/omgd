@@ -108,7 +108,7 @@ $ omgd servers deploy         | deploys servers folder to profile target, not us
 			)
 		case "deploy":
 			if profile.Name == "local" {
-				utils.LogWarn("local profile not needed with omgd servers deploy")
+				utils.LogWarn("omgd servers deploy requires a non local yml profile to be passed in with -p")
 				return
 			}
 

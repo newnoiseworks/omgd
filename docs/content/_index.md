@@ -1,8 +1,9 @@
 ---
-title: Multiplayer Game Dev Made Open and Easy - OMGD
+title: OMGD
 addDot: false
 addBang: true
 ---
+## Open Multiplayer Game Dev
 
 OMGD eases the entanglement of multiplayer game dev by combining open source tools so you can focus on what matters - your game.
 
@@ -17,19 +18,18 @@ This is how to start the local server and build game clients:
 
 ```
 
- $ omgd build-templates
- $ omgd build-clients
- $ omgd server start
+ $ omgd game build
+ $ omgd servers start
  
 ```
 
-This is how to setup and teardown a live game server - dedicated, another set of software, or both - onto a cloud service <small>(currently supporting Google Cloud Platform)</small>:
+This is how to setup a live game server - dedicated, another set of software, or both - onto a cloud service <small>(currently supporting Google Cloud Platform)</small>:
 
 ```
 
  $ omgd infra deploy -p staging.yml
- $ omgd infra game-deploy -p staging.yml
- $ omgd infra destroy -p staging.yml
+ $ omgd game build -p staging.yml
+ $ omgd servers deploy -p staging.yml
  
 ```
 

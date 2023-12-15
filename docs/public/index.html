@@ -100,9 +100,38 @@
   <div class="intro">
     <h1>Multiplayer Game Dev Made Open and Easy - OMGD<span class="dot">!</span></h1>
     
-      <div class="intro-content"><p>OMGD eases the entaglement of multiplayer game dev by combining open source tools so you can focus on what matters - your game.</p>
-<p>All via a simple CLI tool and a few commands!</p>
-<p>Coming soon<span class="dot">!</span></p>
+      <div class="intro-content"><p>OMGD eases the entanglement of multiplayer game dev by combining open source tools so you can focus on what matters - your game.</p>
+<p>All via a simple CLI tool and a few commands!
+<br />
+<br />
+<br /></p>
+<h2 id="how-it-works">How it works</h2>
+<p>This is how to start the local server and build game clients:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> $ omgd build-templates
+</span></span><span class="line"><span class="cl"> $ omgd build-clients
+</span></span><span class="line"><span class="cl"> $ omgd server start
+</span></span><span class="line"><span class="cl"> 
+</span></span></code></pre></div><p>This is how to setup and teardown a live game server - dedicated, another set of software, or both - onto a cloud service <small>(currently supporting Google Cloud Platform)</small>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> $ omgd infra deploy -p staging.yml
+</span></span><span class="line"><span class="cl"> $ omgd infra game-deploy -p staging.yml
+</span></span><span class="line"><span class="cl"> $ omgd infra destroy -p staging.yml
+</span></span><span class="line"><span class="cl"> 
+</span></span></code></pre></div><p>OMGD uses Docker and Terraform for you to make everything work.
+<br />
+<br />
+<br /></p>
+<h2 id="check-out-some-examples">Check out some examples</h2>
+<p><a href="https://github.com/newnoiseworks/omgd-godot3-dedicated-example">Godot 3 Dedicated Server Example</a>
+<br />
+<br />
+<br /></p>
+<h2 id="try-out-the-latest-build">Try out the latest build</h2>
+<p><a href="https://github.com/newnoiseworks/omgd/releases">Get the Latest Beta Release Today!</a>
+<br />
+<br />
+<br /></p>
 </div>
     
   </div>

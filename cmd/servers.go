@@ -24,6 +24,7 @@ $ omgd servers stop           | stops local docker servers containers
 $ omgd servers logs           | prints logs from docker containers
 $ omgd servers logs --verbose | tails / follows logs continuously
 $ omgd servers status         | prints status of running docker containers
+$ omgd servers deploy         | deploys servers folder to profile target, not usable with local profile
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		profile := utils.GetProfile(ProfilePath)
@@ -105,6 +106,22 @@ $ omgd servers status         | prints status of running docker containers
 				fmt.Sprintf("printing servers status"),
 				"servers",
 			)
+		case "deploy":
+			if profile.Name == "local" {
+				utils.LogWarn("local profile not needed with omgd servers deploy")
+				return
+			}
+
+			utils.LogInfo("Deploying servers to cloud...")
+
+			sc := utils.ServersChange{
+				OutputDir:       OutputDir,
+				Profile:         profile,
+				CmdOnDir:        utils.CmdOnDir,
+				CmdOnDirWithEnv: utils.CmdOnDirWithEnv,
+			}
+
+			sc.Deploy()
 		}
 	},
 }

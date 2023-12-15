@@ -51,9 +51,6 @@ $ omgd infra project-destroy | Destroy project infra setup - NOTE: This does NOT
 		case "project-destroy":
 			utils.LogInfo("Destroying OMGD project setup on cloud servers...")
 			infraChange.ProjectDestroy()
-		case "game-deploy":
-			utils.LogInfo("Building and deploying servers to cloud servers...")
-			infraChange.DeployClientAndServer()
 		default:
 			utils.LogFatal(fmt.Sprintf("Found no infra command for %s", args[0]))
 			utils.LogWarn("hello")

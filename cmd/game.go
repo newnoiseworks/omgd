@@ -11,40 +11,46 @@ import (
 // BuildTargets sets the targets to be built
 var BuildTargets string
 
-// buildClientsCmd represents the buildClients command
-var buildClientsCmd = &cobra.Command{
-	Use:   "build-clients",
-	Short: "Builds game clients into the game/dist folder.",
-	// Long:  `Builds local game clients into the game/dist folder based on your local profile.`,
+// gameCmd represents the game command
+var gameCmd = &cobra.Command{
+	Use:   "game",
+	Short: "Manages game clients.",
+	Long: `Manages game clients.
+
+$ omgd game build | builds game clients into the game/dist folder based on provided profile
+	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		utils.LogInfo("Building game clients and copying to servers directory as specified in profile...")
 
 		profile := utils.GetProfile(ProfilePath)
 
-		buildTemplatesCmd.Run(cmd, args)
+		switch args[0] {
+		case "build":
+			buildTemplatesCmd.Run(cmd, args)
 
-		sccp := utils.StaticCodeCopyPlan{}
+			sccp := utils.StaticCodeCopyPlan{}
 
-		cb := utils.ClientBuilder{
-			Profile:             profile,
-			CmdOnDirWithEnv:     utils.CmdOnDirWithEnv,
-			CopyStaticDirectory: sccp.CopyStaticDirectory,
-			Targets:             BuildTargets,
+			cb := utils.ClientBuilder{
+				Profile:             profile,
+				CmdOnDirWithEnv:     utils.CmdOnDirWithEnv,
+				CopyStaticDirectory: sccp.CopyStaticDirectory,
+				Targets:             BuildTargets,
+			}
+
+			cb.Build()
 		}
-
-		cb.Build()
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(buildClientsCmd)
+	rootCmd.AddCommand(gameCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// buildClientsCmd.PersistentFlags().String("foo", "", "A help for foo")
-	buildClientsCmd.PersistentFlags().StringVar(
+	// gameCmd.PersistentFlags().String("foo", "", "A help for foo")
+	gameCmd.PersistentFlags().StringVar(
 		&BuildTargets,
 		"targets",
 		"",
@@ -53,5 +59,5 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// buildClientsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// gameCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

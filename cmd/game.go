@@ -20,13 +20,13 @@ var gameCmd = &cobra.Command{
 $ omgd game build | builds game clients into the game/dist folder based on provided profile
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.LogInfo("Building game clients and copying to servers directory as specified in profile...")
-
 		profile := utils.GetProfile(ProfilePath)
 
 		switch args[0] {
 		case "build":
 			buildTemplatesCmd.Run(cmd, args)
+
+			utils.LogInfo("Building game clients and copying to servers directory as specified in profile...")
 
 			sccp := utils.StaticCodeCopyPlan{}
 

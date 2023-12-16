@@ -1,3 +1,15 @@
 /* You can add custom styles here. */
 
 // @import "plugins/numbered";
+
+$highlight-color: #7b16ff;
+
+body {
+  min-height: 100vh;
+  border: .5rem solid $highlight-color;
+}
+
+.book-menu .book-menu-content {
+  background: transparent;
+  padding-left: 2rem;
+}

@@ -1,6 +1,6 @@
 baseURL = "/"
 languageCode = "en-us"
-theme = "hugo-winston-theme"
+theme = "hugo-book"
 themesDir = "themes"
 title = "OMGD - Open Multiplayer Game Development"
 paginate = 3

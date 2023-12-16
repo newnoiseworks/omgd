@@ -1,9 +1,15 @@
 ---
 title: OMGD
-addDot: false
-addBang: true
+bookToc: false
+# bookFlatSection: false
+# bookHidden: false
+# bookCollapseSection: false
+# bookComments: false
+# bookSearchExclude: false
 ---
-## Open Multiplayer Game Dev
+# OMGD
+
+## OMGD == Open Multiplayer GameDev
 
 OMGD eases the entanglement of multiplayer game dev by combining open source tools so you can focus on what matters - your game.
 
@@ -17,21 +23,19 @@ All via a simple CLI tool and a few commands!
 This is how to start the local server and build game clients:
 
 ```
-
  $ omgd game build
  $ omgd servers start
- 
 ```
+<br />
 
 This is how to setup a live game server - dedicated, another set of software, or both - onto a cloud service <small>(currently supporting Google Cloud Platform)</small>:
 
 ```
-
  $ omgd infra deploy -p staging.yml
  $ omgd game build -p staging.yml
  $ omgd servers deploy -p staging.yml
- 
 ```
+<br />
 
 OMGD uses Docker and Terraform for you to make everything work.
 <br />

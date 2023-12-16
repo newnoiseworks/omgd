@@ -31,7 +31,7 @@ This is how to start the local server and build game clients:
 This is how to setup a live game server - dedicated, another set of software, or both - onto a cloud service <small>(currently supporting Google Cloud Platform)</small>:
 
 ```
- $ omgd infra deploy -p staging.yml
+ $ omgd infra instance-setup -p staging.yml
  $ omgd game build -p staging.yml
  $ omgd servers deploy -p staging.yml
 ```

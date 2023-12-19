@@ -30,6 +30,20 @@ h5 {
   font-weight: bold;
 }
 
+@media screen and (min-width: $mobile-breakpoint) {
+  h1 {
+    font-size: 5rem;
+  }
+
+  h2 {
+    font-size: 3rem;
+  }
+
+  h3 {
+    font-size: 2rem;
+  }
+}
+
 a {
   text-decoration: none;
   color: var(--color-link);

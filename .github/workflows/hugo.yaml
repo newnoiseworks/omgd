@@ -6,6 +6,9 @@ on:
   push:
     branches:
       - main
+      - 285-doc-updates-should-not-affect-releases
+    paths:
+      - 'docs/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:

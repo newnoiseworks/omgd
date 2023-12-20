@@ -37,7 +37,7 @@ Then, in the directory of the project on your computer, run
 
 ```console
 omgd game build
-omgd server start
+omgd servers start
 ```
 
 In the `game/dist` directory, there should be built executables mapped to your local server. Launch a couple to try the demo out!

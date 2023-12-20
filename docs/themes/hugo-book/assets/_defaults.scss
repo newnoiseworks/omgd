@@ -28,13 +28,17 @@ $hint-colors: (
   danger: #f66,
 ) !default;
 
+$highlight-color: #7b16ff;
+
 // Themes
 @mixin theme-light {
   --gray-100: #f8f9fa;
   --gray-200: #e9ecef;
   --gray-500: #adb5bd;
 
-  --color-link: #0055bb;
+
+  --color-link: #7b16ff;
+  // --color-link: #0055bb;
   --color-visited-link: #8440f1;
 
   --body-background: white;

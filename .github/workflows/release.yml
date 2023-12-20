@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - 285-doc-updates-should-not-affect-releases
     paths:
       - 'cmd/**'
       - 'utils/**'

@@ -31,7 +31,7 @@ Grab the latest release [from Github](https://github.com/newnoiseworks/omgd/rele
 
 To get started, grab one of the examples from [Github](https://github.com/newnoiseworks/).
 
-### Building the Game and Starting the Servers
+### Building the Game and Servers
 
 Then, in the directory of the project on your computer, run
 
@@ -40,16 +40,21 @@ omgd game build
 omgd server start
 ```
 
+In the `game/dist` directory, there should be built executables mapped to your local server. Launch a couple to try the demo out!
+
 Follow the README.md in the example but generally loading the `game` directory within the game engine of the example should let you build the game and it will work against the server created. 
 
-Also, in the `game/dist` directory, there should be built executables.
+{{<hint info>}}
+`omgd game build` will run a command internally that you can run manually called `omgd build-templates`, which loads `profile/local.yml` by default and builds templates into game code files such that the servers and games are linked up properly before building and starting them. 
+{{</hint>}}
 
-To verify, check the server logs.
 
 ### Checking Server Logs
 
+To verify running servers, check the logs.
+
 ```console
-omgd server logs
+omgd servers logs
 ```
 
 ## Deploying to the Cloud
@@ -82,7 +87,7 @@ omgd infra project-setup
 
 After it's done, reload your `omgd.cloud.yml` file and you should see a value for the property `omgd.gcp.bucket` - your cloud settings will be saved to a newly created GCS bucket.
 
-### Create a profile to deploy your game to
+### Create a profile to deploy your game
 
 Each `profile/*.yml` file not named `local.yml`, `omgd.yml`, or `omgd.cloud.yml` creates a new instance to deploy your game servers to while you're in development.
 
@@ -106,6 +111,10 @@ Build the game against that profile with the following:
 ```console
 omgd game build -p profiles/example.yml
 ```
+
+{{<hint info>}}
+When you're ready to get back to local development, you may need to run `omgd build-templates` or `omgd game build` so your game and servers are readied to run on your local machine.
+{{</hint>}}
 
 ### Deploy game servers to the cloud
 

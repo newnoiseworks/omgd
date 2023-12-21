@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/newnoiseworks/omgd/utils"
 	"github.com/spf13/cobra"
@@ -44,7 +45,9 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVarP(&ProfilePath, "profile", "p", "profiles/local.yml", "yml profile representing this build in the build/profiles folder")
+	rootProfile := filepath.Join("profiles", "local.yml")
+
+	rootCmd.PersistentFlags().StringVarP(&ProfilePath, "profile", "p", rootProfile, "yml profile representing this build in the build/profiles folder")
 
 	rootCmd.PersistentFlags().StringVar(&OutputDir, "output-dir", ".", "output dir of files that are generated etc")
 

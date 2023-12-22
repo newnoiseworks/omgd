@@ -26,7 +26,7 @@ func TestServersDeploy(t *testing.T) {
 		profile.UpdateProfile("omgd.servers.host", "???")
 	})
 
-	profile := GetProfileFromDir("profiles/staging.yml", testDir)
+	profile := GetProfile(filepath.Join(testDir, "profiles/staging.yml"))
 
 	serversChange := ServersChange{
 		OutputDir:       testDir,

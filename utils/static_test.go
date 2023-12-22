@@ -3,7 +3,6 @@ package utils
 import (
 	"fmt"
 	"os"
-	"path"
 	"path/filepath"
 	"reflect"
 	"runtime"
@@ -22,8 +21,7 @@ func getNewLine() string {
 }
 
 func TestStaticGetStaticFileCmd(t *testing.T) {
-	// NOTE: windows doesn't need backslash separator for embed.FS files
-	received, err := GetStaticFile(path.Join("static", "test", "test.md"))
+	received, err := GetStaticFile(filepath.Join("static", "test", "test.md"))
 
 	if err != nil {
 		LogError(fmt.Sprint(err))

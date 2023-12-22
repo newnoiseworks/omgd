@@ -24,6 +24,7 @@ type StaticCodeCopyPlan struct {
 }
 
 func GetStaticFile(file string) (string, error) {
+	file = strings.Join(strings.Split(file, string(os.PathSeparator)), "/")
 	byteArr, err := staticFiles.ReadFile(file)
 
 	retVal := string(byteArr)
@@ -32,7 +33,8 @@ func GetStaticFile(file string) (string, error) {
 }
 
 func (sccp *StaticCodeCopyPlan) CopyStaticDirectory(pathToCopy string, pathToCopyTo string) error {
-	files, err := staticFiles.ReadDir(pathToCopy)
+	unixPath := strings.Join(strings.Split(pathToCopy, string(os.PathSeparator)), "/")
+	files, err := staticFiles.ReadDir(unixPath)
 	if err != nil {
 		files, err = os.ReadDir(pathToCopy)
 
@@ -94,7 +96,8 @@ func CopyStaticFile(
 	filePathToRead string,
 	filePathToWrite string,
 ) error {
-	fileBytes, err := staticFiles.ReadFile(filePathToRead)
+	unixPath := strings.Join(strings.Split(filePathToRead, string(os.PathSeparator)), "/")
+	fileBytes, err := staticFiles.ReadFile(unixPath)
 	if err != nil {
 		fileBytes, err = os.ReadFile(filePathToRead)
 

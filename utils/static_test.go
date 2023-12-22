@@ -81,7 +81,8 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 	received = string(fileTwo)
 
 	if expected != received {
-		t.Fatal("File ", filepath.Join("static", "test", "test_dir_post_copying", "test_two.md"), " doesn't match expected contents")
+		LogDebug(fmt.Sprintf("File %s doesn't match expected contents", filepath.Join("static", "test", "test_dir_post_copying", "test_two.md")))
+		t.Fail()
 
 		testLogComparison(expected, received)
 	}
@@ -90,7 +91,8 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 	received = string(fileThree)
 
 	if expected != received {
-		t.Fatal("File ", filepath.Join("static", "test", "test_dir_post_copying", "folder", "test_one.md"), " doesn't match expected contents")
+		LogDebug(fmt.Sprintf("File %s doesn't match expected contents", filepath.Join("static", "test", "test_dir_post_copying", "folder", "test_one.md")))
+		t.Fail()
 
 		testLogComparison(expected, received)
 	}
@@ -163,11 +165,13 @@ func TestStaticCopyStaticDirectoryWithEdits(t *testing.T) {
 	received := string(file)
 
 	if expected != received {
-		t.Fatal(
-			"File static",
-			filepath.Join("test", ".omgdtmp", "test_dir_post_copying", "test_one.md"),
-			" doesn't match expected contents",
+		LogDebug(
+			fmt.Sprintf(
+				"File static %s doesn't match expected contents",
+				filepath.Join("test", ".omgdtmp", "test_dir_post_copying", "test_one.md"),
+			),
 		)
+		t.Fail()
 
 		testLogComparison(expected, received)
 	}
@@ -176,11 +180,13 @@ func TestStaticCopyStaticDirectoryWithEdits(t *testing.T) {
 	received = string(fileThree)
 
 	if expected != received {
-		t.Fatal(
-			"File static",
-			filepath.Join("test", ".omgdtmp", "test_dir_post_copying", "folder", "test_one.md"),
-			" doesn't match expected contents",
+		LogDebug(
+			fmt.Sprintf(
+				"File static %s doesn't match expected contents",
+				filepath.Join("test", ".omgdtmp", "test_dir_post_copying", "folder", "test_one.md"),
+			),
 		)
+		t.Fail()
 
 		testLogComparison(expected, received)
 	}

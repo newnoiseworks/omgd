@@ -17,7 +17,7 @@ func TestStaticGetStaticFileCmd(t *testing.T) {
 		LogFatal(fmt.Sprint(err))
 	}
 
-	expected := "This is a test test test\n"
+	expected := "This is a test test test\r\n"
 
 	if expected != received {
 		t.Errorf("File read from static lib doesn't match")
@@ -67,7 +67,7 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 		t.Fail()
 	}
 
-	expected := "test_one\n"
+	expected := "test_one\r\n"
 	received := string(file)
 
 	if expected != received {
@@ -77,7 +77,7 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 		testLogComparison(expected, received)
 	}
 
-	expected = "test_two\n"
+	expected = "test_two\r\n"
 	received = string(fileTwo)
 
 	if expected != received {
@@ -87,7 +87,7 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 		testLogComparison(expected, received)
 	}
 
-	expected = "test_one\n"
+	expected = "test_one\r\n"
 	received = string(fileThree)
 
 	if expected != received {
@@ -161,7 +161,7 @@ func TestStaticCopyStaticDirectoryWithEdits(t *testing.T) {
 		t.Fail()
 	}
 
-	expected := "test_one\n"
+	expected := "test_one\r\n"
 	received := string(file)
 
 	if expected != received {
@@ -176,7 +176,7 @@ func TestStaticCopyStaticDirectoryWithEdits(t *testing.T) {
 		testLogComparison(expected, received)
 	}
 
-	expected = "test_one\n"
+	expected = "test_one\r\n"
 	received = string(fileThree)
 
 	if expected != received {

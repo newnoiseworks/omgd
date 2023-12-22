@@ -11,13 +11,6 @@ func TestInstanceSetup(t *testing.T) {
 	testDir := filepath.Join("static", "test", "infra_test_dir")
 
 	t.Cleanup(func() {
-		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
-
-		if err != nil {
-			LogError(fmt.Sprint(err))
-			t.Fail()
-		}
-
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
 
 		profile := GetProfile(filepath.Join(testDir, "profiles", "staging.yml"))

@@ -42,7 +42,7 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 		err := os.RemoveAll(filepath.Join("static", "test", "test_dir_post_copying"))
 
 		if err != nil {
-			LogDebug(fmt.Sprint(err))
+			LogError(fmt.Sprint(err))
 			t.Fail()
 		}
 	})
@@ -55,26 +55,26 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 		filepath.Join("static", "test", "test_dir_post_copying"),
 	)
 	if err != nil {
-		LogDebug(fmt.Sprint(err))
+		LogError(fmt.Sprint(err))
 		t.Fail()
 	}
 
 	// 2. validate files match
 	file, err := os.ReadFile(filepath.Join("static", "test", "test_dir_post_copying", "test_one.md"))
 	if err != nil {
-		LogDebug(fmt.Sprint(err))
+		LogError(fmt.Sprint(err))
 		t.Fail()
 	}
 
 	fileTwo, err := os.ReadFile(filepath.Join("static", "test", "test_dir_post_copying", "test_two.md"))
 	if err != nil {
-		LogDebug(fmt.Sprint(err))
+		LogError(fmt.Sprint(err))
 		t.Fail()
 	}
 
 	fileThree, err := os.ReadFile(filepath.Join("static", "test", "test_dir_post_copying", "folder", "test_one.md"))
 	if err != nil {
-		LogDebug(fmt.Sprint(err))
+		LogError(fmt.Sprint(err))
 		t.Fail()
 	}
 
@@ -82,7 +82,7 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 	received := string(file)
 
 	if expected != received {
-		LogDebug(fmt.Sprintf("File %s doesn't match expected contents", filepath.Join("static", "test", "test_dir_post_copying", "test_one.md")))
+		LogError(fmt.Sprintf("File %s doesn't match expected contents", filepath.Join("static", "test", "test_dir_post_copying", "test_one.md")))
 		t.Fail()
 
 		testLogComparison(expected, received)
@@ -92,7 +92,7 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 	received = string(fileTwo)
 
 	if expected != received {
-		LogDebug(fmt.Sprintf("File %s doesn't match expected contents", filepath.Join("static", "test", "test_dir_post_copying", "test_two.md")))
+		LogError(fmt.Sprintf("File %s doesn't match expected contents", filepath.Join("static", "test", "test_dir_post_copying", "test_two.md")))
 		t.Fail()
 
 		testLogComparison(expected, received)
@@ -102,7 +102,7 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 	received = string(fileThree)
 
 	if expected != received {
-		LogDebug(fmt.Sprintf("File %s doesn't match expected contents", filepath.Join("static", "test", "test_dir_post_copying", "folder", "test_one.md")))
+		LogError(fmt.Sprintf("File %s doesn't match expected contents", filepath.Join("static", "test", "test_dir_post_copying", "folder", "test_one.md")))
 		t.Fail()
 
 		testLogComparison(expected, received)
@@ -114,14 +114,14 @@ func TestStaticCopyStaticFileWithChangedPath(t *testing.T) {
 		err := os.RemoveAll(filepath.Join("static", "test", ".omgdtmp"))
 
 		if err != nil {
-			LogDebug(fmt.Sprint(err))
+			LogError(fmt.Sprint(err))
 			t.Fail()
 		}
 	})
 
 	err := os.Mkdir(filepath.Join("static", "test", ".omgdtmp"), 0755)
 	if err != nil && !os.IsExist(err) {
-		LogDebug(fmt.Sprint(err))
+		LogError(fmt.Sprint(err))
 		t.Fail()
 	}
 
@@ -135,14 +135,14 @@ func TestStaticCopyStaticDirectoryWithEdits(t *testing.T) {
 		err := os.RemoveAll(filepath.Join("static", "test", ".omgdtmp"))
 
 		if err != nil {
-			LogDebug(fmt.Sprint(err))
+			LogError(fmt.Sprint(err))
 			t.Fail()
 		}
 	})
 
 	err := os.Mkdir(filepath.Join("static", "test", ".omgdtmp"), 0755)
 	if err != nil && !os.IsExist(err) {
-		LogDebug(fmt.Sprint(err))
+		LogError(fmt.Sprint(err))
 		t.Fail()
 	}
 
@@ -162,13 +162,13 @@ func TestStaticCopyStaticDirectoryWithEdits(t *testing.T) {
 
 	file, err := os.ReadFile(filepath.Join("static", "test", ".omgdtmp", "test_dir_post_copying", "test_one.md"))
 	if err != nil {
-		LogDebug(fmt.Sprint(err))
+		LogError(fmt.Sprint(err))
 		t.Fail()
 	}
 
 	fileThree, err := os.ReadFile(filepath.Join("static", "test", ".omgdtmp", "test_dir_post_copying", "folder", "test_one.md"))
 	if err != nil {
-		LogDebug(fmt.Sprint(err))
+		LogError(fmt.Sprint(err))
 		t.Fail()
 	}
 
@@ -176,7 +176,7 @@ func TestStaticCopyStaticDirectoryWithEdits(t *testing.T) {
 	received := string(file)
 
 	if expected != received {
-		LogDebug(
+		LogError(
 			fmt.Sprintf(
 				"File static %s doesn't match expected contents",
 				filepath.Join("test", ".omgdtmp", "test_dir_post_copying", "test_one.md"),
@@ -191,7 +191,7 @@ func TestStaticCopyStaticDirectoryWithEdits(t *testing.T) {
 	received = string(fileThree)
 
 	if expected != received {
-		LogDebug(
+		LogError(
 			fmt.Sprintf(
 				"File static %s doesn't match expected contents",
 				filepath.Join("test", ".omgdtmp", "test_dir_post_copying", "folder", "test_one.md"),
@@ -208,14 +208,14 @@ func TestStaticCopyStaticDirectoryCreatesHiddenFiles(t *testing.T) {
 		err := os.RemoveAll(filepath.Join("static", "test", ".omgdtmp"))
 
 		if err != nil {
-			LogDebug(fmt.Sprint(err))
+			LogError(fmt.Sprint(err))
 			t.Fail()
 		}
 	})
 
 	err := os.Mkdir(filepath.Join("static", "test", ".omgdtmp"), 0755)
 	if err != nil && !os.IsExist(err) {
-		LogDebug(fmt.Sprint(err))
+		LogError(fmt.Sprint(err))
 		t.Fail()
 	}
 
@@ -237,14 +237,14 @@ func TestStaticCopyStaticDirectorySkipsFiles(t *testing.T) {
 		err := os.RemoveAll(filepath.Join("static", "test", ".omgdtmp"))
 
 		if err != nil {
-			LogDebug(fmt.Sprint(err))
+			LogError(fmt.Sprint(err))
 			t.Fail()
 		}
 	})
 
 	err := os.Mkdir(filepath.Join("static", "test", ".omgdtmp"), 0755)
 	if err != nil && !os.IsExist(err) {
-		LogDebug(fmt.Sprint(err))
+		LogError(fmt.Sprint(err))
 		t.Fail()
 	}
 
@@ -269,7 +269,7 @@ func TestStaticCopyStaticDirectoryInSameDirectory(t *testing.T) {
 		err := os.RemoveAll(filepath.Join("static", "test", "test_dir_to_copy", ".omgdtmp"))
 
 		if err != nil {
-			LogDebug(fmt.Sprint(err))
+			LogError(fmt.Sprint(err))
 			t.Fail()
 		}
 	})

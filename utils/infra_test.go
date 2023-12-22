@@ -14,7 +14,7 @@ func TestInstanceSetup(t *testing.T) {
 		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
 
 		if err != nil {
-			LogDebug(fmt.Sprint(err))
+			LogError(fmt.Sprint(err))
 			t.Fail()
 		}
 
@@ -85,7 +85,7 @@ func TestInstanceDestroy(t *testing.T) {
 		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
 
 		if err != nil {
-			LogDebug(fmt.Sprint(err))
+			LogError(fmt.Sprint(err))
 			t.Fail()
 		}
 
@@ -142,7 +142,7 @@ func TestProjectSetup(t *testing.T) {
 		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
 
 		if err != nil {
-			LogDebug(fmt.Sprint(err))
+			LogError(fmt.Sprint(err))
 			t.Fail()
 		}
 
@@ -217,7 +217,7 @@ func TestProjectDestroy(t *testing.T) {
 		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
 
 		if err != nil {
-			LogDebug(fmt.Sprint(err))
+			LogError(fmt.Sprint(err))
 			t.Fail()
 		}
 

@@ -15,7 +15,8 @@ func TestServersDeploy(t *testing.T) {
 		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
 
 		if err != nil {
-			t.Fatal(err)
+			LogError(fmt.Sprint(err))
+			t.Fail()
 		}
 
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
@@ -54,7 +55,8 @@ func TestServersDeploy(t *testing.T) {
 	homeDir, err := os.UserHomeDir()
 
 	if err != nil {
-		LogFatal(fmt.Sprintf("Error finding user's home directory %s", err))
+		LogError(fmt.Sprintf("Error finding user's home directory %s", err))
+		t.Fail()
 	}
 
 	deployCmd := "./deploy.sh"

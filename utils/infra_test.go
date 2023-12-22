@@ -87,12 +87,6 @@ func TestInstanceDestroy(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		err = os.RemoveAll(filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup", "terraform.tfvars"))
-
-		if err != nil {
-			t.Fatal(err)
-		}
-
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
 	})
 

@@ -42,6 +42,8 @@ func TestServersDeploy(t *testing.T) {
 
 	testFileShouldExist(t, filepath.Join(testDir, ".omgd", "infra"))
 
+	testForFileAndRegexpMatch(t, filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup", "terraform.tfvars"), "us-east4c")
+
 	testFileShouldExist(t, filepath.Join(testDir, ".omgd", "deploy"))
 	testFileShouldExist(t, filepath.Join(testDir, ".omgd", "deploy", "gcp", "deploy.sh"))
 

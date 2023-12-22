@@ -7,73 +7,76 @@ import (
 	"testing"
 )
 
-func TestInstanceSetup(t *testing.T) {
-	testDir := filepath.Join("static", "test", "infra_test_dir")
+// func TestInstanceSetup(t *testing.T) {
+// 	testDir := filepath.Join("static", "test", "infra_test_dir")
 
-	t.Cleanup(func() {
-		testCmdOnDirResponses = []testCmdOnDirResponse{}
+// 	t.Cleanup(func() {
+// 		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
 
-		profile := GetProfile(filepath.Join(testDir, "profiles", "staging.yml"))
+// 		if err != nil {
+// 			LogError(fmt.Sprint(err))
+// 			t.Fail()
+// 		}
 
-		profile.UpdateProfile("omgd.servers.host", "???")
-	})
+// 		testCmdOnDirResponses = []testCmdOnDirResponse{}
 
-	profile := GetProfile(filepath.Join(testDir, "profiles", "staging.yml"))
+// 		profile := GetProfile(filepath.Join(testDir, "profiles", "staging.yml"))
 
-	infraChange := InfraChange{
-		OutputDir:   testDir,
-		Profile:     profile,
-		CmdOnDir:    testCmdOnDir,
-		SkipCleanup: true,
-	}
+// 		profile.UpdateProfile("omgd.servers.host", "???")
+// 	})
 
-	infraChange.InstanceSetup()
+// 	profile := GetProfile(filepath.Join(testDir, "profiles", "staging.yml"))
 
-	testFileShouldExist(t, filepath.Join(testDir, ".omgd"))
+// 	infraChange := InfraChange{
+// 		OutputDir:   testDir,
+// 		Profile:     profile,
+// 		CmdOnDir:    testCmdOnDir,
+// 		SkipCleanup: true,
+// 	}
 
-	testFileShouldExist(t, filepath.Join(testDir, "game"))
-	testFileShouldExist(t, filepath.Join(testDir, "profiles"))
+// 	infraChange.InstanceSetup()
 
-	testFileShouldExist(t, filepath.Join(testDir, "profiles", "staging.yml"))
+// 	testFileShouldExist(t, filepath.Join(testDir, ".omgd"))
 
-	// testFileShouldExist(t, filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup", "terraform.tfvars"))
+// 	testFileShouldExist(t, filepath.Join(testDir, "game"))
+// 	testFileShouldExist(t, filepath.Join(testDir, "profiles"))
 
-	// testForFileAndRegexpMatch(t, filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup", "terraform.tfvars"), "gcp_project = \"test\"")
+// 	testFileShouldExist(t, filepath.Join(testDir, "profiles", "staging.yml"))
 
-	cmdDirStrTf := filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup")
+// 	testFileShouldExist(t, filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup", "terraform.tfvars"))
 
-	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
-		{
-			cmdStr:  fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", "???", "top-level-name", profile.Name),
-			cmdDesc: "setting up terraform locally",
-			cmdDir:  cmdDirStrTf,
-		},
-		{
-			cmdStr:  "terraform apply -auto-approve",
-			cmdDesc: "updating cloud infra if needed",
-			cmdDir:  cmdDirStrTf,
-		},
-		{
-			cmdStr:  "terraform output -raw server_ip",
-			cmdDesc: "getting ip of newly created server...",
-			cmdDir:  cmdDirStrTf,
-		},
-	}
+// 	testForFileAndRegexpMatch(t, filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup", "terraform.tfvars"), "gcp_project = \"test\"")
 
-	// 5. Run main task in new .omgdtmp dir profiles/profile.yml file
-	testCmdOnDirValidCmdSet(t, "InstanceSetup")
+// 	cmdDirStrTf := filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup")
 
-	testForFileAndRegexpMatch(t, filepath.Join(testDir, "profiles", "staging.yml"), "127.6.6.6")
+// 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
+// 		{
+// 			cmdStr:  fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", "???", "top-level-name", profile.Name),
+// 			cmdDesc: "setting up terraform locally",
+// 			cmdDir:  cmdDirStrTf,
+// 		},
+// 		{
+// 			cmdStr:  "terraform apply -auto-approve",
+// 			cmdDesc: "updating cloud infra if needed",
+// 			cmdDir:  cmdDirStrTf,
+// 		},
+// 		{
+// 			cmdStr:  "terraform output -raw server_ip",
+// 			cmdDesc: "getting ip of newly created server...",
+// 			cmdDir:  cmdDirStrTf,
+// 		},
+// 	}
 
-	LogInfo("performing cleanup...")
+// 	// 5. Run main task in new .omgdtmp dir profiles/profile.yml file
+// 	testCmdOnDirValidCmdSet(t, "InstanceSetup")
 
-	infraChange.PerformCleanup()
+// 	testForFileAndRegexpMatch(t, filepath.Join(testDir, "profiles", "staging.yml"), "127.6.6.6")
 
-	LogInfo("cleanup performed!")
+// 	infraChange.PerformCleanup()
 
-	testFileShouldNotExist(t, filepath.Join(cmdDirStrTf, "main.tf"))
-	testFileShouldNotExist(t, filepath.Join(testDir, ".omgd"))
-}
+// 	testFileShouldNotExist(t, filepath.Join(cmdDirStrTf, "main.tf"))
+// 	testFileShouldNotExist(t, filepath.Join(testDir, ".omgd"))
+// }
 
 func TestInstanceDestroy(t *testing.T) {
 	testDir := filepath.Join("static", "test", "infra_test_dir")

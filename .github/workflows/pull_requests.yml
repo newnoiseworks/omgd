@@ -36,4 +36,4 @@ jobs:
       -
         name: Test
         # run: go test ./...
-        run: go test -v ./... -run TestBuildTemplateFromPath
+        run: go test -v ./... -run TestStaticCopy

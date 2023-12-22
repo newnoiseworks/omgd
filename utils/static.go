@@ -23,13 +23,13 @@ type StaticCodeCopyPlan struct {
 	skipPaths           []string
 }
 
-// func GetStaticFile(file string) (string, error) {
-// 	byteArr, err := staticFiles.ReadFile(file)
+func GetStaticFile(file string) (string, error) {
+	byteArr, err := staticFiles.ReadFile(file)
 
-// 	retVal := string(byteArr)
+	retVal := string(byteArr)
 
-// 	return retVal, err
-// }
+	return retVal, err
+}
 
 func (sccp *StaticCodeCopyPlan) CopyStaticDirectory(pathToCopy string, pathToCopyTo string) error {
 	files, err := staticFiles.ReadDir(pathToCopy)

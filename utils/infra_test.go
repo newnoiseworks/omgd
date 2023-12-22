@@ -65,6 +65,8 @@ func TestInstanceSetup(t *testing.T) {
 
 	testForFileAndRegexpMatch(t, filepath.Join(testDir, "profiles", "staging.yml"), "127.6.6.6")
 
+	LogInfo("performing cleanup...")
+
 	infraChange.PerformCleanup()
 
 	testFileShouldNotExist(t, filepath.Join(cmdDirStrTf, "main.tf"))

@@ -69,6 +69,8 @@ func TestInstanceSetup(t *testing.T) {
 
 	infraChange.PerformCleanup()
 
+	LogInfo("cleanup performed!")
+
 	testFileShouldNotExist(t, filepath.Join(cmdDirStrTf, "main.tf"))
 	testFileShouldNotExist(t, filepath.Join(testDir, ".omgd"))
 }

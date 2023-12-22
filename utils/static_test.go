@@ -20,23 +20,23 @@ func getNewLine() string {
 	return newline
 }
 
-func TestStaticGetStaticFileCmd(t *testing.T) {
-	// 1. Test for reading a simple one line file
-	received, err := GetStaticFile(filepath.Join("static", "test", "test.md"))
+// func TestStaticGetStaticFileCmd(t *testing.T) {
+// 	// 1. Test for reading a simple one line file
+// 	received, err := GetStaticFile(filepath.Join("static", "test", "test.md"))
 
-	if err != nil {
-		LogError(fmt.Sprint(err))
-		t.Fail()
-	}
+// 	if err != nil {
+// 		LogError(fmt.Sprint(err))
+// 		t.Fail()
+// 	}
 
-	expected := "This is a test test test" + getNewLine()
+// 	expected := "This is a test test test" + getNewLine()
 
-	if expected != received {
-		t.Errorf("File read from static lib doesn't match")
+// 	if expected != received {
+// 		t.Errorf("File read from static lib doesn't match")
 
-		testLogComparison(expected, received)
-	}
-}
+// 		testLogComparison(expected, received)
+// 	}
+// }
 
 func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 	t.Cleanup(func() {

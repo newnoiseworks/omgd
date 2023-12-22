@@ -144,4 +144,6 @@ func processTemplate(tmpl string, data *map[interface{}]interface{}, templateExt
 			LogFatal(fmt.Sprintf("Error removing template after processing %s", err))
 		}
 	}
+
+	file_path.Close()
 }

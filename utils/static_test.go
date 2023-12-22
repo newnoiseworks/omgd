@@ -31,7 +31,8 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 		err := os.RemoveAll(filepath.Join("static", "test", "test_dir_post_copying"))
 
 		if err != nil {
-			t.Fatal(err)
+			LogDebug(fmt.Sprint(err))
+			t.Fail()
 		}
 	})
 
@@ -43,30 +44,35 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 		filepath.Join("static", "test", "test_dir_post_copying"),
 	)
 	if err != nil {
-		t.Fatal(err)
+		LogDebug(fmt.Sprint(err))
+		t.Fail()
 	}
 
 	// 2. validate files match
 	file, err := os.ReadFile(filepath.Join("static", "test", "test_dir_post_copying", "test_one.md"))
 	if err != nil {
-		t.Fatal(err)
+		LogDebug(fmt.Sprint(err))
+		t.Fail()
 	}
 
 	fileTwo, err := os.ReadFile(filepath.Join("static", "test", "test_dir_post_copying", "test_two.md"))
 	if err != nil {
-		t.Fatal(err)
+		LogDebug(fmt.Sprint(err))
+		t.Fail()
 	}
 
 	fileThree, err := os.ReadFile(filepath.Join("static", "test", "test_dir_post_copying", "folder", "test_one.md"))
 	if err != nil {
-		t.Fatal(err)
+		LogDebug(fmt.Sprint(err))
+		t.Fail()
 	}
 
 	expected := "test_one\n"
 	received := string(file)
 
 	if expected != received {
-		t.Fatal("File ", filepath.Join("static", "test", "test_dir_post_copying", "test_one.md"), " doesn't match expected contents")
+		LogDebug(fmt.Sprintf("File %s doesn't match expected contents", filepath.Join("static", "test", "test_dir_post_copying", "test_one.md")))
+		t.Fail()
 
 		testLogComparison(expected, received)
 	}
@@ -95,13 +101,15 @@ func TestStaticCopyStaticFileWithChangedPath(t *testing.T) {
 		err := os.RemoveAll(filepath.Join("static", "test", ".omgdtmp"))
 
 		if err != nil {
-			t.Fatal(err)
+			LogDebug(fmt.Sprint(err))
+			t.Fail()
 		}
 	})
 
 	err := os.Mkdir(filepath.Join("static", "test", ".omgdtmp"), 0755)
 	if err != nil && !os.IsExist(err) {
-		t.Fatal(err)
+		LogDebug(fmt.Sprint(err))
+		t.Fail()
 	}
 
 	CopyStaticFile(filepath.Join("static", "test", "test.md"), filepath.Join("static", "test", ".omgdtmp", "test22.md"))
@@ -114,13 +122,15 @@ func TestStaticCopyStaticDirectoryWithEdits(t *testing.T) {
 		err := os.RemoveAll(filepath.Join("static", "test", ".omgdtmp"))
 
 		if err != nil {
-			t.Fatal(err)
+			LogDebug(fmt.Sprint(err))
+			t.Fail()
 		}
 	})
 
 	err := os.Mkdir(filepath.Join("static", "test", ".omgdtmp"), 0755)
 	if err != nil && !os.IsExist(err) {
-		t.Fatal(err)
+		LogDebug(fmt.Sprint(err))
+		t.Fail()
 	}
 
 	scpp := StaticCodeCopyPlan{
@@ -139,12 +149,14 @@ func TestStaticCopyStaticDirectoryWithEdits(t *testing.T) {
 
 	file, err := os.ReadFile(filepath.Join("static", "test", ".omgdtmp", "test_dir_post_copying", "test_one.md"))
 	if err != nil {
-		t.Fatal(err)
+		LogDebug(fmt.Sprint(err))
+		t.Fail()
 	}
 
 	fileThree, err := os.ReadFile(filepath.Join("static", "test", ".omgdtmp", "test_dir_post_copying", "folder", "test_one.md"))
 	if err != nil {
-		t.Fatal(err)
+		LogDebug(fmt.Sprint(err))
+		t.Fail()
 	}
 
 	expected := "test_one\n"
@@ -179,13 +191,15 @@ func TestStaticCopyStaticDirectoryCreatesHiddenFiles(t *testing.T) {
 		err := os.RemoveAll(filepath.Join("static", "test", ".omgdtmp"))
 
 		if err != nil {
-			t.Fatal(err)
+			LogDebug(fmt.Sprint(err))
+			t.Fail()
 		}
 	})
 
 	err := os.Mkdir(filepath.Join("static", "test", ".omgdtmp"), 0755)
 	if err != nil && !os.IsExist(err) {
-		t.Fatal(err)
+		LogDebug(fmt.Sprint(err))
+		t.Fail()
 	}
 
 	scpp := StaticCodeCopyPlan{}
@@ -206,13 +220,15 @@ func TestStaticCopyStaticDirectorySkipsFiles(t *testing.T) {
 		err := os.RemoveAll(filepath.Join("static", "test", ".omgdtmp"))
 
 		if err != nil {
-			t.Fatal(err)
+			LogDebug(fmt.Sprint(err))
+			t.Fail()
 		}
 	})
 
 	err := os.Mkdir(filepath.Join("static", "test", ".omgdtmp"), 0755)
 	if err != nil && !os.IsExist(err) {
-		t.Fatal(err)
+		LogDebug(fmt.Sprint(err))
+		t.Fail()
 	}
 
 	scpp := StaticCodeCopyPlan{
@@ -236,7 +252,8 @@ func TestStaticCopyStaticDirectoryInSameDirectory(t *testing.T) {
 		err := os.RemoveAll(filepath.Join("static", "test", "test_dir_to_copy", ".omgdtmp"))
 
 		if err != nil {
-			t.Fatal(err)
+			LogDebug(fmt.Sprint(err))
+			t.Fail()
 		}
 	})
 

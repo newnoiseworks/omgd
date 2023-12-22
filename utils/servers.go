@@ -53,12 +53,6 @@ func (serversChange *ServersChange) Deploy() {
 
 	serversChange.Profile.UpdateProfile("omgd.servers.host", ipAddress)
 
-	serversChange.CmdOnDir(
-		fmt.Sprintf("omgd game build --profile=%s", filepath.FromSlash(serversChange.Profile.path)),
-		"building game clients against profile",
-		serversChange.OutputDir,
-	)
-
 	serviceArray := []string{}
 
 	for _, service := range serversChange.Profile.OMGD.Servers.Services {

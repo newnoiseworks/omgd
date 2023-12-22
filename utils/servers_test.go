@@ -26,7 +26,7 @@ func TestServersDeploy(t *testing.T) {
 		profile.UpdateProfile("omgd.servers.host", "???")
 	})
 
-	profile := GetProfileFromDir("profiles/staging.yml", testDir)
+	profile := GetProfile(filepath.Join(testDir, "profiles/staging.yml"))
 
 	serversChange := ServersChange{
 		OutputDir:       testDir,
@@ -77,11 +77,6 @@ func TestServersDeploy(t *testing.T) {
 			cmdStr:  "terraform output -raw server_ip",
 			cmdDesc: "getting ip of newly created server...",
 			cmdDir:  cmdDirStrTf,
-		},
-		{
-			cmdStr:  fmt.Sprintf("omgd game build --profile=%s", filepath.Join("profiles", "staging.yml")),
-			cmdDesc: "building game clients against profile",
-			cmdDir:  testDir,
 		},
 		{
 			cmdStr: deployCmd,

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -66,8 +67,14 @@ func (serversChange *ServersChange) Deploy() {
 
 	services := strings.Join(serviceArray, " ")
 
+	deployCmd := "./deploy.sh"
+
+	if runtime.GOOS == "Windows" {
+		deployCmd = "deploy.bat"
+	}
+
 	serversChange.CmdOnDirWithEnv(
-		"./deploy.sh",
+		deployCmd,
 		"deploying game server to gcp",
 		filepath.Join(serversChange.OutputDir, ".omgd", "deploy", "gcp"),
 		[]string{

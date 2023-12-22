@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 )
 
@@ -56,6 +57,12 @@ func TestServersDeploy(t *testing.T) {
 		LogFatal(fmt.Sprintf("Error finding user's home directory %s", err))
 	}
 
+	deployCmd := "./deploy.sh"
+
+	if runtime.GOOS == "Windows" {
+		deployCmd = "deploy.bat"
+	}
+
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
 			cmdStr:  fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", "???", "top-level-name", profile.Name),
@@ -73,7 +80,7 @@ func TestServersDeploy(t *testing.T) {
 			cmdDir:  testDir,
 		},
 		{
-			cmdStr: "./deploy.sh",
+			cmdStr: deployCmd,
 			env: []string{
 				"GCP_PROJECT=test",
 				"GCP_ZONE=us-east4c",

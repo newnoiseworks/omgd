@@ -4,7 +4,6 @@ gcloud compute ssh --project ${GCP_PROJECT} --zone ${GCP_ZONE} --command "sudo c
 
 gcloud compute ssh --project ${GCP_PROJECT} --zone ${GCP_ZONE} --command "truncate -s 0 /var/log/docker.log" omgd-sa@${OMGD_PROJECT}-omgd-dev-instance-${OMGD_PROFILE}
 
-# scp'ing the docker-compose file in case it's the first deploy and we don't have one, so the subsequent down command won't error out
 gcloud compute scp --project ${GCP_PROJECT} --zone ${GCP_ZONE} --force-key-file-overwrite ../../../servers/docker-compose.yml omgd-sa@${OMGD_PROJECT}-omgd-dev-instance-${OMGD_PROFILE}:
 
 gcloud compute ssh --project ${GCP_PROJECT} --zone ${GCP_ZONE} --command "docker compose down" omgd-sa@${OMGD_PROJECT}-omgd-dev-instance-${OMGD_PROFILE}

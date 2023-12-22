@@ -128,12 +128,12 @@ func processTemplate(tmpl string, data *map[interface{}]interface{}, templateExt
 		LogFatal(fmt.Sprintf("Error on template#ParseFiles call %s", err))
 	}
 
-	file_path, err := os.Create(final_path)
+	filePath, err := os.Create(final_path)
 	if err != nil {
 		LogFatal(fmt.Sprintf("Error on creating path for compiled template %s", err))
 	}
 
-	err = tBase.ExecuteTemplate(file_path, path.Base(tmpl), data)
+	err = tBase.ExecuteTemplate(filePath, path.Base(tmpl), data)
 	if err != nil {
 		LogFatal(fmt.Sprintf("Error on template#ExecuteTemplate call %s", err))
 	}
@@ -145,5 +145,5 @@ func processTemplate(tmpl string, data *map[interface{}]interface{}, templateExt
 		}
 	}
 
-	file_path.Close()
+	filePath.Close()
 }

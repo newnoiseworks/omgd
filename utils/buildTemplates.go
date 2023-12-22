@@ -122,10 +122,9 @@ func processTemplate(tmpl string, data *map[interface{}]interface{}, templateExt
 		LogFatal(fmt.Sprintf("Error on reading template file with ioutil#ReadFile %s", err))
 	}
 
-	// tBase, err := tBase.ParseFiles(tmpl)
 	tBase, err = tBase.Parse(string(tmplText))
 	if err != nil {
-		LogFatal(fmt.Sprintf("Error on template#ParseFiles call %s", err))
+		LogFatal(fmt.Sprintf("Error on template#Parse call %s", err))
 	}
 
 	filePath, err := os.Create(final_path)

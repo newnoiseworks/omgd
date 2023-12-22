@@ -165,7 +165,7 @@ func (infraChange *InfraChange) PerformCleanup() {
 	)
 
 	if err != nil {
-		LogFatal(fmt.Sprint(err))
+		LogFatal(fmt.Sprintf("Error on infraChange#PerformCleanup %s", err))
 	}
 }
 

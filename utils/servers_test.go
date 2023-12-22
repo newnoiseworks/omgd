@@ -3,19 +3,15 @@ package utils
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"testing"
 )
 
 func TestServersDeploy(t *testing.T) {
-	testDir := "static/test/infra_test_dir"
+	testDir := filepath.Join("static", "test", "infra_test_dir")
 
 	t.Cleanup(func() {
-		err := os.RemoveAll(
-			fmt.Sprintf(
-				"%s/.omgd",
-				testDir,
-			),
-		)
+		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
 
 		if err != nil {
 			t.Fatal(err)
@@ -23,7 +19,7 @@ func TestServersDeploy(t *testing.T) {
 
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
 
-		profile := GetProfile(fmt.Sprintf("%s/profiles/staging.yml", testDir))
+		profile := GetProfile(filepath.Join(testDir, "profiles", "staging.yml"))
 
 		profile.UpdateProfile("omgd.servers.host", "???")
 	})
@@ -31,7 +27,7 @@ func TestServersDeploy(t *testing.T) {
 	profile := GetProfileFromDir("profiles/staging.yml", testDir)
 
 	serversChange := ServersChange{
-		OutputDir:       "static/test/infra_test_dir",
+		OutputDir:       testDir,
 		Profile:         profile,
 		CmdOnDir:        testCmdOnDir,
 		CmdOnDirWithEnv: testCmdOnDirWithEnv,
@@ -40,20 +36,19 @@ func TestServersDeploy(t *testing.T) {
 
 	serversChange.Deploy()
 
-	// 1. Should create or empty .omgdtmp directory to work in
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgd", testDir))
+	testFileShouldExist(t, filepath.Join(testDir, ".omgd"))
 
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgd/infra", testDir))
+	testFileShouldExist(t, filepath.Join(testDir, ".omgd", "infra"))
 
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgd/deploy", testDir))
-	testFileShouldExist(t, fmt.Sprintf("%s/.omgd/deploy/gcp/deploy.sh", testDir))
+	testFileShouldExist(t, filepath.Join(testDir, ".omgd", "deploy"))
+	testFileShouldExist(t, filepath.Join(testDir, ".omgd", "deploy", "gcp", "deploy.sh"))
 
-	testFileShouldExist(t, fmt.Sprintf("%s/game", testDir))
-	testFileShouldExist(t, fmt.Sprintf("%s/profiles", testDir))
+	testFileShouldExist(t, filepath.Join(testDir, "game"))
+	testFileShouldExist(t, filepath.Join(testDir, "profiles"))
 
-	testFileShouldExist(t, fmt.Sprintf("%s/profiles/staging.yml", testDir))
+	testFileShouldExist(t, filepath.Join(testDir, "profiles", "staging.yml"))
 
-	cmdDirStrTf := fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", testDir)
+	cmdDirStrTf := filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup")
 
 	homeDir, err := os.UserHomeDir()
 
@@ -73,7 +68,7 @@ func TestServersDeploy(t *testing.T) {
 			cmdDir:  cmdDirStrTf,
 		},
 		{
-			cmdStr:  "omgd game build --profile=profiles/staging.yml",
+			cmdStr:  fmt.Sprintf("omgd game build --profile=%s", filepath.Join("profiles", "staging.yml")),
 			cmdDesc: "building game clients against profile",
 			cmdDir:  testDir,
 		},
@@ -88,17 +83,17 @@ func TestServersDeploy(t *testing.T) {
 				fmt.Sprintf("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=%s/.config/gcloud/application_default_credentials.json", homeDir),
 			},
 			cmdDesc: "deploying game server to gcp",
-			cmdDir:  fmt.Sprintf("%s/.omgd/deploy/gcp", testDir),
+			cmdDir:  filepath.Join(testDir, ".omgd", "deploy", "gcp"),
 		},
 	}
 
 	testForFileAndRegexpMatch(t, fmt.Sprintf("%s/profiles/staging.yml", testDir), "127.6.6.6")
+	testForFileAndRegexpMatch(t, filepath.Join(testDir, "profiles", "staging.yml"), "127.6.6.6")
 
-	// 5. Run main task in new .omgdtmp dir profiles/profile.yml file
 	testCmdOnDirValidCmdSet(t, "Servers#Deploy")
 
 	serversChange.PerformCleanup()
 
-	testFileShouldNotExist(t, fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/main.tf", testDir))
-	testFileShouldNotExist(t, fmt.Sprintf("%s/.omgd", testDir))
+	testFileShouldNotExist(t, filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup", "main.tf"))
+	testFileShouldNotExist(t, filepath.Join(testDir, ".omgd"))
 }

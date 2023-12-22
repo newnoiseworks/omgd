@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -40,13 +41,13 @@ func (serversChange *ServersChange) Deploy() {
 	serversChange.CmdOnDir(
 		fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", serversChange.Profile.OMGD.GCP.Bucket, serversChange.Profile.OMGD.Name, serversChange.Profile.Name),
 		fmt.Sprintf("setting up terraform on profile %s", serversChange.Profile.Name),
-		fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", serversChange.OutputDir),
+		filepath.Join(serversChange.OutputDir, ".omgd", "infra", "gcp", "instance-setup"),
 	)
 
 	ipAddress := serversChange.CmdOnDir(
 		"terraform output -raw server_ip",
 		"getting ip of newly created server...",
-		fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", serversChange.OutputDir),
+		filepath.Join(serversChange.OutputDir, ".omgd", "infra", "gcp", "instance-setup"),
 	)
 
 	serversChange.Profile.UpdateProfile("omgd.servers.host", ipAddress)
@@ -68,7 +69,7 @@ func (serversChange *ServersChange) Deploy() {
 	serversChange.CmdOnDirWithEnv(
 		"./deploy.sh",
 		"deploying game server to gcp",
-		fmt.Sprintf("%s/.omgd/deploy/gcp", serversChange.OutputDir),
+		filepath.Join(serversChange.OutputDir, ".omgd", "deploy", "gcp"),
 		[]string{
 			fmt.Sprintf("GCP_PROJECT=%s", serversChange.Profile.OMGD.GCP.Project),
 			fmt.Sprintf("GCP_ZONE=%s", serversChange.Profile.OMGD.GCP.Zone),
@@ -88,8 +89,8 @@ func (serversChange *ServersChange) setupInstanceInfraFiles() {
 	sccp := StaticCodeCopyPlan{}
 
 	sccp.CopyStaticDirectory(
-		"static/infra/gcp/instance-setup",
-		fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup", serversChange.OutputDir),
+		filepath.Join("static", "infra", "gcp", "instance-setup"),
+		filepath.Join(serversChange.OutputDir, ".omgd", "infra", "gcp", "instance-setup"),
 	)
 }
 
@@ -97,18 +98,13 @@ func (serversChange *ServersChange) setupDeployFiles() {
 	sccp := StaticCodeCopyPlan{}
 
 	sccp.CopyStaticDirectory(
-		"static/deploy/gcp",
-		fmt.Sprintf("%s/.omgd/deploy/gcp", serversChange.OutputDir),
+		filepath.Join("static", "deploy", "gcp"),
+		filepath.Join(serversChange.OutputDir, ".omgd", "deploy", "gcp"),
 	)
 }
 
 func (serversChange *ServersChange) PerformCleanup() {
-	err := os.RemoveAll(
-		fmt.Sprintf(
-			"%s/.omgd",
-			serversChange.OutputDir,
-		),
-	)
+	err := os.RemoveAll(filepath.Join(serversChange.OutputDir, ".omgd"))
 
 	if err != nil {
 		LogFatal(fmt.Sprint(err))

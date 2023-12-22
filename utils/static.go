@@ -4,6 +4,7 @@ import (
 	"embed"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -47,8 +48,8 @@ func (sccp *StaticCodeCopyPlan) CopyStaticDirectory(pathToCopy string, pathToCop
 
 	for i := 0; i < len(files); i++ {
 		file := files[i]
-		filePathToRead := fmt.Sprintf("%s/%s", pathToCopy, file.Name())
-		filePathToWrite := fmt.Sprintf("%s/%s", pathToCopyTo, file.Name())
+		filePathToRead := filepath.Join(pathToCopy, file.Name())
+		filePathToWrite := filepath.Join(pathToCopyTo, file.Name())
 
 		if sccp.shouldSkipFilePath(filePathToRead) {
 			continue
@@ -58,7 +59,11 @@ func (sccp *StaticCodeCopyPlan) CopyStaticDirectory(pathToCopy string, pathToCop
 		// which is trifling if you ask me but whatever. the below is to get around that
 		// by replacing the . with OMGD_DOT_FILE, which will be rewritten to a . into
 		// userland by the below.
-		filePathToWrite = strings.ReplaceAll(filePathToWrite, "/OMGD_DOT_FILE", "/.")
+		filePathToWrite = strings.ReplaceAll(
+			filePathToWrite,
+			fmt.Sprintf("%sOMGD_DOT_FILE", string(os.PathSeparator)),
+			fmt.Sprintf("%s.", string(os.PathSeparator)),
+		)
 
 		if file.IsDir() {
 			err = sccp.CopyStaticDirectory(filePathToRead, filePathToWrite)

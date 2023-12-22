@@ -1,20 +1,21 @@
 package utils
 
 import (
+	"path/filepath"
 	"strings"
 	"testing"
 )
 
 func TestGetProfile(t *testing.T) {
-	testDir := "static/test/infra_test_dir"
+	testDir := filepath.Join("static", "test", "infra_test_dir")
 
-	profile := GetProfileFromDir("profiles/staging.yml", testDir)
+	profile := GetProfileFromDir(filepath.Join("profiles", "staging.yml"), testDir)
 
 	if profile.Name != "staging" {
 		t.Fatalf("profile Name not properly formatted")
 	}
 
-	if profile.path != "profiles/staging.yml" {
+	if profile.path != filepath.Join("profiles", "staging.yml") {
 		t.Fatalf("profile path not properly set")
 	}
 

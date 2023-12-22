@@ -142,7 +142,7 @@ func GetProfile(path string) *ProfileConf {
 		path: path,
 	}
 
-	splits := strings.Split(path, "/")
+	splits := strings.Split(path, string(os.PathSeparator))
 	c.Name = strings.Replace(splits[len(splits)-1], ".yml", "", 1)
 
 	var bytes, err = yaml.Marshal(c.GetProfileAsMap())

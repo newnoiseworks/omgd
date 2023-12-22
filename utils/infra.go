@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -23,19 +24,19 @@ func (infraChange *InfraChange) InstanceSetup() {
 	infraChange.CmdOnDir(
 		fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", infraChange.Profile.OMGD.GCP.Bucket, infraChange.Profile.OMGD.Name, infraChange.Profile.Name),
 		"setting up terraform locally",
-		fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", infraChange.OutputDir),
+		filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "instance-setup"),
 	)
 
 	infraChange.CmdOnDir(
 		"terraform apply -auto-approve",
 		"updating cloud infra if needed",
-		fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", infraChange.OutputDir),
+		filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "instance-setup"),
 	)
 
 	ipAddress := infraChange.CmdOnDir(
 		"terraform output -raw server_ip",
 		"getting ip of newly created server...",
-		fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", infraChange.OutputDir),
+		filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "instance-setup"),
 	)
 
 	infraChange.Profile.UpdateProfile("omgd.servers.host", ipAddress)
@@ -53,13 +54,13 @@ func (infraChange *InfraChange) InstanceDestroy() {
 	infraChange.CmdOnDir(
 		fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", infraChange.Profile.OMGD.GCP.Bucket, infraChange.Profile.OMGD.Name, infraChange.Profile.Name),
 		fmt.Sprintf("setting up terraform on profile %s", infraChange.Profile.Name),
-		fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", infraChange.OutputDir),
+		filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "instance-setup"),
 	)
 
 	infraChange.CmdOnDir(
 		"terraform destroy -auto-approve",
 		"destroying infrastructure",
-		fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup/", infraChange.OutputDir),
+		filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "instance-setup"),
 	)
 
 	if !infraChange.SkipCleanup {
@@ -75,21 +76,21 @@ func (infraChange *InfraChange) ProjectSetup() {
 	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
 
 	infraChange.CmdOnDir(
-		"terraform init -reconfigure -backend-config path=../../../../.omgd/terraform.tfstate",
+		fmt.Sprintf("terraform init -reconfigure -backend-config path=%s", filepath.Join("..", "..", "..", "..", ".omgd", "terraform.tfstate")),
 		"setting up terraform locally",
-		fmt.Sprintf("%s/.omgd/infra/gcp/project-setup/", infraChange.OutputDir),
+		filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "project-setup"),
 	)
 
 	infraChange.CmdOnDir(
 		"terraform apply -auto-approve",
 		"setting up initial infra",
-		fmt.Sprintf("%s/.omgd/infra/gcp/project-setup/", infraChange.OutputDir),
+		filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "project-setup"),
 	)
 
 	bucketName := infraChange.CmdOnDir(
 		"terraform output -raw bucket_name",
 		"getting newly created bucket name",
-		fmt.Sprintf("%s/.omgd/infra/gcp/project-setup/", infraChange.OutputDir),
+		filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "project-setup"),
 	)
 
 	omgdProfile := GetProfileFromDir(strings.Replace(
@@ -102,13 +103,13 @@ func (infraChange *InfraChange) ProjectSetup() {
 
 	infraChange.Profile = infraChange.Profile.LoadProfile()
 
-	tfFilePath := fmt.Sprintf("%s/.omgd/infra/gcp/project-setup/main.tf", infraChange.OutputDir)
+	tfFilePath := filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "project-setup", "main.tf")
 	infraChange.alterInfraBackendFile(tfFilePath, true)
 
 	infraChange.CmdOnDir(
 		fmt.Sprintf("terraform init -force-copy -backend-config bucket=%s -backend-config prefix=terraform/state/%s", infraChange.Profile.OMGD.GCP.Bucket, infraChange.Profile.OMGD.Name),
 		"setting up terraform to use gcs backend",
-		fmt.Sprintf("%s/.omgd/infra/gcp/project-setup/", infraChange.OutputDir),
+		filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "project-setup"),
 	)
 
 	if !infraChange.SkipCleanup {
@@ -121,27 +122,27 @@ func (infraChange *InfraChange) ProjectDestroy() {
 
 	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
 
-	tfFilePath := fmt.Sprintf("%s/.omgd/infra/gcp/project-setup/main.tf", infraChange.OutputDir)
+	tfFilePath := filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "project-setup", "main.tf")
 	infraChange.alterInfraBackendFile(tfFilePath, true)
 
 	infraChange.CmdOnDir(
 		fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s", infraChange.Profile.OMGD.GCP.Bucket, infraChange.Profile.OMGD.Name),
 		"setting up terraform to local backend",
-		fmt.Sprintf("%s/.omgd/infra/gcp/project-setup/", infraChange.OutputDir),
+		filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "project-setup"),
 	)
 
 	infraChange.alterInfraBackendFile(tfFilePath, false)
 
 	infraChange.CmdOnDir(
-		"terraform init -force-copy -backend-config path=../../../../.omgd/terraform.tfstate",
+		fmt.Sprintf("terraform init -force-copy -backend-config path=%s", filepath.Join("..", "..", "..", "..", ".omgd", "terraform.tfstate")),
 		"setting up terraform to destroy project level infra",
-		fmt.Sprintf("%s/.omgd/infra/gcp/project-setup/", infraChange.OutputDir),
+		filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "project-setup"),
 	)
 
 	infraChange.CmdOnDir(
 		"terraform destroy -auto-approve",
 		"destroying initial infra",
-		fmt.Sprintf("%s/.omgd/infra/gcp/project-setup/", infraChange.OutputDir),
+		filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "project-setup"),
 	)
 
 	if !infraChange.SkipCleanup {
@@ -160,10 +161,7 @@ func (infraChange *InfraChange) ProjectDestroy() {
 
 func (infraChange *InfraChange) PerformCleanup() {
 	err := os.RemoveAll(
-		fmt.Sprintf(
-			"%s/.omgd",
-			infraChange.OutputDir,
-		),
+		filepath.Join(infraChange.OutputDir, ".omgd"),
 	)
 
 	if err != nil {
@@ -175,8 +173,8 @@ func (infraChange *InfraChange) setupDeployFiles() {
 	sccp := StaticCodeCopyPlan{}
 
 	sccp.CopyStaticDirectory(
-		"static/deploy/gcp",
-		fmt.Sprintf("%s/.omgd/deploy/gcp", infraChange.OutputDir),
+		filepath.Join("static", "deploy", "gcp"),
+		filepath.Join(infraChange.OutputDir, ".omgd", "deploy", "gcp"),
 	)
 }
 
@@ -184,8 +182,8 @@ func (infraChange *InfraChange) setupInstanceInfraFiles() {
 	sccp := StaticCodeCopyPlan{}
 
 	sccp.CopyStaticDirectory(
-		"static/infra/gcp/instance-setup",
-		fmt.Sprintf("%s/.omgd/infra/gcp/instance-setup", infraChange.OutputDir),
+		filepath.Join("static", "infra", "gcp", "instance-setup"),
+		filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "instance-setup"),
 	)
 }
 
@@ -193,8 +191,8 @@ func (infraChange *InfraChange) setupProjectInfraFiles() {
 	sccp := StaticCodeCopyPlan{}
 
 	sccp.CopyStaticDirectory(
-		"static/infra/gcp/project-setup",
-		fmt.Sprintf("%s/.omgd/infra/gcp/project-setup", infraChange.OutputDir),
+		filepath.Join("static", "infra", "gcp", "project-setup"),
+		filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "project-setup"),
 	)
 }
 

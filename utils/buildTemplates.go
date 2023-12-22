@@ -24,18 +24,18 @@ func getData(profile *ProfileConf, buildPath string) *map[interface{}]interface{
 	resourceDir := buildPath
 
 	if strings.HasPrefix(profile.path, "..") {
-		paths := strings.Split(profile.path, "./")
+		paths := strings.Split(profile.path, fmt.Sprintf(".%s", string(os.PathSeparator)))
 
 		resourceDir = ""
 
 		for _, p := range paths {
 			if p == "." {
-				resourceDir += "../"
+				resourceDir += fmt.Sprintf("..%s", string(os.PathSeparator))
 			}
 		}
 	}
 
-	resourceDir = fmt.Sprintf("%s/resources/", resourceDir)
+	resourceDir = filepath.Join(resourceDir, "resources")
 	_, err := os.Stat(resourceDir)
 
 	if !os.IsNotExist(err) {

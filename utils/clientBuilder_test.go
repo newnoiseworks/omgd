@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"path/filepath"
 	"testing"
 )
 
@@ -11,9 +12,8 @@ func TestClientBuilderBuildFromProfile(t *testing.T) {
 		testCopyStaticDirectoryResponses = []testCopyStaticDirectoryResponse{}
 	})
 
-	testDir := "static/test/client_builder_dir"
-
-	profile := GetProfileFromDir("profiles/local.yml", testDir)
+	testDir := filepath.Join("static", "test", "client_builder_dir")
+	profile := GetProfileFromDir(filepath.Join("profiles", "local.yml"), testDir)
 
 	cb := ClientBuilder{
 		Profile:             profile,
@@ -41,9 +41,8 @@ func TestClientBuilderBuildFromArgs(t *testing.T) {
 		testCopyStaticDirectoryResponses = []testCopyStaticDirectoryResponse{}
 	})
 
-	testDir := "static/test/client_builder_dir"
-
-	profile := GetProfileFromDir("profiles/local.yml", testDir)
+	testDir := filepath.Join("static", "test", "client_builder_dir")
+	profile := GetProfileFromDir(filepath.Join("profiles", "local.yml"), testDir)
 
 	cb := ClientBuilder{
 		Profile:             profile,
@@ -72,9 +71,8 @@ func TestClientBuilderBuildFromProfileWithOverrides(t *testing.T) {
 		testCopyStaticDirectoryResponses = []testCopyStaticDirectoryResponse{}
 	})
 
-	testDir := "static/test/client_builder_dir"
-
-	profile := GetProfileFromDir("profiles/override.yml", testDir)
+	testDir := filepath.Join("static", "test", "client_builder_dir")
+	profile := GetProfileFromDir(filepath.Join("profiles", "override.yml"), testDir)
 
 	cb := ClientBuilder{
 		Profile:             profile,
@@ -102,9 +100,8 @@ func TestClientBuilderBuildCopiesFiles(t *testing.T) {
 		testCopyStaticDirectoryResponses = []testCopyStaticDirectoryResponse{}
 	})
 
-	testDir := "static/test/client_builder_dir"
-
-	profile := GetProfileFromDir("profiles/local.yml", testDir)
+	testDir := filepath.Join("static", "test", "client_builder_dir")
+	profile := GetProfileFromDir(filepath.Join("profiles", "local.yml"), testDir)
 
 	cb := ClientBuilder{
 		Profile:             profile,
@@ -127,8 +124,8 @@ func TestClientBuilderBuildCopiesFiles(t *testing.T) {
 
 	testCopyStaticDirectoryValidResponseSet = []testCopyStaticDirectoryResponse{
 		{
-			pathToCopy:   "test/dir",
-			pathToCopyTo: "test/dir_to",
+			pathToCopy:   filepath.Join("test", "dir"),
+			pathToCopyTo: filepath.Join("test", "dir_to"),
 		},
 	}
 

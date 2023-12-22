@@ -145,5 +145,5 @@ func processTemplate(tmpl string, data *map[interface{}]interface{}, templateExt
 		}
 	}
 
-	filePath.Close()
+	defer filePath.Close()
 }

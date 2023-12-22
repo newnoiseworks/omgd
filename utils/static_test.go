@@ -25,7 +25,8 @@ func TestStaticGetStaticFileCmd(t *testing.T) {
 	received, err := GetStaticFile(filepath.Join("static", "test", "test.md"))
 
 	if err != nil {
-		LogFatal(fmt.Sprint(err))
+		LogError(fmt.Sprint(err))
+		t.Fail()
 	}
 
 	expected := "This is a test test test" + getNewLine()

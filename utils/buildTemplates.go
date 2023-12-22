@@ -5,6 +5,7 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -109,37 +110,32 @@ func processTemplate(tmpl string, data *map[interface{}]interface{}, templateExt
 
 	LogDebug(fmt.Sprintf("processing template file %s >> %s", tmpl, final_path))
 
-	t, err := template.ParseFiles(tmpl)
-
-	if err != nil {
-		LogFatal(fmt.Sprint(err))
-	}
-
-	tBase := t.Funcs(template.FuncMap{
+	tBase := template.New(path.Base(tmpl)).Funcs(template.FuncMap{
 		"md5":             StrToMd5,
 		"upperSnake":      StrToUpperSnake,
 		"camel":           StrToCamel,
 		"gcpZoneToRegion": GCPZoneToRegion,
 	})
 
-	if templateExtension == "omgdtpl" {
-		tBase.Delims("{*", "*}")
+	tBase, err := tBase.ParseFiles(tmpl)
+	if err != nil {
+		LogFatal(fmt.Sprintf("Error on template#ParseFiles call %s", err))
 	}
 
-	f, err := os.Create(final_path)
+	file_path, err := os.Create(final_path)
 	if err != nil {
-		LogFatal(fmt.Sprint(err))
+		LogFatal(fmt.Sprintf("Error on creating path for compiled template %s", err))
 	}
 
-	err = t.Execute(f, data)
+	err = tBase.Execute(file_path, data)
 	if err != nil {
-		LogFatal(fmt.Sprint(err))
+		LogFatal(fmt.Sprintf("Error on template#Execute call %s", err))
 	}
 
 	if removeTemplateAfterProcessing {
 		err = os.Remove(tmpl)
 		if err != nil {
-			LogFatal(fmt.Sprint(err))
+			LogFatal(fmt.Sprintf("Error removing template after processing %s", err))
 		}
 	}
 }

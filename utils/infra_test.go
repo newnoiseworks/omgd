@@ -43,7 +43,7 @@ func TestInstanceSetup(t *testing.T) {
 
 	testFileShouldExist(t, filepath.Join(testDir, "profiles", "staging.yml"))
 
-	testFileShouldExist(t, filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup", "terraform.tfvars"))
+	// testFileShouldExist(t, filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup", "terraform.tfvars"))
 
 	testForFileAndRegexpMatch(t, filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup", "terraform.tfvars"), "gcp_project = \"test\"")
 

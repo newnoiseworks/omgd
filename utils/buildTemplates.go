@@ -5,7 +5,6 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -110,7 +109,13 @@ func processTemplate(tmpl string, data *map[interface{}]interface{}, templateExt
 
 	LogDebug(fmt.Sprintf("processing template file %s >> %s", tmpl, final_path))
 
-	t := template.New(path.Base(tmpl)).Funcs(template.FuncMap{
+	t, err := template.ParseFiles(tmpl)
+
+	if err != nil {
+		LogFatal(fmt.Sprint(err))
+	}
+
+	tBase := t.Funcs(template.FuncMap{
 		"md5":             StrToMd5,
 		"upperSnake":      StrToUpperSnake,
 		"camel":           StrToCamel,
@@ -118,13 +123,7 @@ func processTemplate(tmpl string, data *map[interface{}]interface{}, templateExt
 	})
 
 	if templateExtension == "omgdtpl" {
-		t.Delims("{*", "*}")
-	}
-
-	t, err := t.ParseFiles(tmpl)
-
-	if err != nil {
-		LogFatal(fmt.Sprint(err))
+		tBase.Delims("{*", "*}")
 	}
 
 	f, err := os.Create(final_path)

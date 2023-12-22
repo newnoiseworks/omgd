@@ -14,7 +14,8 @@ func TestInstanceSetup(t *testing.T) {
 		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
 
 		if err != nil {
-			t.Fatal(err)
+			LogDebug(fmt.Sprint(err))
+			t.Fail()
 		}
 
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
@@ -84,7 +85,8 @@ func TestInstanceDestroy(t *testing.T) {
 		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
 
 		if err != nil {
-			t.Fatal(err)
+			LogDebug(fmt.Sprint(err))
+			t.Fail()
 		}
 
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
@@ -140,7 +142,8 @@ func TestProjectSetup(t *testing.T) {
 		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
 
 		if err != nil {
-			t.Fatal(err)
+			LogDebug(fmt.Sprint(err))
+			t.Fail()
 		}
 
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
@@ -214,7 +217,8 @@ func TestProjectDestroy(t *testing.T) {
 		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
 
 		if err != nil {
-			t.Fatal(err)
+			LogDebug(fmt.Sprint(err))
+			t.Fail()
 		}
 
 		testCmdOnDirResponses = []testCmdOnDirResponse{}

@@ -127,7 +127,7 @@ func processTemplate(tmpl string, data *map[interface{}]interface{}, templateExt
 		LogFatal(fmt.Sprintf("Error on creating path for compiled template %s", err))
 	}
 
-	err = tBase.Execute(file_path, data)
+	err = tBase.ExecuteTemplate(file_path, path.Base(tmpl), data)
 	if err != nil {
 		LogFatal(fmt.Sprintf("Error on template#Execute call %s", err))
 	}

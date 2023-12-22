@@ -117,7 +117,13 @@ func processTemplate(tmpl string, data *map[interface{}]interface{}, templateExt
 		"gcpZoneToRegion": GCPZoneToRegion,
 	})
 
-	tBase, err := tBase.ParseFiles(tmpl)
+	tmplText, err := ioutil.ReadFile(tmpl)
+	if err != nil {
+		LogFatal(fmt.Sprintf("Error on reading template file with ioutil#ReadFile %s", err))
+	}
+
+	// tBase, err := tBase.ParseFiles(tmpl)
+	tBase, err = tBase.Parse(string(tmplText))
 	if err != nil {
 		LogFatal(fmt.Sprintf("Error on template#ParseFiles call %s", err))
 	}
@@ -129,7 +135,7 @@ func processTemplate(tmpl string, data *map[interface{}]interface{}, templateExt
 
 	err = tBase.ExecuteTemplate(file_path, path.Base(tmpl), data)
 	if err != nil {
-		LogFatal(fmt.Sprintf("Error on template#Execute call %s", err))
+		LogFatal(fmt.Sprintf("Error on template#ExecuteTemplate call %s", err))
 	}
 
 	if removeTemplateAfterProcessing {

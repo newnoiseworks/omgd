@@ -24,6 +24,10 @@ func StrToCamel(text string) string {
 }
 
 func GCPZoneToRegion(zone interface{}) string {
+	if zone == nil {
+		return ""
+	}
+
 	splits := strings.Split(zone.(string), "-")
 
 	return strings.Join(splits[0:len(splits)-1], "-")

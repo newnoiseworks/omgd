@@ -5,9 +5,20 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"runtime"
 	"strconv"
 	"testing"
 )
+
+func getNewLine() string {
+	newline := "\n"
+
+	if runtime.GOOS == "windows" {
+		newline = "\r\n"
+	}
+
+	return newline
+}
 
 func TestStaticGetStaticFileCmd(t *testing.T) {
 	// 1. Test for reading a simple one line file
@@ -17,7 +28,7 @@ func TestStaticGetStaticFileCmd(t *testing.T) {
 		LogFatal(fmt.Sprint(err))
 	}
 
-	expected := "This is a test test test\r\n"
+	expected := "This is a test test test" + getNewLine()
 
 	if expected != received {
 		t.Errorf("File read from static lib doesn't match")
@@ -67,7 +78,7 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 		t.Fail()
 	}
 
-	expected := "test_one\r\n"
+	expected := "test_one" + getNewLine()
 	received := string(file)
 
 	if expected != received {
@@ -77,7 +88,7 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 		testLogComparison(expected, received)
 	}
 
-	expected = "test_two\r\n"
+	expected = "test_two" + getNewLine()
 	received = string(fileTwo)
 
 	if expected != received {
@@ -87,7 +98,7 @@ func TestStaticCopyStaticDirectoryCmd(t *testing.T) {
 		testLogComparison(expected, received)
 	}
 
-	expected = "test_one\r\n"
+	expected = "test_one" + getNewLine()
 	received = string(fileThree)
 
 	if expected != received {
@@ -161,7 +172,7 @@ func TestStaticCopyStaticDirectoryWithEdits(t *testing.T) {
 		t.Fail()
 	}
 
-	expected := "test_one\r\n"
+	expected := "test_one" + getNewLine()
 	received := string(file)
 
 	if expected != received {
@@ -176,7 +187,7 @@ func TestStaticCopyStaticDirectoryWithEdits(t *testing.T) {
 		testLogComparison(expected, received)
 	}
 
-	expected = "test_one\r\n"
+	expected = "test_one" + getNewLine()
 	received = string(fileThree)
 
 	if expected != received {

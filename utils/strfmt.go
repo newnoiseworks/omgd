@@ -23,8 +23,8 @@ func StrToCamel(text string) string {
 	return strcase.ToCamel(text)
 }
 
-func GCPZoneToRegion(zone string) string {
-	splits := strings.Split(zone, "-")
+func GCPZoneToRegion(zone interface{}) string {
+	splits := strings.Split(zone.(string), "-")
 
 	return strings.Join(splits[0:len(splits)-1], "-")
 }

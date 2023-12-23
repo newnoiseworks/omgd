@@ -14,7 +14,7 @@ func getNewLine() string {
 	newline := "\n"
 
 	if runtime.GOOS == "windows" {
-		newline = "\r\n"
+		newline = "\n"
 	}
 
 	return newline

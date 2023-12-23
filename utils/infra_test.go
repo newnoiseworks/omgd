@@ -14,7 +14,8 @@ func TestInstanceSetup(t *testing.T) {
 		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
 
 		if err != nil {
-			t.Fatal(err)
+			LogError(fmt.Sprint(err))
+			t.Fail()
 		}
 
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
@@ -84,13 +85,8 @@ func TestInstanceDestroy(t *testing.T) {
 		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
 
 		if err != nil {
-			t.Fatal(err)
-		}
-
-		err = os.RemoveAll(filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup", "terraform.tfvars"))
-
-		if err != nil {
-			t.Fatal(err)
+			LogError(fmt.Sprint(err))
+			t.Fail()
 		}
 
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
@@ -146,7 +142,8 @@ func TestProjectSetup(t *testing.T) {
 		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
 
 		if err != nil {
-			t.Fatal(err)
+			LogError(fmt.Sprint(err))
+			t.Fail()
 		}
 
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
@@ -220,7 +217,8 @@ func TestProjectDestroy(t *testing.T) {
 		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
 
 		if err != nil {
-			t.Fatal(err)
+			LogError(fmt.Sprint(err))
+			t.Fail()
 		}
 
 		testCmdOnDirResponses = []testCmdOnDirResponse{}

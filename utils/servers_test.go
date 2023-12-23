@@ -15,7 +15,8 @@ func TestServersDeploy(t *testing.T) {
 		err := os.RemoveAll(filepath.Join(testDir, ".omgd"))
 
 		if err != nil {
-			t.Fatal(err)
+			LogError(fmt.Sprint(err))
+			t.Fail()
 		}
 
 		testCmdOnDirResponses = []testCmdOnDirResponse{}
@@ -25,7 +26,7 @@ func TestServersDeploy(t *testing.T) {
 		profile.UpdateProfile("omgd.servers.host", "???")
 	})
 
-	profile := GetProfileFromDir("profiles/staging.yml", testDir)
+	profile := GetProfile(filepath.Join(testDir, "profiles/staging.yml"))
 
 	serversChange := ServersChange{
 		OutputDir:       testDir,
@@ -41,6 +42,8 @@ func TestServersDeploy(t *testing.T) {
 
 	testFileShouldExist(t, filepath.Join(testDir, ".omgd", "infra"))
 
+	testForFileAndRegexpMatch(t, filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup", "terraform.tfvars"), "us-east4c")
+
 	testFileShouldExist(t, filepath.Join(testDir, ".omgd", "deploy"))
 	testFileShouldExist(t, filepath.Join(testDir, ".omgd", "deploy", "gcp", "deploy.sh"))
 
@@ -54,7 +57,8 @@ func TestServersDeploy(t *testing.T) {
 	homeDir, err := os.UserHomeDir()
 
 	if err != nil {
-		LogFatal(fmt.Sprintf("Error finding user's home directory %s", err))
+		LogError(fmt.Sprintf("Error finding user's home directory %s", err))
+		t.Fail()
 	}
 
 	deployCmd := "./deploy.sh"
@@ -73,11 +77,6 @@ func TestServersDeploy(t *testing.T) {
 			cmdStr:  "terraform output -raw server_ip",
 			cmdDesc: "getting ip of newly created server...",
 			cmdDir:  cmdDirStrTf,
-		},
-		{
-			cmdStr:  fmt.Sprintf("omgd game build --profile=%s", filepath.Join("profiles", "staging.yml")),
-			cmdDesc: "building game clients against profile",
-			cmdDir:  testDir,
 		},
 		{
 			cmdStr: deployCmd,

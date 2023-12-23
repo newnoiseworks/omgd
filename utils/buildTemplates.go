@@ -18,8 +18,8 @@ var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
 var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
 
 func getData(profile *ProfileConf, buildPath string) *map[interface{}]interface{} {
-	fp := make(map[interface{}]interface{})
-	fp["profile"] = profile.GetProfileAsMap()
+	data := make(map[interface{}]interface{})
+	data["profile"] = profile.GetProfileAsMap()
 
 	resourceDir := buildPath
 
@@ -61,7 +61,7 @@ func getData(profile *ProfileConf, buildPath string) *map[interface{}]interface{
 				}
 
 				for k, v := range c {
-					fp[k] = v
+					data[k] = v
 				}
 			}
 
@@ -73,11 +73,11 @@ func getData(profile *ProfileConf, buildPath string) *map[interface{}]interface{
 		}
 	}
 
-	return &fp
+	return &data
 }
 
 func BuildTemplatesFromPath(profile *ProfileConf, buildPath string, templateExtension string, removeTemplateAfterProcessing bool) {
-	fp := getData(profile, buildPath)
+	data := getData(profile, buildPath)
 
 	LogDebug(fmt.Sprintf("building template files in %s", buildPath))
 
@@ -89,7 +89,7 @@ func BuildTemplatesFromPath(profile *ProfileConf, buildPath string, templateExte
 		name := info.Name()
 
 		if info.IsDir() == false && strings.HasSuffix(name, "."+templateExtension) {
-			processTemplate(tmpl, fp, templateExtension, removeTemplateAfterProcessing)
+			processTemplate(tmpl, data, templateExtension, removeTemplateAfterProcessing)
 		}
 
 		return nil
@@ -101,46 +101,48 @@ func BuildTemplatesFromPath(profile *ProfileConf, buildPath string, templateExte
 }
 
 func BuildTemplateFromPath(tmplPath string, profile *ProfileConf, buildPath string, templateExtension string, removeTemplateAfterProcessing bool) {
-	fp := getData(profile, buildPath)
-	processTemplate(tmplPath, fp, templateExtension, removeTemplateAfterProcessing)
+	data := getData(profile, buildPath)
+	processTemplate(tmplPath, data, templateExtension, removeTemplateAfterProcessing)
 }
 
-func processTemplate(tmpl string, fp *map[interface{}]interface{}, templateExtension string, removeTemplateAfterProcessing bool) {
+func processTemplate(tmpl string, data *map[interface{}]interface{}, templateExtension string, removeTemplateAfterProcessing bool) {
 	final_path := strings.ReplaceAll(tmpl, "."+templateExtension, "")
 
 	LogDebug(fmt.Sprintf("processing template file %s >> %s", tmpl, final_path))
 
-	t := template.New(path.Base(tmpl)).Funcs(template.FuncMap{
+	tBase := template.New(path.Base(tmpl)).Funcs(template.FuncMap{
 		"md5":             StrToMd5,
 		"upperSnake":      StrToUpperSnake,
 		"camel":           StrToCamel,
 		"gcpZoneToRegion": GCPZoneToRegion,
 	})
 
-	if templateExtension == "omgdtpl" {
-		t.Delims("{*", "*}")
+	tmplText, err := ioutil.ReadFile(tmpl)
+	if err != nil {
+		LogFatal(fmt.Sprintf("Error on reading template file with ioutil#ReadFile %s", err))
 	}
 
-	t, err := t.ParseFiles(tmpl)
-
+	tBase, err = tBase.Parse(string(tmplText))
 	if err != nil {
-		LogFatal(fmt.Sprint(err))
+		LogFatal(fmt.Sprintf("Error on template#Parse call %s", err))
 	}
 
-	f, err := os.Create(final_path)
+	filePath, err := os.Create(final_path)
 	if err != nil {
-		LogFatal(fmt.Sprint(err))
+		LogFatal(fmt.Sprintf("Error on creating path for compiled template %s", err))
 	}
 
-	err = t.Execute(f, fp)
+	err = tBase.ExecuteTemplate(filePath, path.Base(tmpl), data)
 	if err != nil {
-		LogFatal(fmt.Sprint(err))
+		LogFatal(fmt.Sprintf("Error on template#ExecuteTemplate call %s", err))
 	}
 
 	if removeTemplateAfterProcessing {
 		err = os.Remove(tmpl)
 		if err != nil {
-			LogFatal(fmt.Sprint(err))
+			LogFatal(fmt.Sprintf("Error removing template after processing %s", err))
 		}
 	}
+
+	defer filePath.Close()
 }

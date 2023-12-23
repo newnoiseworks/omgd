@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 )
 
@@ -36,7 +37,7 @@ func (cb *ClientBuilder) Build() {
 
 	for _, target := range cb.Profile.OMGD.Game.Targets {
 		if target.Copy != "" && target.To != "" {
-			err := cb.CopyStaticDirectory(target.Copy, target.To)
+			err := cb.CopyStaticDirectory(filepath.FromSlash(target.Copy), filepath.FromSlash(target.To))
 
 			if err != nil {
 				LogFatal(fmt.Sprintf("Error on copying build from game to server folders %s", err))

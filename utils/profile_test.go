@@ -12,19 +12,23 @@ func TestGetProfile(t *testing.T) {
 	profile := GetProfileFromDir(filepath.Join("profiles", "staging.yml"), testDir)
 
 	if profile.Name != "staging" {
-		t.Fatalf("profile Name not properly formatted")
+		LogError("profile Name not properly formatted")
+		t.Fail()
 	}
 
 	if profile.path != filepath.Join("profiles", "staging.yml") {
-		t.Fatalf("profile path not properly set")
+		LogError("profile path not properly set")
+		t.Fail()
 	}
 
 	if profile.Get("omgd.name") != "top-level-name" {
-		t.Fatalf("Profile not inheriting from top level omgd.yml profile")
+		LogError("Profile not inheriting from top level omgd.yml profile")
+		t.Fail()
 	}
 
 	if profile.Get("omgd.override") != "overriden" {
-		t.Fatalf("Profile not overriding properly")
+		LogError("Profile not overriding properly")
+		t.Fail()
 	}
 }
 

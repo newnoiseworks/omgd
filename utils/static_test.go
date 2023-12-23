@@ -2,19 +2,34 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
 	"strconv"
+	"strings"
 	"testing"
+
+	"golang.org/x/sys/windows/registry"
 )
 
 func getNewLine() string {
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE, `SOFTWARE\Microsoft\Windows NT\CurrentVersion`, registry.QUERY_VALUE)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer k.Close()
+
+	pn, _, err := k.GetStringValue("ProductName")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	newline := "\n"
 
-	if runtime.GOOS == "windows" {
-		newline = "\n"
+	if runtime.GOOS == "windows" && strings.Contains(pn, "Server") {
+		newline = "\r\n"
 	}
 
 	return newline

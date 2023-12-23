@@ -18,7 +18,7 @@ jobs:
         run: go test -v ./...
 
   test-windows:
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -30,6 +30,8 @@ jobs:
           go-version: 1.21
       - name: Go version check
         run: go version
+      - name: Windows version check
+        run: ver
       - name: Test
         run: go test -v ./...
         # run: go test -v ./... -run TestStaticCopy

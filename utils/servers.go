@@ -63,7 +63,7 @@ func (serversChange *ServersChange) Deploy() {
 
 	deployCmd := "./deploy.sh"
 
-	if runtime.GOOS == "Windows" {
+	if runtime.GOOS == "windows" {
 		deployCmd = "deploy.bat"
 	}
 

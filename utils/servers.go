@@ -63,8 +63,8 @@ func (serversChange *ServersChange) Deploy() {
 
 	deployCmd := "./deploy.sh"
 
-	if runtime.GOOS == "Windows" {
-		deployCmd = "deploy.bat"
+	if runtime.GOOS == "windows" {
+		deployCmd = "cmd.exe /C deploy.bat"
 	}
 
 	serversChange.CmdOnDirWithEnv(

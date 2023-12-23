@@ -54,7 +54,7 @@ func TestServersDeploy(t *testing.T) {
 
 	cmdDirStrTf := filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup")
 
-	homeDir, err := os.UserHomeDir()
+	configDir, err := os.UserConfigDir()
 
 	if err != nil {
 		LogError(fmt.Sprintf("Error finding user's home directory %s", err))
@@ -63,8 +63,8 @@ func TestServersDeploy(t *testing.T) {
 
 	deployCmd := "./deploy.sh"
 
-	if runtime.GOOS == "Windows" {
-		deployCmd = "deploy.bat"
+	if runtime.GOOS == "windows" {
+		deployCmd = "cmd.exe /C deploy.bat"
 	}
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
@@ -86,7 +86,7 @@ func TestServersDeploy(t *testing.T) {
 				"OMGD_PROFILE=staging",
 				"OMGD_PROJECT=top-level-name",
 				"OMGD_SERVER_SERVICES=central web",
-				fmt.Sprintf("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=%s/.config/gcloud/application_default_credentials.json", homeDir),
+				fmt.Sprintf("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=%s", filepath.Join(configDir, "gcloud", "application_default_credentials.json")),
 			},
 			cmdDesc: "deploying game server to gcp",
 			cmdDir:  filepath.Join(testDir, ".omgd", "deploy", "gcp"),

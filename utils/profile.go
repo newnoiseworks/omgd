@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
-	"runtime"
 	"strings"
 
 	"gopkg.in/yaml.v2"
@@ -157,18 +156,13 @@ func GetProfile(path string) *ProfileConf {
 
 	if c.OMGD.GCP.Project != "" {
 		if c.OMGD.GCP.CredsFile == "" {
+			configDir, err := os.UserConfigDir()
 
-			if runtime.GOOS == "Windows" {
-				c.OMGD.GCP.CredsFile = "%APPDATA%\\gcloud\\application_default_credentials.json"
-			} else {
-				homeDir, err := os.UserHomeDir()
-
-				if err != nil {
-					LogFatal(fmt.Sprintf("Error finding user's home directory %s", err))
-				}
-
-				c.OMGD.GCP.CredsFile = fmt.Sprintf("%s/.config/gcloud/application_default_credentials.json", homeDir)
+			if err != nil {
+				LogFatal(fmt.Sprintf("Error finding user's config directory %s", err))
 			}
+
+			c.OMGD.GCP.CredsFile = filepath.Join(configDir, "gcloud", "application_default_credentials.json")
 		}
 	}
 

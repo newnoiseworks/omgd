@@ -36,17 +36,14 @@ To get started, grab one of the examples from [Github](https://github.com/newnoi
 Then, in the directory of the project on your computer, run
 
 ```console
+omgd build-templates
 omgd game build
 omgd servers start
 ```
 
 In the `game/dist` directory, there should be built executables mapped to your local server. Launch a couple to try the demo out!
 
-Follow the README.md in the example but generally loading the `game` directory within the game engine of the example should let you build the game and it will work against the server created. 
-
-{{<hint info>}}
-`omgd game build` will run a command internally that you can run manually called `omgd build-templates`, which loads `profile/local.yml` by default and builds templates into game code files such that the servers and games are linked up properly before building and starting them. 
-{{</hint>}}
+Also, generally loading the `game` directory within the game engine of the example should let you build the game and it will work against the server created.
 
 
 ### Checking Server Logs
@@ -109,6 +106,7 @@ Your game needs to know the IP address (and other info) of your new profile.
 Build the game against that profile with the following:
 
 ```console
+omgd build-templates -p profiles/example.yml
 omgd game build -p profiles/example.yml
 ```
 
@@ -124,3 +122,16 @@ As easy as:
 omgd servers deploy -p profiles/example.yml
 ```
 
+### Cleaning up the server
+
+First destroy the instance with the following:
+
+```console
+omgd infra instance-destroy -p profiles/example.yml
+```
+
+Then, if you wish, destroy the project. This will disable new instances from being created.
+
+```console
+omgd infra project-destroy
+```

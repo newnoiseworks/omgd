@@ -54,11 +54,26 @@ func TestServersDeploy(t *testing.T) {
 
 	cmdDirStrTf := filepath.Join(testDir, ".omgd", "infra", "gcp", "instance-setup")
 
-	configDir, err := os.UserConfigDir()
+	configDir := ""
 
-	if err != nil {
-		LogError(fmt.Sprintf("Error finding user's home directory %s", err))
-		t.Fail()
+	if runtime.GOOS == "windows" {
+		confDir, err := os.UserConfigDir()
+
+		if err != nil {
+			LogError(fmt.Sprintf("Error finding user's config directory %s", err))
+			t.Fail()
+		}
+
+		configDir = confDir
+	} else {
+		homeDir, err := os.UserHomeDir()
+
+		if err != nil {
+			LogError(fmt.Sprintf("Error finding user's home directory %s", err))
+			t.Fail()
+		}
+
+		configDir = fmt.Sprintf("%s/.config", homeDir)
 	}
 
 	deployCmd := "./deploy.sh"

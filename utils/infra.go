@@ -19,7 +19,12 @@ type InfraChange struct {
 func (infraChange *InfraChange) InstanceSetup() {
 	infraChange.setupInstanceInfraFiles()
 
-	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
+	BuildTemplatesFromPath(
+		infraChange.Profile,
+		filepath.Join(infraChange.OutputDir, ".omgd"),
+		"tmpl",
+		false,
+	)
 
 	infraChange.CmdOnDir(
 		fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", infraChange.Profile.OMGD.GCP.Bucket, infraChange.Profile.OMGD.Name, infraChange.Profile.Name),
@@ -49,7 +54,12 @@ func (infraChange *InfraChange) InstanceSetup() {
 func (infraChange *InfraChange) InstanceDestroy() {
 	infraChange.setupInstanceInfraFiles()
 
-	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
+	BuildTemplatesFromPath(
+		infraChange.Profile,
+		filepath.Join(infraChange.OutputDir, ".omgd"),
+		"tmpl",
+		false,
+	)
 
 	infraChange.CmdOnDir(
 		fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", infraChange.Profile.OMGD.GCP.Bucket, infraChange.Profile.OMGD.Name, infraChange.Profile.Name),
@@ -73,7 +83,12 @@ func (infraChange *InfraChange) InstanceDestroy() {
 func (infraChange *InfraChange) ProjectSetup() {
 	infraChange.setupProjectInfraFiles()
 
-	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
+	BuildTemplatesFromPath(
+		infraChange.Profile,
+		filepath.Join(infraChange.OutputDir, ".omgd"),
+		"tmpl",
+		false,
+	)
 
 	infraChange.CmdOnDir(
 		fmt.Sprintf("terraform init -reconfigure -backend-config path=%s", filepath.Join("..", "..", "..", "..", ".omgd", "terraform.tfstate")),
@@ -120,7 +135,12 @@ func (infraChange *InfraChange) ProjectSetup() {
 func (infraChange *InfraChange) ProjectDestroy() {
 	infraChange.setupProjectInfraFiles()
 
-	BuildTemplatesFromPath(infraChange.Profile, infraChange.OutputDir, "tmpl", false)
+	BuildTemplatesFromPath(
+		infraChange.Profile,
+		filepath.Join(infraChange.OutputDir, ".omgd"),
+		"tmpl",
+		false,
+	)
 
 	tfFilePath := filepath.Join(infraChange.OutputDir, ".omgd", "infra", "gcp", "project-setup", "main.tf")
 	infraChange.alterInfraBackendFile(tfFilePath, true)

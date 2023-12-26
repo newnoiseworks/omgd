@@ -37,7 +37,12 @@ func (serversChange *ServersChange) Deploy() {
 	serversChange.setupInstanceInfraFiles()
 	serversChange.setupDeployFiles()
 
-	BuildTemplatesFromPath(serversChange.Profile, serversChange.OutputDir, "tmpl", false)
+	BuildTemplatesFromPath(
+		serversChange.Profile,
+		filepath.Join(serversChange.OutputDir, ".omgd"),
+		"tmpl",
+		false,
+	)
 
 	serversChange.CmdOnDir(
 		fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s/%s", serversChange.Profile.OMGD.GCP.Bucket, serversChange.Profile.OMGD.Name, serversChange.Profile.Name),

@@ -24,8 +24,6 @@ $ omgd game build | builds game clients into the game/dist folder based on provi
 
 		switch args[0] {
 		case "build":
-			buildTemplatesCmd.Run(cmd, args)
-
 			utils.LogInfo("Building game clients and copying to servers directory as specified in profile...")
 
 			sccp := utils.StaticCodeCopyPlan{}

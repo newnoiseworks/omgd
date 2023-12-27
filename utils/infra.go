@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -133,6 +134,12 @@ func (infraChange *InfraChange) ProjectSetup() {
 }
 
 func (infraChange *InfraChange) ProjectDestroy() {
+	if infraChange.hasRunningInstances() {
+		LogWarn("It appears this project has running compute instances. Run omgd infra instance-destroy against all profiles that have created instances within this project, or delete the entire project on GCP and start again with a new one. OMGD is not responsible for managing your cloud billing.")
+
+		return
+	}
+
 	infraChange.setupProjectInfraFiles()
 
 	BuildTemplatesFromPath(
@@ -187,6 +194,34 @@ func (infraChange *InfraChange) PerformCleanup() {
 	if err != nil {
 		LogFatal(fmt.Sprintf("Error on infraChange#PerformCleanup %s", err))
 	}
+}
+
+type gcloudInstanceResponse struct {
+	Name string `json:"name"`
+}
+
+func (infraChange *InfraChange) hasRunningInstances() bool {
+	instanceList := infraChange.CmdOnDirWithEnv(
+		fmt.Sprintf(
+			"gcloud compute instances list --format=json --project=%s",
+			infraChange.Profile.OMGD.GCP.Project,
+		),
+		"checking for running compute instances",
+		infraChange.OutputDir,
+		[]string{
+			fmt.Sprintf("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=%s", infraChange.Profile.OMGD.GCP.CredsFile),
+		},
+	)
+
+	instances := []gcloudInstanceResponse{}
+
+	err := json.Unmarshal([]byte(instanceList), &instances)
+
+	if err != nil {
+		LogFatal(fmt.Sprintf("Error unmarshalling json from gcloud instance list check %s", err))
+	}
+
+	return len(instances) > 0
 }
 
 func (infraChange *InfraChange) setupDeployFiles() {

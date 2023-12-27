@@ -249,6 +249,14 @@ func TestProjectDestroy(t *testing.T) {
 
 	testCmdOnDirValidResponseSet = []testCmdOnDirResponse{
 		{
+			cmdStr:  "gcloud compute instances list --format=json --project=test",
+			cmdDesc: "checking for running compute instances",
+			cmdDir:  testDir,
+			env: []string{
+				fmt.Sprintf("CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=%s", infraChange.Profile.OMGD.GCP.CredsFile),
+			},
+		},
+		{
 			cmdStr:  fmt.Sprintf("terraform init -reconfigure -backend-config bucket=%s -backend-config prefix=terraform/state/%s", "???", "top-level-name"),
 			cmdDesc: "setting up terraform to local backend",
 			cmdDir:  cmdDirStrTf,

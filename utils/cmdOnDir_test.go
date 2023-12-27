@@ -3,6 +3,7 @@ package utils
 import (
 	"reflect"
 	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -39,6 +40,10 @@ var testCmdOnDirWithEnv = func(cmdStr string, cmdDesc string, cmdDir string, env
 		cmdDir:  cmdDir,
 		env:     env,
 	})
+
+	if strings.Contains(cmdStr, "gcloud compute instances list") {
+		return "[]"
+	}
 
 	return ""
 }

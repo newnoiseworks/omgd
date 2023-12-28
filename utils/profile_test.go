@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -41,6 +42,34 @@ func Test_setValueToKeyWithArray(t *testing.T) {
 
 	if getValueToKeyWithArray(keys, 0, testObj) != "success" {
 		LogError("Could not set a nested key onto a map that doesn't have those keys in the first place")
+		t.Fail()
+	}
+}
+
+func Test_validateProfileProjectNameLimit(t *testing.T) {
+	setupLoggingTests()
+	t.Cleanup(cleanupLoggingTests)
+
+	testDir := filepath.Join("static", "test", "invalid_profiles")
+
+	GetProfileFromDir("staging.yml", testDir)
+
+	if testPrintFnOutput[0] != "OMGD project name exceeds 30 character limit" {
+		fmt.Println("OMGD project name not limited to 30 character limit")
+		t.Fail()
+	}
+}
+
+func Test_validateProfileNameLimit(t *testing.T) {
+	setupLoggingTests()
+	t.Cleanup(cleanupLoggingTests)
+
+	testDir := filepath.Join("static", "test", "invalid_profiles")
+
+	GetProfileFromDir("twentyTwoCharacterLimit.yml", testDir)
+
+	if testPrintFnOutput[0] != "OMGD profile filename exceeds 14 character limit (not counting .yml)" {
+		fmt.Println("OMGD profile name not limited to 14 character limit")
 		t.Fail()
 	}
 }

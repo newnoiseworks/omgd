@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -155,28 +156,11 @@ func GetProfile(path string) *ProfileConf {
 		LogFatal(fmt.Sprintf("YAML Unmarshal err: %v", err))
 	}
 
-	if c.OMGD.GCP.Project != "" {
-		if c.OMGD.GCP.CredsFile == "" {
-			configDir := ""
+	c.attachGCPCredsFileAsNeeded()
 
-			if runtime.GOOS == "windows" {
-				configDir, err = os.UserConfigDir()
-
-				if err != nil {
-					LogFatal(fmt.Sprintf("Error finding user's config directory %s", err))
-				}
-			} else {
-				homeDir, err := os.UserHomeDir()
-
-				if err != nil {
-					LogFatal(fmt.Sprintf("Error finding user's home directory %s", err))
-				}
-
-				configDir = fmt.Sprintf("%s/.config", homeDir)
-			}
-
-			c.OMGD.GCP.CredsFile = filepath.Join(configDir, "gcloud", "application_default_credentials.json")
-		}
+	if !c.validateProfile() && flag.Lookup("test.v") == nil {
+		fmt.Println("Your OMGD profile needs fixing")
+		os.Exit(1)
 	}
 
 	return &c
@@ -257,6 +241,47 @@ func (profile ProfileConf) UpdateProfile(key string, val interface{}) {
 	keys := strings.Split(key, ".")
 	setValueToKeyWithArray(keys, 0, profileMap, val)
 	profile.SaveProfileFromMap(&profileMap)
+}
+
+func (profile *ProfileConf) validateProfile() bool {
+	if len(profile.Name) > 14 {
+		LogWarn("OMGD profile filename exceeds 14 character limit (not counting .yml)")
+		return false
+	}
+
+	if len(profile.OMGD.Name) > 30 {
+		LogWarn("OMGD project name exceeds 30 character limit")
+		return false
+	}
+
+	return true
+}
+
+func (profile *ProfileConf) attachGCPCredsFileAsNeeded() {
+	if profile.OMGD.GCP.Project != "" {
+		if profile.OMGD.GCP.CredsFile == "" {
+			configDir := ""
+			var err error
+
+			if runtime.GOOS == "windows" {
+				configDir, err = os.UserConfigDir()
+
+				if err != nil {
+					LogFatal(fmt.Sprintf("Error finding user's config directory %s", err))
+				}
+			} else {
+				homeDir, err := os.UserHomeDir()
+
+				if err != nil {
+					LogFatal(fmt.Sprintf("Error finding user's home directory %s", err))
+				}
+
+				configDir = fmt.Sprintf("%s/.config", homeDir)
+			}
+
+			profile.OMGD.GCP.CredsFile = filepath.Join(configDir, "gcloud", "application_default_credentials.json")
+		}
+	}
 }
 
 func setValueToKeyWithArray(keys []string, keyIndex int, obj map[interface{}]interface{}, value interface{}) {

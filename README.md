@@ -2,11 +2,13 @@
 
 Multiplayer game dev is hard. OMGD aims to make some of it easier, namely, the setting up of servers on local machines for development and cloud instances for testing changes.
 
-OMGD aims to be agnostic towards game engines and servers; the only requirement is that the game and servers can be built and ran using docker images and containers. For now, our examples focus on Godot as the game engine for client builds and dedicated servers, as well as using [Nakama](https://heroiclabs.com/nakama/) as a custom software server separate from the game build.
+OMGD aims to be agnostic towards game engines and servers; the only requirement is that the game and servers can be built and ran using docker images and containers.
+
+For now, our examples focus on [Godot](https://godotengine.org) as the game engine for client builds and dedicated servers, as well as using [Nakama](https://heroiclabs.com/nakama/) as a custom software server separate from the game build.
 
 OMGD aims to be agnostic towards cloud providers via it's usage of [Terraform](https://www.terraform.io/), but for now only supports [Google Cloud Platform (GCP)](https://cloud.google.com/gcp).
 
-OMGD at this time does NOT support production deployments, but aims to in the future.
+OMGD at this time does NOT support production deployments, but aims to in the future. OMGD is meant for development and testing purposes in the game dev cycle only.
 
 ## Full documentation
 

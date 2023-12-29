@@ -27,3 +27,24 @@ func TestBuildTemplateFromPath(t *testing.T) {
 
 	testForFileAndRegexpMatch(t, filepath.Join(testDir, "template_example.gd"), "127.6.6.6")
 }
+
+func TestBuildTemplatesFromPath(t *testing.T) {
+	testDir := filepath.Join("static", "test", "build_templates_dir")
+
+	t.Cleanup(func() {
+		os.Remove(filepath.Join(testDir, "template_example.gd"))
+	})
+
+	profile := GetProfileFromDir("profile.yml", testDir)
+
+	BuildTemplatesFromPath(
+		profile,
+		testDir,
+		"tmpl",
+		false,
+	)
+
+	testFileShouldExist(t, filepath.Join(testDir, "template_example.gd"))
+
+	testForFileAndRegexpMatch(t, filepath.Join(testDir, "template_example.gd"), "127.6.6.6")
+}

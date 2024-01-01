@@ -14,7 +14,7 @@ See the [templates core concept page](/docs/core-concepts/templates) for more.
 
 `omgd build-templates [OPTIONS]`
 
-## Options
+## Flags
 
 ### Extension (`--ext [STRING]`)
 

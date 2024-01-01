@@ -21,3 +21,4 @@ OMGD is a command line interface based application. Below are the basic commands
 | -- | -- | -- |
 | `-p`, `--profile` | `profiles/local.yml` | The OMGD YML profile to run command against. See [profiles section](/docs/core-concepts/profiles) for more details on profiles. |
 | `--output-dir` | `.` (current working directory) | The directory that OMGD should output files into. Defaults to current directory. |
+| `--help` | Provides help on any `omgd` command. |

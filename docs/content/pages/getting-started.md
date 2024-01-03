@@ -68,7 +68,7 @@ For deploying to the cloud, you'll need the following installed:
 1. GCloud CLI SDK
 
 {{<hint warning>}}
-You will need billing enabled on your GCP account. The costs for servers can be pennies if you stick to f1-micro compute instances (the default) and take them down when they're not being tested on.
+You will need billing enabled on your GCP account. The costs for servers can be pennies if you stick to f1-micro compute instances (the default) and take them down when they're not being tested on. OMGD is not responsible for managing your billing.
 {{</hint>}}
 
 ### GCloud SDK Setup

@@ -37,8 +37,6 @@ If you create another file in your `servers/` directory somewhere in a running s
 
 OMGD supports a few custom functions should they be useful to you in your templates.
 
-### https://pkg.go.dev/text/template
-
 ### MD5
 
 OMGD can convert a string into an md5 hash.
@@ -51,7 +49,7 @@ OMGD can convert a string to be in "UPPER_SNAKE" format.
 
 e.g. `{{ upperSnake .your.resource.value }}`
 
-## Camel case
+### Camel case
 
 OMGD can convert a string to "camelCase" format.
 

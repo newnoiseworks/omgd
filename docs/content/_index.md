@@ -46,6 +46,10 @@ As long as the game engine can build executables via a docker image, and the clo
 
 As of January 2024, OMGD only supports [Godot](https://godotengine.org) and [Google Cloud Platform (GCP)](https://cloud.google.com/)
 
+{{<hint danger>}}
+OMGD is not responsible for your cloud billing or costs!
+{{</hint>}}
+
 ## Check out some examples
 
 [Godot 4 Dedicated Server Example](https://github.com/newnoiseworks/omgd-godot4-dedicated-example)

@@ -20,47 +20,7 @@ For now, you need to grab a [binary from our release page](https://github.com/ne
 
 If you're on Windows, [here's a guide to adding executables to your PATH](https://stackoverflow.com/questions/4822400/register-an-exe-so-you-can-run-it-from-any-command-line-in-windows), and if you're on Mac / Linux, [here's a guide](https://medium.com/codex/adding-executable-program-commands-to-the-path-variable-5e45f1bdf6ce) for you.
 
-### Local Development
-
-#### Prerequisites
-
-For local development only, you'll need `docker` and the `docker compose` plugin. We recommend using [Docker for Desktop](https://www.docker.com/products/docker-desktop/). You don't need a docker account.
-
-#### Local setup
-
-Start by downloading one of the [examples using Godot](https://github.com/orgs/newnoiseworks/repositories?q=example&type=all&language=&sort=) from our repositories.
-
-In the example's folder, run the following commands.
-
-```console
-> omgd build-templates
-> omgd game build
-> omgd servers start
-```
-
-For details on each command and what it does, check the [full documentation](https://newnoiseworks.github.io/omgd).
-
-Check your `game/dist` folder, there should be executables for the built game that you can load. If the `profiles/omgd.yml` file references a "web" servers target, you likely have a web based example built and running on `https://localhost:3030`. Also, try loading the project in your game enging from the `game` folder; buiding and running the game from the engine should work against the spawned server.
-
-##### Check server logs
-
-To see a running log from the servers, use the following command:
-
-```console
-> omgd servers logs
-```
-
-### Cloud Deployment for Testing
-
-#### Prerequisites
-
-For cloud deployment, you'll need to install [Terraform](https://www.terraform.io).
-
-You'll also need a [Google Cloud Platform (GCP)](https://cloud.google.com/gcp) account with billing enabled.
-
-<b>NOTE: OMGD is NOT responsible for your billing or finances on GCP or any cloud provider. You must monitor this. However, we default instances to `f1-micro`, and if you shut down your instances after testing, you shouldn't be paying more than a few pennies to dollars per month, USD.</b>
-
-#### Cloud Setup
+### Getting Started
 
 Please see the [getting started section](https://newnoiseworks.github.io/omgd/pages/getting-started/#deploying-to-the-cloud) for more.
 

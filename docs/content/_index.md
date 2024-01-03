@@ -44,7 +44,7 @@ OMGD is built to be agnostic to game engines and cloud platforms.
 
 As long as the game engine can build executables via a docker image, and the cloud platform is compatible with Terraform, OMGD should be expandable to support any combination of the two.
 
-As of January 2024, OMGD only supports [Godot](https://godotengine.org) and [Google Cloud Platform (GCP)](https://cloud.google.com/)
+As of January 2024, OMGD only supports [Godot game engine](https://godotengine.org) and [Google Cloud Platform (GCP)](https://cloud.google.com/).
 
 {{<hint danger>}}
 OMGD is not responsible for your cloud billing or costs!

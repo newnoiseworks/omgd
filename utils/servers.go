@@ -17,8 +17,27 @@ type ServersChange struct {
 }
 
 func RemoteGCPCommand(cmd string, dir string, profile *ProfileConf) {
+	cmdStr := "gcloud compute ssh omgd-sa@%s-omgd-dev-instance-%s --project=%s --zone=%s -- %s"
+
+	if runtime.GOOS == "windows" {
+		LogWarn("This command does not work on windows. Try authenticating to gcloud without the application default permissions via `gcloud auth login`")
+
+		cmdStr = fmt.Sprintf(
+			"gcloud compute ssh omgd-sa@%s-omgd-dev-instance-%s --project=%s --zone=%s --command=\"%s\"",
+			profile.OMGD.Name,
+			profile.Name,
+			profile.OMGD.GCP.Project,
+			profile.OMGD.GCP.Zone,
+			cmd,
+		)
+
+		LogWarn("Afterwards, try running the following manually: ")
+		LogWarn(cmdStr)
+		return
+	}
+
 	CmdOnDirToStdOut(
-		fmt.Sprintf("gcloud compute ssh omgd-sa@%s-omgd-dev-instance-%s --project=%s --zone=%s -- %s",
+		fmt.Sprintf(cmdStr,
 			profile.OMGD.Name,
 			profile.Name,
 			profile.OMGD.GCP.Project,

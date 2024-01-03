@@ -18,11 +18,10 @@ var infraCmd = &cobra.Command{
 	Short: "Deploys and destroys cloud infrastructure",
 	Long: `Deploys and destroys cloud infrastructure
 
-$ omgd infra deploy | Deploys cloud infrastructure via terraform
-$ omgd infra game-deploy | Builds and deploys clients and server to infra
-$ omgd infra destroy | Destroys cloud infrastructure via terraform
 $ omgd infra project-setup | Initial one time project level infra setup
-$ omgd infra project-destroy | Destroy project infra setup - NOTE: This does NOT destroy individual instances, and may leave compute boxes up to be destroyed manually. Use omgd infra destroy for that first.`,
+$ omgd infra project-destroy | Destroy initial project infra setup
+$ omgd infra instance-deploy | Sets up a cloud VM instance of the game servers against a non local profile
+$ omgd infra instance-destroy | Destroys cloud VM created against supplied profile`,
 	Run: func(cmd *cobra.Command, args []string) {
 		profile := utils.GetProfile(ProfilePath)
 		command := args[0]

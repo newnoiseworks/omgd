@@ -1,11 +1,6 @@
 ---
 title: OMGD
 bookToc: false
-# bookFlatSection: false
-# bookHidden: false
-# bookCollapseSection: false
-# bookComments: false
-# bookSearchExclude: false
 ---
 # OMGD
 
@@ -38,9 +33,30 @@ This is how to setup a live game server - dedicated, another set of software, or
 
 OMGD uses Docker and Terraform for you to make everything work.
 
+## Game Engines and Cloud Platforms
+
+OMGD is built to be agnostic to game engines and cloud platforms.
+
+As long as the game engine can build executables via a docker image, and the cloud platform is compatible with Terraform, OMGD should be expandable to support any combination of the two.
+
+As of January 2024, OMGD only supports [Godot game engine](https://godotengine.org) and [Google Cloud Platform (GCP)](https://cloud.google.com/).
+
+{{<hint danger>}}
+OMGD is not responsible for your cloud billing or costs!
+{{</hint>}}
+
 ## Check out some examples
 
+[Godot 4 Dedicated Server Example](https://github.com/newnoiseworks/omgd-godot4-dedicated-example)
+<br />
+[Godot 4 with Nakama 3 Server Example](https://github.com/newnoiseworks/omgd-godot4-nakama3-example)
+<br />
 [Godot 3 Dedicated Server Example](https://github.com/newnoiseworks/omgd-godot3-dedicated-example)
+<br />
+[Godot 3 Dedicated Server and Nakama 3 Server Example](https://github.com/newnoiseworks/omgd-godot3-dedicated-nakama3-example)
+<hr />
+
+[All Examples](https://github.com/orgs/newnoiseworks/repositories?q=omgd+example&type=all&language=&sort=)
 
 ## Try out the latest build
 

@@ -57,5 +57,4 @@ func init() {
 	// buildTemplatesCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	buildTemplatesCmd.Flags().StringVar(&templateExtension, "ext", "tmpl", "File extension used for templates. Don't include the period.")
 	buildTemplatesCmd.Flags().BoolVar(&removeTemplateAfterProcessing, "remove", false, "Remove template file after processing")
-	buildTemplatesCmd.Flags().BoolVar(&useLocalProfilesDir, "profiles", false, "uses local .profiles/ dir instead of build .omgd/ dir in main project lib")
 }

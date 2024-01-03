@@ -22,7 +22,6 @@ var serversCmd = &cobra.Command{
 $ omgd servers start          | starts local docker servers containers
 $ omgd servers stop           | stops local docker servers containers
 $ omgd servers logs           | prints logs from docker containers
-$ omgd servers logs --verbose | tails / follows logs continuously
 $ omgd servers status         | prints status of running docker containers
 $ omgd servers deploy         | deploys servers folder to profile target, not usable with local profile
 	`,

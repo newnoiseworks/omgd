@@ -22,6 +22,6 @@ If you're on Windows, [here's a guide to adding executables to your PATH](https:
 
 ### Getting Started
 
-Please see the [getting started section](https://newnoiseworks.github.io/omgd/pages/getting-started/#deploying-to-the-cloud) for more.
+Please see the [getting started section](https://newnoiseworks.github.io/omgd/pages/getting-started/) for more.
 
 

@@ -1,11 +1,6 @@
 ---
 title: OMGD
 bookToc: false
-# bookFlatSection: false
-# bookHidden: false
-# bookCollapseSection: false
-# bookComments: false
-# bookSearchExclude: false
 ---
 # OMGD
 

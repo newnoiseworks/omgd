@@ -44,7 +44,7 @@ $ omgd infra instance-destroy | Destroys cloud VM created against supplied profi
 				return
 			}
 
-			utils.LogInfo("Setting up instance on cloud servers...")
+			utils.LogInfo("Setting up instance on cloud servers... WARNING: OMGD is not responsible for managing your server costs.")
 			infraChange.InstanceSetup()
 		case "instance-destroy":
 			if profile.OMGD.GCP.Bucket == "" || profile.OMGD.GCP.Bucket == "???" {
@@ -60,7 +60,7 @@ $ omgd infra instance-destroy | Destroys cloud VM created against supplied profi
 				return
 			}
 
-			utils.LogInfo("Setting up OMGD project to work with cloud servers...")
+			utils.LogInfo("Setting up OMGD project to work with cloud servers... WARNING: OMGD is not responsible for managing your server costs.")
 			infraChange.ProjectSetup()
 		case "project-destroy":
 			if profile.OMGD.GCP.Project == "" || profile.OMGD.GCP.Project == "???" || profile.OMGD.GCP.Project == "your-project-name" {

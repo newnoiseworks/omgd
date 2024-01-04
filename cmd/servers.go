@@ -123,7 +123,7 @@ $ omgd servers deploy         | deploys servers folder to profile target, not us
 				return
 			}
 
-			utils.LogInfo("Deploying servers to cloud...")
+			utils.LogInfo("Deploying servers to cloud... WARNING: OMGD is not responsible for managing your server costs.")
 
 			sc := utils.ServersChange{
 				OutputDir:       OutputDir,

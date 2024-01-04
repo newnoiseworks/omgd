@@ -39,15 +39,40 @@ $ omgd infra instance-destroy | Destroys cloud VM created against supplied profi
 
 		switch command {
 		case "instance-setup":
+			if profile.OMGD.GCP.Bucket == "" || profile.OMGD.GCP.Bucket == "???" {
+				utils.LogWarn("No bucket setup in omgd.cloud.yml file -- you need to run omgd infra project-setup first.")
+				return
+			}
+
 			utils.LogInfo("Setting up instance on cloud servers...")
 			infraChange.InstanceSetup()
 		case "instance-destroy":
+			if profile.OMGD.GCP.Bucket == "" || profile.OMGD.GCP.Bucket == "???" {
+				utils.LogWarn("No bucket setup in omgd.cloud.yml file -- you need to run omgd infra project-setup first.")
+				return
+			}
+
 			utils.LogInfo("Destroying instance on cloud servers...")
 			infraChange.InstanceDestroy()
 		case "project-setup":
+			if profile.OMGD.GCP.Project == "" || profile.OMGD.GCP.Project == "???" || profile.OMGD.GCP.Project == "your-project-name" {
+				utils.LogWarn("No GCP project setup in omgd.cloud.yml file -- you need to create a GCP project and insert it's ID in that file")
+				return
+			}
+
 			utils.LogInfo("Setting up OMGD project to work with cloud servers...")
 			infraChange.ProjectSetup()
 		case "project-destroy":
+			if profile.OMGD.GCP.Project == "" || profile.OMGD.GCP.Project == "???" || profile.OMGD.GCP.Project == "your-project-name" {
+				utils.LogWarn("No GCP project setup in omgd.cloud.yml file -- you need to create a GCP project and insert it's ID in that file")
+				return
+			}
+
+			if profile.OMGD.GCP.Bucket == "" || profile.OMGD.GCP.Bucket == "???" {
+				utils.LogWarn("No bucket setup in omgd.cloud.yml file -- you need to run omgd infra project-setup first.")
+				return
+			}
+
 			utils.LogInfo("Destroying OMGD project setup on cloud servers...")
 			infraChange.ProjectDestroy()
 		default:
